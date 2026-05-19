@@ -1,37 +1,27 @@
-# Risk Matrix
+# Risk Matrix (Updated post-founder answers)
 
-**Scoring:** Likelihood (1–5) × Impact (1–5) = Exposure (max 25)
+**Date:** 2026-05-19
 
 | ID | Risk | L | I | Exp | Mitigation | Status |
 |----|------|---|---|-----|------------|--------|
-| R-01 | Founder scope ambiguity | 5 | 5 | **25** | Phase 0 questionnaire | Open |
-| R-02 | Union backlash on video analytics | 4 | 5 | 20 | Teacher-owned sharing; audio tier | Open |
-| R-03 | FERPA violation via AI subprocessors | 3 | 5 | 15 | DPA + allowlisted models | Open |
-| R-04 | LLM hallucination in coaching | 4 | 4 | 16 | Citations + human approval | Planned |
-| R-05 | ASR inaccuracy in noisy classes | 5 | 3 | 15 | Confidence bands; diarization limits | Known |
-| R-06 | CV engagement false positives | 4 | 4 | 16 | No high-stakes use; de-id tier | Planned |
-| R-07 | Unit economics (GPU cost) | 4 | 4 | 16 | Tiered processing; batch scheduling | Open |
-| R-08 | Big Tech bundles free analytics | 3 | 4 | 12 | Pedagogy-specific moat | Monitor |
-| R-09 | Cannot acquire training data | 4 | 5 | 20 | Pilot MOUs; synthetic data | Open |
-| R-10 | China competitor outpaces features | 2 | 3 | 6 | Ethical differentiation | Accept |
-| R-11 | Research timeline vs investor pressure | 5 | 4 | 20 | Explicit phase gates | Open |
-| R-12 | Key hire gap (ML + pedagogy) | 4 | 4 | 16 | Advisory board | Open |
+| R-01 | Scope ambiguity | 3 | 5 | 15 | Partial answers; D-05/10/12 open | Improved |
+| R-02 | Union backlash (US) | 2 | 4 | 8 | India-first; defer US | Lower |
+| R-03 | India DPDP / child data violation | **5** | **5** | **25** | Counsel, DPIA, consent | **Critical** |
+| R-04 | LLM hallucination | 4 | 4 | 16 | Text-only prompts; labels | Open |
+| R-05 | ASR in noisy Indian classrooms | **5** | 4 | **20** | HI+EN models; mic guidance | Open |
+| R-06 | CV false engagement scores | 4 | 5 | **20** | Preliminary vs final; no student grade v1 | Open |
+| R-07 | Unit economics (multi-cam GPU) | **5** | **5** | **25** | D-10 budget; edge caching | **Critical** |
+| R-08 | Real-time pipeline failure at scale | 4 | 5 | 20 | Hot/cold split; degrade gracefully | New |
+| R-09 | Teacher trust / public backlash | 4 | 4 | 16 | Contractual use limits | New |
+| R-10 | Dual segment (K-12 + univ) dilution | 4 | 3 | 12 | Separate templates | New |
+| R-11 | Screen capture PII leakage | 4 | 4 | 16 | Redact LMS chat; policies | New |
+| R-12 | No success metric → wrong build | **5** | 4 | **20** | Founder pick M-A/B | Open |
 
 ---
 
-## Unknowns Register
+## New Assumptions Requiring Validation
 
-| Unknown | Validation experiment |
-|---------|----------------------|
-| Optimal privacy tier for adoption | A/B district pilots |
-| Talk ratio coaching → student outcomes | RCT with university partner |
-| Slide-speech alignment accuracy | Benchmark 100 lessons |
-| District willingness to pay for T2 video | Pricing interviews (n≥15) |
-
----
-
-## Assumptions Requiring Disproof
-
-1. Multimodal beats audio-only on **coach time saved** (not just feature checklist)
-2. Teachers will upload ≥4 lessons/month without mandates
-3. Admins will accept human-approved AI vs manual coaching only
+1. Indian schools will install **desktop agent** on teacher PC
+2. **5–15 Mbps** uplink available per classroom
+3. Admins will act on live dashboards (not ignore)
+4. Universities share procurement path with K-12 (may be false)

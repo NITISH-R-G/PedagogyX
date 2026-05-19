@@ -1,141 +1,91 @@
-# AI / ML Architecture v0.1
+# AI / ML Architecture v0.2 (India Supervision)
 
-**Status:** Draft
-
----
-
-## Model Layers (Tiered Product)
-
-| Tier | Modality | Models (indicative) | Cost |
-|------|----------|---------------------|------|
-| **T0** | Audio | ASR + diarization + talk metrics | $ |
-| **T1** | Audio + slides | + slide OCR/embedding alignment | $$ |
-| **T2** | Single-camera video | + activity detection, teacher pose | $$$ |
-| **T3** | Multi-cam + board | + fusion, engagement proxies | $$$$ |
-
-**[ASSUMPTION]** Ship **T0→T1** before T3.
+**Status:** Draft — multi-cam + real-time + identifiable students
 
 ---
 
-## ML Pipeline
+## v1 Model Stack (Founder-Aligned)
+
+| Stream | Models / techniques | Hot | Cold |
+|--------|---------------------|-----|------|
+| `audio_mic` | ASR (Whisper-class), diarization, talk ratio | Yes | Yes |
+| `screen` | Slide OCR, UI change detection, app classification | Partial | Yes |
+| `cam_*` | Person detect, pose, hand-raise, head-up proxy | Yes | Yes |
+| Fusion | Temporal transformer / rules (Flanders/S-T proxies) | Heuristic | Full |
+| LLM | Rubric narrative, lesson summary | Optional live | Yes |
+
+**Languages:** English + Hindi ASR **[ASSUMPTION]** until D-11 confirmed.
+
+---
+
+## Pedagogy Index (Admin Score) — Draft Components
+
+**[HYPOTHESIS]** Composite index for dashboards:
+
+| Component | Weight (TBD) | Source |
+|-----------|----------------|--------|
+| Teacher talk ratio | 15% | Audio |
+| Student talk ratio | 15% | Audio |
+| Interaction density | 15% | CV + audio |
+| Pacing / silence gaps | 10% | Audio |
+| Board/slide utilization | 15% | Screen |
+| Student attention proxy | 20% | Multi-cam CV |
+| Question rate (instructional) | 10% | NLP |
+
+**Risk:** Publishing single score without validity study — document as **indicative** until efficacy RCT.
+
+---
+
+## Real-Time Inference Architecture
 
 ```mermaid
 flowchart LR
-    subgraph inputs [Inputs]
-        AUD[Audio]
-        VID[Video]
-        SL[Slides PDF]
+    subgraph gpu [GPU Node Pool]
+        T1[Stream decoder]
+        T2[Triton/ONNX models]
     end
-
-    subgraph extract [Feature Extraction]
-        ASR[Whisper-class ASR]
-        DIA[Diarization]
-        OCR[Slide OCR]
-        DET[Activity detectors]
-        EMB[Embeddings]
-    end
-
-    subgraph fusion [Fusion]
-        ALIGN[Temporal alignment]
-        KG[Instruction graph]
-    end
-
-    subgraph outputs [Outputs]
-        MET[Structured metrics JSON]
-        CLIP[Evidence clips]
-        NAR[Coaching narrative]
-    end
-
-    AUD --> ASR --> DIA
-    SL --> OCR
-    VID --> DET
-    ASR --> ALIGN
-    OCR --> ALIGN
-    DET --> ALIGN
-    ALIGN --> KG --> MET
-    ALIGN --> CLIP
-    MET --> NAR
-    CLIP --> NAR
+    ING[Ingest] --> T1 --> T2
+    T2 --> REDIS[(Feature cache)]
+    REDIS --> AGG[2s window aggregator]
+    AGG --> WS[WebSocket to dashboard]
 ```
 
----
+**SLO draft (hot path):**
 
-## Temporal Alignment Strategy
-
-**[HYPOTHESIS]** Master timeline = **audio waveform clock** (sample-accurate), with video frame timestamps and slide change events snapped via cross-correlation on speech ↔ slide titles.
-
-| Signal | Timestamp source |
-|--------|------------------|
-| Utterances | ASR word timestamps |
-| Slide change | PDF metadata / vision diff |
-| Board writing | OCR change detection |
-| CV events | Frame index → audio clock |
+- Preview talk ratio: p95 < **8s** delay
+- Activity labels: p95 < **5s**
+- GPU autoscale on concurrent classrooms per school
 
 ---
 
-## Coaching Agent (LLM) Guardrails
+## Identifiable Student Processing
 
-1. **Retrieve** only from lesson artifacts + district rubric docs (RAG)
-2. **Require citations** — `[mm:ss]` links to clip URLs
-3. **Schema-constrained JSON** intermediate (metrics → narrative)
-4. **Secondary critic model** or rule checks for unsupported claims
-5. **Human approval** before admin-visible release
+**[FOUNDER DECISION]** Face/body tracks may persist per session for analytics.
 
-**[FACT]** Hallucination in education feedback is high-liability.
+Mitigations:
 
----
-
-## Eval Pipeline (MLOps)
-
-```mermaid
-flowchart TB
-    DS[Golden dataset] --> BEN[Benchmark suites]
-    BEN --> CI[CI regression]
-    CI -->|pass| REG[Model registry promote]
-    CI -->|fail| BLOCK[Block deploy]
-    REG --> CAN[Canary tenant]
-    CAN --> PROD[Production]
-```
-
-**Benchmark suites (build):**
-
-| Suite | Metrics |
-|-------|---------|
-| ASR | WER, diarization DER |
-| Talk ratio | MAE vs human coders |
-| Questions | F1 (Donnelly baseline ~0.59 utterance) |
-| Coaching | Human rubric: groundedness, actionability |
-| CV | mAP per behavior (if enabled) |
+- Session-scoped pseudonymous track IDs (not national ID)
+- No cross-lesson student identity **unless** school enables SIS linkage **[ASSUMPTION: default OFF]**
+- Retention TTL on face embeddings
 
 ---
 
-## Model Sourcing Strategy
+## LLM Policy (D-12 unresolved)
 
-| Component | Build | Buy | Open weights |
-|-----------|-------|-----|--------------|
-| ASR | Fine-tune | Deepgram/AWS | Whisper |
-| Diarization | Fine-tune | — | pyannote |
-| NLP discourse | Train | — | DeBERTa-class |
-| CV | Train | — | YOLO/DETR |
-| Coaching LLM | Prompt+RAG | API (restricted) | Llama on GPU |
+| Option | India fit |
+|--------|-------------|
+| Self-hosted Llama/Mistral on GPU | Best if D-12 forbids cloud |
+| Azure OpenAI India region | If counsel approves DPA |
+| No LLM on raw video frames | Redact to text + slide text only |
 
-**[ASSUMPTION]** No training on identifiable student data without contract + IRB.
+**Default implementation:** LLM inputs = **transcript + structured metrics JSON** only (no raw child images in prompt).
 
 ---
 
-## Long-Context Video **[HYPOTHESIS]**
+## Eval Priorities (Revised)
 
-For 45–90 min lessons:
-
-- **Hierarchical:** segment → clip embeddings → lesson summary transformer
-- **Do not** naive full-attention on 1080p所有 frames
-- Explore Video-LLM for **coach Q&A** only, not autonomous scoring
-
----
-
-## Knowledge Graph (Phase 2+)
-
-Nodes: `Lesson`, `Activity`, `Utterance`, `RubricSkill`, `Standard`, `EvidenceClip`  
-Edges: `demonstrates`, `violates`, `precedes`, `correlates`
-
-Store: Postgres JSONB first; Neo4j if query complexity demands.
+1. Multi-stream sync accuracy (ms drift)
+2. Hot vs cold score divergence (must be < ε or UI warns)
+3. Hindi/English code-switch WER
+4. Indian classroom layout CV (bench rows, fan noise)
+5. Admin score stability week-over-week

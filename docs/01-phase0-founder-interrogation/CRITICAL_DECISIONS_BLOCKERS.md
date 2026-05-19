@@ -1,65 +1,62 @@
 # Critical Decision Blockers — Implementation Gate G0/G1
 
-**Status:** 🔴 **BLOCKING** — Cannot finalize architecture or cost models without these answers.
-
-Answer directly in this file (append `**Founder answer:**` under each item) or in a linked decision log.
-
----
-
-## Tier 1 — Must answer before any architecture freeze
-
-| ID | Question | Default if silent | Impact |
-|----|----------|-------------------|--------|
-| **D-01** | Primary customer: K-12, higher ed, corporate L&D, or government? | K-12 US | GTM, compliance, UX |
-| **D-02** | Primary geography year 1? | US only | Legal, language, cloud region |
-| **D-03** | Is student **identifiable video** in scope for v1? | No — audio + de-identified video | 50% of CV pipeline |
-| **D-04** | Is **real-time** coaching (in-ear / live dashboard) in scope for v1? | No — post-lesson only | Infra, WebRTC |
-| **D-05** | Who is the **economic buyer**? | District curriculum/coaching office | Pricing, features |
-| **D-06** | Can **admins** see individual teacher AI scores? | Coaches only, not HR | RBAC, unions |
-| **D-07** | Is platform **surveillance-acceptable** in any market? | No | Brand, China features |
-| **D-08** | Hardware: BYOD upload only, or bundled capture kits? | BYOD | Logistics, margin |
-| **D-09** | Minimum viable modality: audio-only, single cam, or multi-cam? | Single cam + audio | Cost per hour |
-| **D-10** | Budget ceiling per classroom per year for infra? | Unknown | Model selection |
+**Status:** 🟡 **PARTIALLY UNBLOCKED** (founder Tier-1 answers 2026-05-19)  
+**Canonical answers:** [FOUNDER_ANSWERS.md](FOUNDER_ANSWERS.md)
 
 ---
 
-## Tier 2 — Must answer before ML roadmap
+## Tier 1 — Founder answers recorded
 
-| ID | Question | Default if silent |
-|----|----------|-------------------|
-| **D-11** | Target languages for ASR year 1? | English |
-| **D-12** | Accept cloud LLM (OpenAI/Anthropic) or require private LLM? | Private/vPC for student-adjacent data |
-| **D-13** | Will you **label data** in-house or vendor? | Vendor + teacher opt-in |
-| **D-14** | Is **synthetic classroom data** acceptable for training? | Yes with disclosure |
-| **D-15** | Required explainability: feature attributions, rubric mapping, or narrative only? | Rubric-mapped evidence clips |
-
----
-
-## Tier 3 — Must answer before enterprise sales materials
-
-| ID | Question |
-|----|----------|
-| **D-16** | SOC 2 Type II timeline expectation? |
-| **D-17** | Data residency: US-only, EU region, India, Middle East? |
-| **D-18** | SSO: SAML, OIDC, both? Clever/ClassLink? |
-| **D-19** | LMS integrations priority list? |
-| **D-20** | Union / collective bargaining markets — any hard exclusions? |
+| ID | Question | **Founder answer** | Gate |
+|----|----------|-------------------|------|
+| **D-01** | Primary customer | **K-12 district + university** | ✅ |
+| **D-02** | Year-1 geography | **India** | ✅ |
+| **D-03** | Identifiable student video in v1? | **Yes** | ✅ (triggers G2 legal) |
+| **D-04** | Real-time coaching in v1? | **Yes** | ✅ |
+| **D-05** | Economic buyer? | **TBD** | 🔴 |
+| **D-06** | Admins see individual AI pedagogy scores? | **Yes** | ✅ |
+| **D-07** | China-style supervision acceptable? | **Yes** (some markets) | ✅ |
+| **D-08** | Capture model? | **Screen recording + microphone** | ✅ |
+| **D-09** | MVP modality? | **Multi-cam** | ✅ |
+| **D-10** | Budget ceiling per classroom/year? | **TBD** | 🔴 |
+| **D-11** | ASR languages (inferred)? | **TBD** (assume EN + HI) | 🟡 |
+| **D-12** | Cloud LLM on student-adjacent data? | **TBD** | 🔴 |
 
 ---
 
-## Contradiction Alerts (Founder must pick a lane)
+## Tier 2 — Still open
 
-1. **"Privacy-first" + "engagement heatmaps from student faces"** — incompatible without strict consent and DPIA.
-2. **"Rival China smart classroom" + "EU/US union-friendly"** — feature sets diverge sharply.
-3. **"Autonomous classroom intelligence" + "human review mandatory"** — define autonomy boundary.
-4. **"30-day research phase" + "ship in Q1"** — clarify calendar vs agent-effort metaphor.
+| ID | Question | Default until answered |
+|----|----------|------------------------|
+| **D-13** | Label data in-house or vendor? | Vendor |
+| **D-14** | Synthetic data OK? | Yes with disclosure |
+| **D-15** | Explainability level? | Rubric + evidence clips |
+
+---
+
+## Tier 3 — Still open
+
+D-16 through D-20 — see [FOUNDER_QUESTIONNAIRE.md](FOUNDER_QUESTIONNAIRE.md)
+
+---
+
+## Contradiction Alerts — **ACTIVE**
+
+| Tension | Founder choice | Risk |
+|---------|----------------|------|
+| India DPDP + child data + identifiable video | Yes to ID video | Consent, purpose limitation, retention caps |
+| Real-time + multi-cam + screen capture | All in v1 | Cost, bandwidth, school IT burden |
+| Supervision + admin individual scores | Yes | Teacher trust, press, parent complaints |
+| Dual customer (K-12 + university) | Both | Two compliance paths, two UX |
+
+**Legal review required before G2** — see [INDIA_DPDP_ARCHITECTURE.md](../07-compliance-ethics/INDIA_DPDP_ARCHITECTURE.md)
 
 ---
 
 ## Sign-off
 
-| Role | Name | Date | Signature |
-|------|------|------|-----------|
-| Founder | | | |
-| Technical lead | | | |
-| Legal counsel | | | |
+| Role | Name | Date | Status |
+|------|------|------|--------|
+| Founder | | 2026-05-19 | Partial |
+| Legal counsel (India) | | | Not started |
+| Technical lead | | | Architecture revision in progress |

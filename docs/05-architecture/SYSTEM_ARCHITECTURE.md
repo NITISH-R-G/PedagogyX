@@ -1,17 +1,19 @@
-# System Architecture v0.1 (Reference)
+# System Architecture v0.2 (India Supervision)
 
-**Status:** Draft — **blocked on G0/G1 founder decisions**  
-**RFC:** [RFC-0001](../08-rfc-adr/RFC-0001-platform-vision-and-scope.md)
+**Status:** Draft — aligned to [FOUNDER_ANSWERS.md](../01-phase0-founder-interrogation/FOUNDER_ANSWERS.md)  
+**Supersedes:** v0.1 assumptions (US coaching-only)  
+**ADRs:** [ADR-0003](../08-rfc-adr/ADR-0003-india-supervision-v1-scope.md), [ADR-0004](../08-rfc-adr/ADR-0004-capture-screen-multicam.md)
 
 ---
 
-## Architectural Principles
+## Architectural Principles (Revised)
 
-1. **Privacy tiers by configuration** — same codebase, different feature flags per tenant
-2. **Immutable ingest** — raw media append-only; analytics recomputable
-3. **Event-driven** — lesson lifecycle as event stream
-4. **Human-in-the-loop** for externally visible AI coaching
-5. **Eval-first ML** — no model promotion without benchmark regression pass
+1. **India data residency** default (ap-south-1)
+2. **Dual analytics path:** real-time (hot) + batch (cold, authoritative scores)
+3. **Multi-stream sync** — screen + mic + multi-cam
+4. **Supervision mode** — admin dashboards with individual teacher metrics
+5. **Segment templates** — K-12 vs university org policies
+6. Human review **recommended** for AI narratives; **not blocking** admin quantitative scores
 
 ---
 
@@ -19,176 +21,136 @@
 
 ```mermaid
 flowchart TB
-    subgraph clients [Clients]
-        WEB[Web App]
-        MOB[Mobile Capture]
-        EXT[LMS/VCS Integrations]
+    subgraph capture [Capture Layer]
+        AGENT[Desktop Capture Agent]
+        SCR[Screen stream]
+        MIC[Mic stream]
+        CAM1[Cam 1]
+        CAM2[Cam 2]
     end
 
-    subgraph edge [Optional Edge]
-        ENC[Classroom Encoder Appliance]
+    subgraph realtime [Hot Path - Real-Time]
+        ING[Stream Ingest / WebRTC SFU]
+        EDGE[Edge Feature Workers]
+        LIVE[Live Analytics Bus]
+        DASH_L[Live Admin Dashboard]
     end
 
-    subgraph api [Control Plane]
+    subgraph batch [Cold Path - Authoritative]
+        ARCH[Object Store Archive]
+        TR[Transcode + Index]
+        ML[Batch ML Fusion]
+        SCORE[Pedagogy Score Store]
+    end
+
+    subgraph plane [Control Plane]
         GW[API Gateway]
-        AUTH[Auth / RBAC]
-        META[Session Metadata Service]
+        AUTH[Auth RBAC]
+        TEN[Tenant K-12 / Univ]
     end
 
-    subgraph ingest [Ingestion]
-        UP[Upload Service]
-        BUS[Event Bus]
-        TR[Transcode Worker]
-    end
-
-    subgraph ml [ML Plane]
-        ASR[ASR + Diarization]
-        NLP[Discourse Analytics]
-        CV[Video Understanding]
-        FUS[Multimodal Fusion]
-        LLM[Coaching Agent]
-    end
-
-    subgraph data [Data Plane]
-        OBJ[(Object Storage)]
-        OLTP[(PostgreSQL)]
-        OLAP[(ClickHouse)]
-        VEC[(Vector Store)]
-        GRAPH[(Graph DB - optional)]
-    end
-
-    subgraph exp [Experience]
-        REV[Review Player]
-        COACH[Coach Workspace]
-        DASH[District Analytics]
-    end
-
-    WEB --> GW
-    MOB --> UP
-    EXT --> UP
-    ENC --> UP
-    GW --> AUTH
-    GW --> META
-    UP --> OBJ
-    UP --> BUS
-    BUS --> TR
-    TR --> OBJ
-    BUS --> ASR
-    ASR --> NLP
-    TR --> CV
-    NLP --> FUS
-    CV --> FUS
-    FUS --> OLAP
-    FUS --> VEC
-    FUS --> LLM
-    META --> OLTP
-  LLM --> COACH
-    OBJ --> REV
-    OLAP --> DASH
+    AGENT --> SCR & MIC & CAM1 & CAM2
+    SCR & MIC & CAM1 & CAM2 --> ING
+    ING --> EDGE --> LIVE --> DASH_L
+    ING --> ARCH --> TR --> ML --> SCORE
+    GW --> AUTH --> TEN
+    SCORE --> DASH_A[Admin Analytics]
+    SCORE --> T_PORT[Teacher Portal]
 ```
 
 ---
 
-## Lesson Lifecycle (Event Model)
-
-```mermaid
-stateDiagram-v2
-    [*] --> Draft: teacher_schedules
-    Draft --> Uploading: capture_started
-    Uploading --> Ingested: upload_complete
-    Ingested --> Transcoding: transcode_queued
-    Transcoding --> Transcribed: asr_complete
-    Transcribed --> Analyzed: analytics_complete
-    Analyzed --> InReview: coach_opens
-    InReview --> Published: teacher_accepts_feedback
-    Published --> Archived: retention_policy
-    Archived --> [*]
-```
-
-**Core events (Avro/Protobuf TBD):** `lesson.uploaded`, `lesson.transcoded`, `lesson.transcript.ready`, `lesson.metrics.computed`, `lesson.coaching.draft`, `lesson.coaching.approved`
-
----
-
-## Deployment Architecture (Cloud Reference)
-
-```mermaid
-flowchart LR
-    subgraph region [Region e.g. us-east-1]
-        subgraph k8s [Kubernetes]
-            API[API pods]
-            WRK[GPU worker pools]
-            CPU[CPU workers]
-        end
-        S3[(S3)]
-        RDS[(RDS Postgres)]
-        CH[(ClickHouse Cloud)]
-        KFK[Kafka/Redpanda]
-    end
-    CDN[CloudFront]
-    CDN --> S3
-    API --> RDS
-    WRK --> S3
-    WRK --> KFK
-    CPU --> KFK
-```
-
-**[ASSUMPTION]** Single-region MVP; multi-region for EU data residency in Phase 2.
-
----
-
-## Subsystem Boundaries
-
-| Service | Responsibility | SLO draft |
-|---------|----------------|-----------|
-| Upload | Resumable multipart, virus scan, checksum | 99.9% |
-| Transcode | H.264/H.265 normalization, thumbnails | p95 < 2× realtime |
-| ASR | Transcript + diarization + confidence | p95 < 15 min / 50 min lesson |
-| Discourse | Talk ratio, questions, dialogic proxies | batch |
-| CV | Optional detectors | GPU quota |
-| Coaching Agent | RAG + rubric-grounded narrative | human approval |
-| Analytics API | Aggregates only for district roles | k-anonymity ≥ 5 |
-
----
-
-## Sequence: Post-Lesson Analysis (Default Path)
+## Stream Synchronization
 
 ```mermaid
 sequenceDiagram
-    participant T as Teacher
-    participant U as Upload
-    participant E as Event Bus
-    participant X as Transcode
-    participant A as ASR
-    participant M as ML Fusion
-    participant C as Coach UI
-    participant H as Human Coach
+    participant A as Capture Agent
+    participant S as Sync Service
+    participant H as Hot Path
+    participant C as Cold Archive
 
-    T->>U: Upload lesson artifact
-    U->>E: lesson.uploaded
-    E->>X: transcode job
-    X->>E: lesson.transcoded
-    E->>A: transcribe job
-    A->>E: lesson.transcript.ready
-    E->>M: analyze job
-    M->>E: lesson.metrics.computed
-    M->>C: AI coaching draft
-    H->>C: Review/edit/approve
-    C->>T: Published feedback
+    A->>S: Register session + stream descriptors
+    par Streams
+        A->>S: screen chunks
+        A->>S: audio chunks
+        A->>S: cam1/cam2 chunks
+    end
+    S->>H: Aligned micro-batches (e.g. 2s windows)
+    S->>C: Chunked upload for durable storage
+    Note over S: Master clock = audio sample clock
 ```
 
----
-
-## Security Zones
-
-| Zone | Data | Exposure |
-|------|------|----------|
-| Public | Marketing | Internet |
-| App | De-identified analytics | Authenticated users |
-| Sensitive | Raw video, transcripts with student voice | RBAC + audit |
-| ML | Training exports | Isolated account, no prod keys |
+| Challenge | Mitigation |
+|-----------|------------|
+| A/V drift | Cross-correlate screen OCR events with speech |
+| Multi-cam alignment | Hardware genlock or software timestamp + calibration |
+| Packet loss | Local ring buffer on agent; resumable upload |
 
 ---
 
-## Open Architecture Questions
+## Real-Time vs Batch Responsibilities
 
-See [CRITICAL_DECISIONS_BLOCKERS.md](../01-phase0-founder-interrogation/CRITICAL_DECISIONS_BLOCKERS.md) and ADRs.
+| Capability | Hot path (latency) | Cold path (quality) |
+|------------|-------------------|---------------------|
+| Talk ratio estimate | ~5s rolling | Final diarization |
+| Activity detection | Lightweight YOLO | Full transformer fusion |
+| Engagement proxy | Heuristic | Calibrated model |
+| Pedagogy index | Preview score | **Authoritative** admin score |
+| Coaching tips | Live nudges (optional) | Full LLM report |
+
+**[ASSUMPTION]** Admin contractual SLAs reference **cold path** scores; hot path labeled "preliminary."
+
+---
+
+## Deployment (India Reference)
+
+```mermaid
+flowchart LR
+    subgraph in [ap-south-1]
+        EKS[EKS cluster]
+        GPU[GPU pool - inference]
+        SFU[Media SFU]
+        S3[(S3)]
+        RDS[(Postgres)]
+        CH[(ClickHouse)]
+    end
+    SCH[Schools] --> AGENT
+    AGENT --> SFU
+    SFU --> GPU
+    GPU --> CH
+```
+
+**Bandwidth:** Multi-cam + screen may require **5–15 Mbps uplink** per classroom **[HYPOTHESIS]** — needs pilot measurement.
+
+---
+
+## RBAC (Supervision Mode)
+
+| Role | Live view | Individual scores | Raw student video |
+|------|-----------|-------------------|-------------------|
+| Teacher | Own class | Own (preview) | Own sessions |
+| Coach | Assigned | Assigned | If permitted |
+| School admin | School | **Yes** | **Yes** |
+| District admin | District aggregate + drill-down | **Yes** | Policy-dependent |
+| University dean | Department | **Yes** | Policy-dependent |
+
+Audit: immutable log of every stream view and score export.
+
+---
+
+## Capture Agent (v1)
+
+See ADR-0004. Minimum platforms:
+
+- Windows 10+ (primary lab / smart classroom PC)
+- **[HYPOTHESIS]** Android companion for USB camera relay
+
+Not in v1: iOS screen capture (policy restrictions).
+
+---
+
+## Open Blockers
+
+- D-10 budget → GPU sizing
+- D-12 LLM → coaching narrative architecture
+- Legal G2 → consent flows in agent installer

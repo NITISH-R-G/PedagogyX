@@ -1,55 +1,61 @@
-# Ethical Framework for Classroom Intelligence
+# Ethical Framework — Revised for Supervision Mode
 
-**Status:** Draft — requires founder + advisory board ratification
-
----
-
-## North Star
-
-PedagogyX exists to **amplify teacher agency and professional growth**, not to automate punitive surveillance.
+**Status:** Draft — **founder chose supervision posture**; ethics board review still required
 
 ---
 
-## Non-Negotiables (Proposed)
+## Declared Product Stance (2026-05-19)
 
-1. **Teachers control sharing** of their lesson artifacts by default
-2. **No hidden recording** — clear UI indicators during capture
-3. **No student summative scores** from CV in v1
-4. **No sale of student data** or advertising profiles
-5. **Transparency report** annually on model limitations and incidents
-6. **Appeal path** when AI-assisted feedback disputed
+PedagogyX v1 targets **India K-12 and university** buyers who want:
 
----
+- **Administrative visibility** into teaching quality
+- **Real-time and historical** analytics
+- **Identifiable** classroom video where legally consented
+- Feature parity with **smart classroom / 督导-class** systems in some markets
 
-## Acceptable Use Policy (Schools)
-
-Schools must certify:
-
-- Purpose is **professional development**, not sole termination evidence
-- Compliance with local recording consent laws
-- Commitment to **least invasive** analytics tier meeting goals
+This is **not** the same ethical posture as US teacher-coaching-first vendors.
 
 ---
 
-## Red Lines (PedagogyX may refuse contracts)
+## Guardrails We Still Enforce
 
-- Mass student facial recognition for discipline
-- Real-time punitive alerts to administrators about individual students
-- Export to law enforcement without legal process policy
-- Cross-district benchmarking that enables teacher ranking publications
-
----
-
-## Ethics Review Board **[HYPOTHESIS]**
-
-Quarterly review of:
-
-- New model capabilities
-- Government RFP requirements
-- Research partnerships
+1. **Contractual purpose limitation** — education quality only
+2. **No advertising / no sale of student profiles**
+3. **Audit logs** on all admin access
+4. **Consent artifacts** stored per session
+5. **Deletion** on fiduciary request within SLA
+6. **No public teacher shaming** — scores not published to students/parents by default **[ASSUMPTION]**
+7. **Preliminary vs final** labels on real-time scores
 
 ---
 
-## Alignment with Research
+## Elevated Risks (Founder-Accepted Tradeoffs)
 
-Multimodal analytics can support reflection (**NSF teacher noticing**) but position tracking and gaze may be **more invasive than valuable** in some contexts—default off.
+| Risk | Mitigation |
+|------|------------|
+| Chilling effect on student participation | Schools disclose recording; classroom signage |
+| Teacher morale / union issues | Less acute in India context but monitor; coaching use case messaging |
+| Algorithmic bias across regions/languages | Disaggregated eval; human spot audits |
+| Children’s psychological harm from being scored | **No individual student grades in v1 admin UI** **[PROPOSAL — confirm]** |
+| Scope creep to punitive HR | Contract clause: scores not sole employment input |
+
+---
+
+## Modes (Technical)
+
+| Mode | When |
+|------|------|
+| `supervision` | India v1 default |
+| `coaching` | Teacher-private reflection; de-id options |
+| `research` | Anonymized exports only |
+
+Export to US/EU requires mode downgrade + legal review.
+
+---
+
+## Open Founder Decision
+
+**Should v1 show per-student engagement scores to admins?**
+
+- Founder said identifiable video **yes** and admin pedagogy scores **yes**
+- **Per-student** scoring not explicitly confirmed — **default OFF** until answered

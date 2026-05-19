@@ -1,101 +1,91 @@
-# Product Requirements Document v0.1 (Draft)
+# Product Requirements Document v0.2 (India Supervision)
 
-**Status:** 🔴 Blocked on Phase 0 answers  
-**Product:** PedagogyX Classroom Intelligence Platform
-
----
-
-## 1. Problem Statement
-
-Teachers lack **timely, objective, actionable feedback** on classroom practice. Coaches cannot scale observation. Districts spend heavily on PD with weak measurement.
-
-**[FACT]** Teachers talk 70–80% in many classrooms (TeachFX mission); dialogic instruction correlates with better outcomes.
+**Status:** 🟡 Revised per founder answers — legal G2 pending  
+**Supersedes:** v0.1 US coaching assumptions
 
 ---
 
-## 2. Vision
+## 1. Target Market
 
-**Multimodal evidence + pedagogical frameworks → explainable coaching → longitudinal teacher growth.**
-
-Not: automated surveillance scoring.
-
----
-
-## 3. Goals (Year 1 hypothesis)
-
-| Goal | Metric (TBD with founder) |
-|------|---------------------------|
-| Adoption | X% pilot teachers upload ≥4 lessons/month |
-| Utility | Coach NPS ≥ 40 |
-| Efficacy | +Y% student talk time (pilot RCT optional) |
-| Trust | <Z% teachers report "surveillance" in survey |
+| Attribute | Value |
+|-----------|-------|
+| Geography | **India** (year 1) |
+| Segments | **K-12 schools/districts** + **universities** |
+| Mode | **Supervision** (admin visibility, individual teacher scores) |
+| Comparable products | Smart classroom analytics (China/Taiwan/India), AI Sokrates |
 
 ---
 
-## 4. Personas (Draft)
+## 2. Capture Requirements (v1)
 
-| Persona | Need |
-|---------|------|
-| **Teacher** | Private reflection, evidence clips, growth tracking |
-| **Instructional coach** | Efficient review, rubric alignment, PLC sharing |
-| **Principal** | Aggregate PD insights (not individual punishment) |
-| **District admin** | ROI, standards alignment, compliance |
-| **Researcher** | Anonymized exports |
+- Desktop **screen recording** (slides, LMS, digital content)
+- **Microphone** audio (classroom or teacher mic)
+- **≥2 camera streams** (room + board or students)
+- Synchronized timeline; local buffer on network loss
+- Visible **recording indicator**
 
 ---
 
-## 5. Functional Requirements (Epic-level)
+## 3. Analytics Requirements (v1)
 
-### EPIC-01 Capture & Ingest
-- Resumable upload (web/mobile)
-- Consent + recording indicator
-- Privacy tier enforcement
+### Real-time (hot path)
 
-### EPIC-02 Media Processing
-- Transcode to house format
-- Thumbnail + waveform
-- Optional face blur pipeline
+- Rolling teacher/student talk ratio (preview)
+- Activity / attention proxies
+- Live admin dashboard per school
 
-### EPIC-03 Speech Intelligence
-- Transcript with timestamps
-- Teacher/student talk ratio (confidence band)
-- Silence, overlap detection
+### Batch (cold path — authoritative)
 
-### EPIC-04 Discourse Analytics (Phase 2)
-- Question type proxies
-- Dialogic vs monologic indicators
+- Final diarization and discourse metrics
+- Multi-cam fusion
+- **Composite pedagogy index** per lesson (admin-visible)
+- Lesson archive with searchable transcript
 
-### EPIC-05 Coaching Experience
-- Timeline player with transcript sync
-- Commenting + tags
-- AI draft narrative with citations
-- Human approve workflow
+### AI coaching
 
-### EPIC-06 Administration
-- SSO, RBAC, audit logs
-- District aggregates (k-anonymized)
+- Post-lesson LLM summary **[pending D-12]**
+- Optional live nudges **[HYPOTHESIS]** secondary priority
 
 ---
 
-## 6. Non-Functional Requirements
+## 4. Admin & RBAC
 
-| NFR | Target (draft) |
-|-----|----------------|
-| Availability | 99.9% |
-| Analysis SLA | < 30 min for 50-min lesson (T0) |
-| Security | SOC 2 Type II in 18 months **[ASSUMPTION]** |
-| Accessibility | WCAG 2.2 AA |
+- School/district admins: **individual teacher scores**, drill-down to lessons
+- Audit log of all video/score access
+- University dean role with department scope
 
 ---
 
-## 7. Out of Scope v1
+## 5. Non-Functional (Draft)
 
-- Live in-ear coaching
-- Student face emotion scoring
-- Automated tenure recommendations
+| NFR | Target |
+|-----|--------|
+| Data residency | India region only |
+| Hot path latency | p95 < 8s for preview metrics |
+| Cold path SLA | < 45 min for 50-min lesson (TBD after GPU sizing) |
+| Availability | 99.5% MVP |
+| Languages | English + Hindi ASR |
 
 ---
 
-## 8. Dependencies
+## 6. Out of Scope v1 (Proposed)
 
-Founder questionnaire, legal review, pilot district LOI.
+- US FERPA-first deployment package
+- Public teacher leaderboards
+- **Per-student punitive scores** (pending founder confirm)
+- iOS capture agent
+
+---
+
+## 7. Success Metric
+
+**TBD** — see [SUCCESS_METRIC_OPTIONS.md](../01-phase0-founder-interrogation/SUCCESS_METRIC_OPTIONS.md)
+
+**Recommended primary:** M-A (classroom coverage) + M-B (time-to-insight)
+
+---
+
+## 8. Blockers
+
+- D-05, D-10, D-12
+- India legal memo (G2)

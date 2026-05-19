@@ -2,22 +2,22 @@
 
 | Field | Value |
 |-------|-------|
-| **Status** | Accepted (provisional — supersede if founder mandates live) |
-| **Date** | 2026-05-19 |
+| **Status** | **Superseded** by [ADR-0003](ADR-0003-india-supervision-v1-scope.md) |
+| **Date** | 2026-05-19 (superseded same day) |
 
 ## Context
 
-Real-time classroom analytics (China platforms, IRIS Go Live) require WebRTC, edge compute, and low-latency ops. Western coaching vendors primarily use **async video review**.
+Original default assumed Western async coaching vendors.
 
-## Decision
+## Original Decision
 
-**Default architecture is post-hoc batch** after lesson upload. Real-time paths are **Phase 4** optional module.
+Post-hoc batch first; real-time Phase 4.
 
-## Consequences
+## Supersession
 
-**Positive:** Lower cost, simpler FERPA story, faster MVP, aligns with Edthena/Vosaic.  
-**Negative:** Cannot compete on live in-ear coaching until later.
+Founder requires **real-time coaching in v1**. Architecture must implement **dual path**:
 
-## Validation
+- **Hot path:** stream ingest → low-latency feature extractors → live dashboard
+- **Cold path:** full lesson archive → higher-quality batch re-analysis (source of truth for scores)
 
-Founder answers **D-04** in blockers document.
+Do not delete this ADR — historical record.
