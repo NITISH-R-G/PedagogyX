@@ -65,3 +65,6 @@ Founder choices align with **supervision + analytics** platforms (China smart cl
 | Founder Tier-1 | Partial (8/10 answered) |
 | Legal (India DPDP) | Not started |
 | Architecture freeze | **Denied** until D-10, D-12, legal memo |
+
+| **D-CLIENT** | Production devices | **Android + low-end Windows smartboards** (2026-05-19) |
+| **D-PROC** | Where ML runs in production | **TBD** (central cloud vs district server) |

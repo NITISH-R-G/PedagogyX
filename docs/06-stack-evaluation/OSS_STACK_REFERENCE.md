@@ -5,6 +5,19 @@
 
 ---
 
+
+## Production clients (low-end — no ML)
+
+| Platform | OSS stack |
+|----------|-----------|
+| **Android** | Kotlin, MediaProjection, MediaCodec, Camera2, WorkManager |
+| **Windows smartboard** | Tauri 2 or .NET + FFmpeg / Media Foundation |
+| **On-device ML** | Silero VAD only (optional) |
+
+All ASR/CV/LLM on **central server** — see [PRODUCTION_CLIENT_SPEC.md](../05-architecture/PRODUCTION_CLIENT_SPEC.md).
+
+## Central server (production ML)
+
 ## Layer map
 
 | Layer | OSS choice | License | Avoid (paid API) |

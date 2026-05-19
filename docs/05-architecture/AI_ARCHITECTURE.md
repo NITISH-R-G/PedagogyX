@@ -1,13 +1,20 @@
-# AI / ML Architecture v0.3 (OSS + RTX 5070 12 GB)
+# AI / ML Architecture v0.4 (Central OSS Inference)
 
-**Status:** Draft — OSS-only; RTX 5070 12 GB budget  
+**Status:** Draft — ML on **central servers**; RTX 5070 **dev/benchmark only**; clients do not run models  
 **Refs:** [OSS_STACK_REFERENCE.md](../06-stack-evaluation/OSS_STACK_REFERENCE.md), [GPU_BUDGET_RTX5070.md](GPU_BUDGET_RTX5070.md)
 
----
+
+## Deployment split
+
+| Where | What runs |
+|-------|-----------|
+| **Android / Windows smartboard** | Capture, encode, upload (optional Silero VAD) |
+| **Central OSS backend** | faster-whisper, YOLO, fusion, Ollama |
+| **Developer RTX 5070** | Benchmark + export engines for backend |
 
 ## v1 Model Stack (Founder-Aligned)
 
-| Stream | OSS model | Hot (5070) | Cold (5070) |
+| Stream | OSS model | Hot (central GPU) | Cold (central GPU) |
 |--------|-----------|------------|-------------|
 | `audio_mic` | **faster-whisper** small→medium INT8 | Yes (small) | Yes (medium/large-v3) |
 | `screen` | Frame diff + **PaddleOCR**/Tesseract (CPU) | CPU only | Yes |
@@ -38,11 +45,11 @@
 
 ---
 
-## Real-Time Inference (Single RTX 5070)
+## Real-Time Inference (Central Server)
 
 ```mermaid
 flowchart LR
-    subgraph gpu [RTX 5070 12GB]
+    subgraph gpu [Central GPU pool]
         FW[faster-whisper SMALL]
         YOLO[YOLO11n TRT 480p]
     end

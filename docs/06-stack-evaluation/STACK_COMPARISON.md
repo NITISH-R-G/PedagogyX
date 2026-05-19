@@ -62,7 +62,21 @@
 
 ---
 
-## Infrastructure at pilot scale (1× RTX 5070)
+## Infrastructure
+
+### Development (RTX 5070 workstation)
+
+Docker Compose full stack; benchmarks per [GPU_BUDGET_RTX5070.md](../05-architecture/GPU_BUDGET_RTX5070.md).
+
+### Production
+
+| Layer | Host |
+|-------|------|
+| Clients | Android + Windows smartboard (low spec) |
+| API + ML | Central OSS servers (India — D-PROC TBD) |
+| Dev GPU | RTX 5070 **not in classroom** |
+
+### Obsolete note — school-edge 5070
 
 ```text
 Single server (64 GB RAM recommended, 2 TB NVMe)

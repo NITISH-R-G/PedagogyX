@@ -1,4 +1,7 @@
-# GPU Budget — NVIDIA RTX 5070 (12 GB)
+# GPU Budget — RTX 5070 (12 GB) — **Development & Benchmarking Only**
+
+> **Production** runs on **central servers**, not RTX 5070 in classrooms. Clients are low-end Android / Windows smartboards.
+
 
 **ADR:** [ADR-0006](../08-rfc-adr/ADR-0006-rtx5070-compute-budget.md)
 
@@ -98,3 +101,12 @@ To get full real-time multi-cam, you need **more GPUs** or **cloud GPUs** (contr
 - [ ] `bench_yolo_trt.py` — 480p vs 720p, 1 vs 2 streams
 - [ ] `bench_ollama.py` — Qwen2.5-7B Q4 tokens/sec
 - [ ] `bench_full_pipeline.sh` — end-to-end VRAM peak via `nvidia-smi`
+
+
+---
+
+## Production inference sizing
+
+Use benchmark results from this GPU to **size central server GPUs** (e.g. if one 5070 handles 2 live + 16 batch lessons/day, rent equivalent GPU in India cloud for N schools).
+
+**D-PROC open:** managed cloud vs district-owned server.

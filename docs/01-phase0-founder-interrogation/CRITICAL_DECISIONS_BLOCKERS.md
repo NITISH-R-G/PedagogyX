@@ -21,8 +21,10 @@
 | **D-10** | Budget ceiling per classroom/year? | **TBD** | 🔴 |
 | **D-11** | ASR languages (inferred)? | **TBD** (assume EN + HI) | 🟡 |
 | **D-12** | Cloud LLM? | **OSS on-prem only** | ✅ |
-| **D-GPU** | Max GPU? | **RTX 5070 12 GB** | ✅ |
+| **D-GPU** | Dev GPU? | **RTX 5070 — dev only** | ✅ |
 | **D-OSS** | OSS-first? | **Yes** | ✅ |
+| **D-CLIENT** | Production devices? | **Android + Win smartboard** | ✅ |
+| **D-PROC** | Where ML runs? | **TBD** | 🔴 |
 
 ---
 

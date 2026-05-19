@@ -1,8 +1,8 @@
-# System Architecture v0.3 (India Supervision, OSS Edge)
+# System Architecture v0.4 (Thin Clients + Central OSS Backend)
 
 **Status:** Draft — aligned to [FOUNDER_ANSWERS.md](../01-phase0-founder-interrogation/FOUNDER_ANSWERS.md)  
 **Supersedes:** v0.1 assumptions (US coaching-only)  
-**ADRs:** [ADR-0003](../08-rfc-adr/ADR-0003-india-supervision-v1-scope.md), [ADR-0004](../08-rfc-adr/ADR-0004-capture-screen-multicam.md), [ADR-0005](../08-rfc-adr/ADR-0005-foss-first-stack.md), [ADR-0006](../08-rfc-adr/ADR-0006-rtx5070-compute-budget.md)  
+**ADRs:** [ADR-0003](../08-rfc-adr/ADR-0003-india-supervision-v1-scope.md), [ADR-0004](../08-rfc-adr/ADR-0004-capture-screen-multicam.md), [ADR-0005](../08-rfc-adr/ADR-0005-foss-first-stack.md), [ADR-0006](../08-rfc-adr/ADR-0006-rtx5070-compute-budget.md), [ADR-0007](../08-rfc-adr/ADR-0007-production-clients-low-end.md)  
 **OSS stack:** [OSS_STACK_REFERENCE.md](../06-stack-evaluation/OSS_STACK_REFERENCE.md) | **GPU:** [GPU_BUDGET_RTX5070.md](GPU_BUDGET_RTX5070.md)
 
 ---
@@ -10,7 +10,7 @@
 ## Architectural Principles (Revised)
 
 1. **OSS-first** — self-hosted; no proprietary ASR/LLM APIs ([ADR-0005](../08-rfc-adr/ADR-0005-foss-first-stack.md))
-2. **Edge compute** — **RTX 5070 12 GB** max per node; GPU job scheduler ([ADR-0006](../08-rfc-adr/ADR-0006-rtx5070-compute-budget.md))
+2. **Thin clients** — Android + low-end Windows smartboards capture/upload only ([ADR-0007](../08-rfc-adr/ADR-0007-production-clients-low-end.md)) ([ADR-0006](../08-rfc-adr/ADR-0006-rtx5070-compute-budget.md), [ADR-0007](../08-rfc-adr/ADR-0007-production-clients-low-end.md))
 3. **India data residency** — school LAN / on-prem MinIO + Postgres
 4. **Dual path:** **audio + 1 cam live** (hot) + **full multi-cam + screen** batch (cold, authoritative)
 5. **Multi-stream sync** — screen + mic + multi-cam
@@ -104,36 +104,33 @@ sequenceDiagram
 
 ---
 
-## Deployment (OSS Edge — India Pilot)
+## Deployment (Production)
 
 ```mermaid
-flowchart LR
-    subgraph school [School LAN]
-        AGENT[Capture agents]
-        MTX[MediaMTX]
-        EDGE[Edge server]
-        GPU[RTX 5070 12GB]
-        MINIO[(MinIO)]
-        PG[(PostgreSQL)]
-        OLL[Ollama]
+flowchart TB
+    subgraph clients [Classroom - low spec]
+        AND[Android app]
+        WIN[Windows smartboard app]
     end
-    AGENT --> MTX --> EDGE
-    EDGE --> GPU
-    EDGE --> MINIO & PG
-    GPU --> OLL
+    subgraph central [Central OSS backend - India D-PROC TBD]
+        MTX[MediaMTX / ingest]
+        API[API]
+        Q[Job queue]
+        GPU[GPU workers - NOT in classroom]
+        DB[(Postgres + MinIO)]
+    end
+    AND --> MTX
+    WIN --> MTX
+    MTX --> API --> Q --> GPU --> DB
 ```
 
-| Component | OSS |
-|-----------|-----|
-| Ingest | MediaMTX |
-| Queue | NATS JetStream |
-| Storage | MinIO |
-| DB | PostgreSQL |
-| GPU jobs | faster-whisper, TensorRT YOLO, Ollama |
+| Layer | Where it runs |
+|-------|----------------|
+| Capture / encode | **Android, Windows smartboard** |
+| ASR, CV, LLM | **Central server** (OSS stack) |
+| Model dev / bench | **Developer RTX 5070** only |
 
-**Pilot capacity (one RTX 5070):** ~1–2 live audio/1-cam previews + overnight batch for 8–16 lessons/day.
-
-See [GPU_BUDGET_RTX5070.md](GPU_BUDGET_RTX5070.md).
+See [PRODUCTION_CLIENT_SPEC.md](PRODUCTION_CLIENT_SPEC.md).
 
 
 ## RBAC (Supervision Mode)

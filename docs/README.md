@@ -53,3 +53,5 @@
 - [ADR-0006 RTX 5070](../08-rfc-adr/ADR-0006-rtx5070-compute-budget.md)
 - [OSS_STACK_REFERENCE](../06-stack-evaluation/OSS_STACK_REFERENCE.md)
 - [GPU_BUDGET_RTX5070](../05-architecture/GPU_BUDGET_RTX5070.md)
+- [PRODUCTION_CLIENT_SPEC](../05-architecture/PRODUCTION_CLIENT_SPEC.md)
+- [ADR-0007 production clients](../08-rfc-adr/ADR-0007-production-clients-low-end.md)
