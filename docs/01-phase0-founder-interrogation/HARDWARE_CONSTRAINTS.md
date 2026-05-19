@@ -10,7 +10,7 @@
 |-------------|----------|------|
 | **Development** | NVIDIA **RTX 5070 12 GB** | Benchmarks, train/export models, local Compose stack — **not production** |
 | **Production clients** | **Android** + **low-end Windows smartboards** | Capture, encode, upload only — **no GPU ML on device** |
-| **Production ML** | **Central server** (spec TBD — D-PROC) | OSS: faster-whisper, TensorRT/YOLO, Ollama |
+| **Production ML** | **Hybrid** — school/district **LAN edge** (buffer/ingest) + **India cloud GPU** (analytics) | OSS: faster-whisper, TensorRT/YOLO, Ollama on cloud; edge per ADR-0008 |
 
 ---
 
@@ -55,5 +55,5 @@ No paid ASR/LLM APIs in core path. Cloud **hosting** may cost money; software re
 
 | ID | Question |
 |----|----------|
-| **D-PROC** | Central processing: PedagogyX cloud, district server, or hybrid? |
-| **D-DEV** | Exact Android + smartboard OEM models for pilot? |
+| **D-DEV** | Exact Android + smartboard **OEM models** (India) for pilot minimum specs |
+| **D-10** | Budget per classroom/year — sizes cloud GPU pool and edge hardware tier |

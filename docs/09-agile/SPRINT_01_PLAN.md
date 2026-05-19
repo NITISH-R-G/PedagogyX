@@ -3,8 +3,9 @@
 | Field | Value |
 |-------|-------|
 | **Depends on** | Founder answers Sprint 00 (partial ✅) |
-| **Goal** | Capture protocol, India compliance path, GPU cost model, admin UX spec |
+| **Goal** | Capture protocol, India compliance path, GPU cost model, admin UX spec, **hybrid edge+cloud OSS backend spec** |
 | **Implementation code** | Still **forbidden** until G2 |
+| **D-PROC** | **C — Hybrid** ✅ (2026-05-19) — unblocks S01-01, S01-10 architecture |
 
 ## Backlog
 
@@ -27,4 +28,5 @@
 - RFC-0002 accepted
 
 | S01-09 | RTX 5070 full pipeline benchmark suite | ML |
-| S01-10 | Docker Compose OSS pilot stack | Platform |
+| S01-10 | Docker Compose OSS pilot stack (**edge + cloud** profiles per ADR-0008) | Platform |
+| S01-11 | Central OSS backend architecture spec (hybrid D-PROC) | Arch |

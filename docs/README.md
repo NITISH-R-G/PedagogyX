@@ -10,7 +10,7 @@
 
 | Gate | Criteria | Status |
 |------|----------|--------|
-| **G0** | Founder Tier-1 blockers | 🟡 **Partial** (D-05, D-10, D-12 open) |
+| **G0** | Founder Tier-1 blockers | 🟡 **Partial** (D-05, D-10 open; D-PROC closed) |
 | **G1** | Product scope locked | 🟡 India supervision scope locked |
 | **G2** | India DPDP legal sign-off | 🔴 **Blocked** — counsel required |
 | **G3** | Reference architecture v0.2 | 🟢 Draft complete |
@@ -42,9 +42,11 @@
 
 1. **D-05** — Who is the economic buyer?
 2. **D-10** — Budget per classroom per year (₹ or USD)
-3. **D-12** — Cloud LLM yes/no; which provider?
-4. **Success metric** — choose M-A through M-F
-5. **Per-student admin scores** — yes or no for v1?
+3. **Success metric** — choose M-A through M-F
+4. **Per-student admin scores** — yes or no for v1?
+5. **D-DEV** — Exact India smartboard/Android **OEM models** for minimum specs
+
+**Recorded (2026-05-19):** **D-PROC = C (Hybrid)** — [ADR-0008](08-rfc-adr/ADR-0008-d-proc-hybrid-central-ml.md). Sprint 01 may spec central OSS backend + capture RFCs.
 
 
 ## Hardware & OSS (2026-05-19)

@@ -24,7 +24,7 @@
 | **D-GPU** | Dev GPU? | **RTX 5070 — dev only** | ✅ |
 | **D-OSS** | OSS-first? | **Yes** | ✅ |
 | **D-CLIENT** | Production devices? | **Android + Win smartboard** | ✅ |
-| **D-PROC** | Where ML runs? | **TBD** | 🔴 |
+| **D-PROC** | Where ML runs? | **C — Hybrid** (LAN edge + India cloud) | ✅ |
 
 ---
 
