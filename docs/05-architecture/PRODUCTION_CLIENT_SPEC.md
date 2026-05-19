@@ -42,7 +42,7 @@ flowchart TB
 | **Windows SB** | Celeron N5105, 4 GB RAM, 64 GB eMMC | 720p screen + mic; one 480p cam |
 | **Windows SB min** | 4 GB RAM, HDD | Screen + mic only |
 
-**[ACTION]** Founder to confirm actual OEM models used in India pilots.
+**[ACTION]** Confirm actual OEM at pilot site using [INDIA_PILOT_DEVICE_REFERENCE.md](../01-phase0-founder-interrogation/INDIA_PILOT_DEVICE_REFERENCE.md) (research list — ViewSonic, BenQ, Samsung Flip, LG CreateBoard, Teachmint, Promark, etc.).
 
 ---
 

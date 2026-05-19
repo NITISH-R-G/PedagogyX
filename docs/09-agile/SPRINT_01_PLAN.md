@@ -22,8 +22,9 @@
 
 ## Exit criteria
 
-- D-10, D-12 answered
-- Primary success metric selected
+- D-10 closed (₹0 customer budget — founder-funded pilot infra)
+- D-12 answered (OSS on-prem)
+- Primary success metric selected **or** accept default **M-A + M-B**
 - Legal memo scheduled or received
 - RFC-0002 accepted
 

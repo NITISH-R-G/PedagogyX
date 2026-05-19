@@ -55,5 +55,5 @@ No paid ASR/LLM APIs in core path. Cloud **hosting** may cost money; software re
 
 | ID | Question |
 |----|----------|
-| **D-DEV** | Exact Android + smartboard **OEM models** (India) for pilot minimum specs |
-| **D-10** | Budget per classroom/year — sizes cloud GPU pool and edge hardware tier |
+| **D-DEV** | Confirm pilot site **make/model** (research list in [INDIA_PILOT_DEVICE_REFERENCE.md](INDIA_PILOT_DEVICE_REFERENCE.md)) |
+| **D-20** | Primary success metric — [FOUNDER_SUCCESS_METRICS_GUIDE.md](FOUNDER_SUCCESS_METRICS_GUIDE.md) |
