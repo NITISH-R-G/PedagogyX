@@ -20,12 +20,12 @@ AI Sokrates is the closest **operational analog** to PedagogyX vision: **automat
 
 ## Inferred Architecture
 
-| Layer | Description |
-|-------|-------------|
-| Data capture | HiTeach interactive whiteboard + classroom events (not generic phone video only) |
-| Analytics engine | Rule + ML hybrid for TPACK indices |
-| Platform | Cloud lesson repository + district dashboards |
-| PD loop | Expert review + AI reports |
+| Layer            | Description                                                                      |
+| ---------------- | -------------------------------------------------------------------------------- |
+| Data capture     | HiTeach interactive whiteboard + classroom events (not generic phone video only) |
+| Analytics engine | Rule + ML hybrid for TPACK indices                                               |
+| Platform         | Cloud lesson repository + district dashboards                                    |
+| PD loop          | Expert review + AI reports                                                       |
 
 **Key insight:** Deep integration with **proprietary teaching OS** yields richer signals than passive video alone.
 

@@ -1,9 +1,9 @@
 # ADR-0005: Free & Open-Source Software First
 
-| Field | Value |
-|-------|-------|
+| Field      | Value                       |
+| ---------- | --------------------------- |
 | **Status** | Accepted (founder-directed) |
-| **Date** | 2026-05-19 |
+| **Date**   | 2026-05-19                  |
 
 ## Context
 
@@ -13,13 +13,13 @@ Founder requires **maximize free and open-source** components; avoid proprietary
 
 ### License policy
 
-| Tier | Policy |
-|------|--------|
-| **Preferred** | OSI-approved licenses (MIT, Apache-2.0, BSD, PostgreSQL) |
-| **Acceptable** | LGPL, MPL (with compliance review) |
-| **Conditional** | AGPL (MinIO, Grafana — network use review) |
-| **Avoid default** | Proprietary SaaS APIs (OpenAI, Deepgram, AWS Transcribe) |
-| **Forbidden default** | Vendor lock-in for core path (ASR, LLM, storage, DB) |
+| Tier                  | Policy                                                   |
+| --------------------- | -------------------------------------------------------- |
+| **Preferred**         | OSI-approved licenses (MIT, Apache-2.0, BSD, PostgreSQL) |
+| **Acceptable**        | LGPL, MPL (with compliance review)                       |
+| **Conditional**       | AGPL (MinIO, Grafana — network use review)               |
+| **Avoid default**     | Proprietary SaaS APIs (OpenAI, Deepgram, AWS Transcribe) |
+| **Forbidden default** | Vendor lock-in for core path (ASR, LLM, storage, DB)     |
 
 ### Mandatory OSS components (reference stack)
 

@@ -1,10 +1,10 @@
 # P-008: Instructional Activity Recognition with Multi-Semantic Attention Transformer
 
-| Field | Value |
-|-------|-------|
-| **Source** | NSF PAR |
-| **Tags** | CV, MM, LKV |
-| **Label** | **[FACT]** |
+| Field      | Value       |
+| ---------- | ----------- |
+| **Source** | NSF PAR     |
+| **Tags**   | CV, MM, LKV |
+| **Label**  | **[FACT]**  |
 
 ## Problem
 

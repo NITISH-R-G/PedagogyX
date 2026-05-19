@@ -6,12 +6,12 @@
 
 Not direct classroom coaching vendors, but **platform gravity** for capture, transcription, and emerging "meeting intelligence."
 
-| Platform | Classroom-relevant capabilities |
-|----------|--------------------------------|
-| **Zoom** | AI Companion, summaries, clips; education SKUs |
-| **Microsoft Teams** | Speaker analytics, meeting recap, Education Insights ecosystem |
-| **Google Meet** | Transcripts, Gemini integration in Workspace for Education |
-| **Panopto / Echo360** | Lecture capture + search; analytics partnerships |
+| Platform              | Classroom-relevant capabilities                                |
+| --------------------- | -------------------------------------------------------------- |
+| **Zoom**              | AI Companion, summaries, clips; education SKUs                 |
+| **Microsoft Teams**   | Speaker analytics, meeting recap, Education Insights ecosystem |
+| **Google Meet**       | Transcripts, Gemini integration in Workspace for Education     |
+| **Panopto / Echo360** | Lecture capture + search; analytics partnerships               |
 
 ---
 
@@ -34,13 +34,13 @@ Not direct classroom coaching vendors, but **platform gravity** for capture, tra
 
 ## Integration Priority **[ASSUMPTION]**
 
-| Priority | Integration |
-|----------|-------------|
-| P0 | File upload (MP4/audio) |
-| P1 | Zoom cloud recording webhook |
-| P1 | Teams recording via Graph (admin consent) |
-| P2 | Google Drive / Meet exports |
-| P2 | Panopto API |
+| Priority | Integration                               |
+| -------- | ----------------------------------------- |
+| P0       | File upload (MP4/audio)                   |
+| P1       | Zoom cloud recording webhook              |
+| P1       | Teams recording via Graph (admin consent) |
+| P2       | Google Drive / Meet exports               |
+| P2       | Panopto API                               |
 
 ---
 

@@ -1,9 +1,9 @@
 # ADR-0004: Screen + Microphone + Multi-Camera Capture
 
-| Field | Value |
-|-------|-------|
-| **Status** | Accepted |
-| **Date** | 2026-05-19 |
+| Field      | Value      |
+| ---------- | ---------- |
+| **Status** | Accepted   |
+| **Date**   | 2026-05-19 |
 
 ## Context
 
@@ -13,13 +13,13 @@ Founder specified **screen recording + mic** and **multi-cam** for MVP—not pho
 
 Standard session ingest comprises **synchronized streams**:
 
-| Stream ID | Source | Required v1 |
-|-----------|--------|-------------|
-| `screen` | Teacher device display capture | Yes |
-| `audio_mic` | Classroom / teacher microphone | Yes |
-| `cam_room_1` | Room wide shot | Yes |
-| `cam_room_2` | Second angle (board or students) | Yes |
-| `cam_optional_n` | Additional RTSP/USB | Optional |
+| Stream ID        | Source                           | Required v1 |
+| ---------------- | -------------------------------- | ----------- |
+| `screen`         | Teacher device display capture   | Yes         |
+| `audio_mic`      | Classroom / teacher microphone   | Yes         |
+| `cam_room_1`     | Room wide shot                   | Yes         |
+| `cam_room_2`     | Second angle (board or students) | Yes         |
+| `cam_optional_n` | Additional RTSP/USB              | Optional    |
 
 **Clock:** Single session timeline; NTP-aligned timestamps; drift correction in fusion service.
 

@@ -1,10 +1,10 @@
 # RFC-0001: Platform Vision & Scope
 
-| Field | Value |
-|-------|-------|
-| **Status** | Draft |
+| Field       | Value                          |
+| ----------- | ------------------------------ |
+| **Status**  | Draft                          |
 | **Authors** | PedagogyX Architecture (Agent) |
-| **Created** | 2026-05-19 |
+| **Created** | 2026-05-19                     |
 
 ## Summary
 
@@ -18,13 +18,13 @@ Global competitors prove demand (Edthena, Vosaic, IRIS, TeachFX, AI Sokrates, Ch
 
 ### In scope (phased)
 
-| Phase | Capabilities |
-|-------|--------------|
-| **P0** | Research, architecture, compliance, eval design |
-| **P1** | Audio ingest, ASR, talk ratio, coach review UI skeleton |
+| Phase  | Capabilities                                             |
+| ------ | -------------------------------------------------------- |
+| **P0** | Research, architecture, compliance, eval design          |
+| **P1** | Audio ingest, ASR, talk ratio, coach review UI skeleton  |
 | **P2** | Video + slides, evidence clips, rubric-mapped LLM drafts |
-| **P3** | District analytics, LMS/VCS integrations |
-| **P4** | Live coaching, advanced CV (opt-in) |
+| **P3** | District analytics, LMS/VCS integrations                 |
+| **P4** | Live coaching, advanced CV (opt-in)                      |
 
 ### Out of scope (initial)
 
@@ -38,11 +38,11 @@ Listed in [SYSTEM_ARCHITECTURE.md](../05-architecture/SYSTEM_ARCHITECTURE.md).
 
 ## Alternatives Considered
 
-| Alternative | Rejected because |
-|-------------|------------------|
-| Video-only MVP | TeachFX wins audio; need differentiation |
-| China-first feature parity | Legal/ethical barrier in US/EU |
-| Pure LLM wrapper on transcript | Hallucination + weak pedagogy |
+| Alternative                    | Rejected because                         |
+| ------------------------------ | ---------------------------------------- |
+| Video-only MVP                 | TeachFX wins audio; need differentiation |
+| China-first feature parity     | Legal/ethical barrier in US/EU           |
+| Pure LLM wrapper on transcript | Hallucination + weak pedagogy            |
 
 ## Risks
 

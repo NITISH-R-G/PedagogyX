@@ -64,11 +64,11 @@ gantt
 
 ## Team Ramp (indicative)
 
-| Phase | Team size |
-|-------|-----------|
-| 0 | 1–2 architects + founder |
-| 1 | 6–8 FTE |
-| 2 | 10–14 FTE |
-| 3 | 15–20 FTE |
+| Phase | Team size                |
+| ----- | ------------------------ |
+| 0     | 1–2 architects + founder |
+| 1     | 6–8 FTE                  |
+| 2     | 10–14 FTE                |
+| 3     | 15–20 FTE                |
 
 **[ASSUMPTION]** Not calendar estimates — staffing model only.

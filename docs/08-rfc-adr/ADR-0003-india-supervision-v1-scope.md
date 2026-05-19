@@ -1,9 +1,9 @@
 # ADR-0003: India-First Supervision Scope for v1
 
-| Field | Value |
-|-------|-------|
-| **Status** | Accepted (founder-directed) |
-| **Date** | 2026-05-19 |
+| Field          | Value                                   |
+| -------------- | --------------------------------------- |
+| **Status**     | Accepted (founder-directed)             |
+| **Date**       | 2026-05-19                              |
 | **Supersedes** | Implicit defaults in ADR-0001, ADR-0002 |
 
 ## Context

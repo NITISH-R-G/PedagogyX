@@ -1,9 +1,9 @@
 # ADR-0007: Production on Android & Low-End Windows Smartboards
 
-| Field | Value |
-|-------|-------|
+| Field      | Value                       |
+| ---------- | --------------------------- |
 | **Status** | Accepted (founder-directed) |
-| **Date** | 2026-05-19 |
+| **Date**   | 2026-05-19                  |
 
 ## Context
 
@@ -18,16 +18,16 @@ All heavy ML runs **off-device** on central OSS infrastructure (spec TBD).
 
 ### Client responsibilities (thin client)
 
-| Task | Android | Windows smartboard |
-|------|---------|-------------------|
-| Screen capture | MediaProjection API | DXGI / GDI capture |
-| Microphone | AudioRecord | WASAPI |
-| Camera(s) | Camera2 (0–1 USB/built-in) | DirectShow / Media Foundation |
-| Encode | **MediaCodec** H.264 (HW if available) | Media Foundation / FFmpeg DLL |
-| Buffer on network loss | Local SQLite + file chunks | Same |
-| Upload | HTTPS resumable to central API | Same |
-| On-device ML | **Optional:** Silero VAD only (CPU, &lt;50 MB) | Same |
-| On-device ASR/CV/LLM | **Forbidden** in v1 | **Forbidden** |
+| Task                   | Android                                        | Windows smartboard            |
+| ---------------------- | ---------------------------------------------- | ----------------------------- |
+| Screen capture         | MediaProjection API                            | DXGI / GDI capture            |
+| Microphone             | AudioRecord                                    | WASAPI                        |
+| Camera(s)              | Camera2 (0–1 USB/built-in)                     | DirectShow / Media Foundation |
+| Encode                 | **MediaCodec** H.264 (HW if available)         | Media Foundation / FFmpeg DLL |
+| Buffer on network loss | Local SQLite + file chunks                     | Same                          |
+| Upload                 | HTTPS resumable to central API                 | Same                          |
+| On-device ML           | **Optional:** Silero VAD only (CPU, &lt;50 MB) | Same                          |
+| On-device ASR/CV/LLM   | **Forbidden** in v1                            | **Forbidden**                 |
 
 ### What low-end hardware cannot do
 
@@ -38,11 +38,11 @@ All heavy ML runs **off-device** on central OSS infrastructure (spec TBD).
 
 ### Multi-cam strategy (revised)
 
-| Stream | Source on low-end client |
-|--------|--------------------------|
-| Screen | Yes (primary) |
-| Mic | Yes |
-| Cam 1 | Yes if USB/built-in and CPU can encode 480p@15fps |
+| Stream | Source on low-end client                                                                         |
+| ------ | ------------------------------------------------------------------------------------------------ |
+| Screen | Yes (primary)                                                                                    |
+| Mic    | Yes                                                                                              |
+| Cam 1  | Yes if USB/built-in and CPU can encode 480p@15fps                                                |
 | Cam 2+ | **[ASSUMPTION]** IP cameras → **ingest direct to central server** (RTSP), not through smartboard |
 
 ### Real-time analytics
@@ -53,21 +53,21 @@ All heavy ML runs **off-device** on central OSS infrastructure (spec TBD).
 
 ### Client technology (OSS-first)
 
-| Platform | Recommended stack |
-|----------|-------------------|
-| **Android** | **Kotlin** + Jetpack + MediaCodec + WorkManager upload |
-| **Windows** | **Tauri 2** (Rust + WebView2) *or* **.NET 8** WinUI — pick one in RFC-0002 |
-| **Shared logic** | Rust `capture-core` crate (FFI to Kotlin + Tauri) **[HYPOTHESIS]** |
+| Platform         | Recommended stack                                                          |
+| ---------------- | -------------------------------------------------------------------------- |
+| **Android**      | **Kotlin** + Jetpack + MediaCodec + WorkManager upload                     |
+| **Windows**      | **Tauri 2** (Rust + WebView2) _or_ **.NET 8** WinUI — pick one in RFC-0002 |
+| **Shared logic** | Rust `capture-core` crate (FFI to Kotlin + Tauri) **[HYPOTHESIS]**         |
 
 **Flutter** alternative: single codebase for Android + Windows desktop — evaluate in RFC-0002.
 
 ### Central processing (production)
 
-| Tier | Hardware | When |
-|------|----------|------|
-| **P0 pilot** | India VPS **CPU-only** (slow batch) | Zero GPU budget |
-| **P1 recommended** | 1× datacenter GPU per ~8–16 concurrent analyses | Matches dev benchmarks from RTX 5070 |
-| **P2** | Autoscale GPU pool (still OSS: vLLM, faster-whisper) | Scale |
+| Tier               | Hardware                                             | When                                 |
+| ------------------ | ---------------------------------------------------- | ------------------------------------ |
+| **P0 pilot**       | India VPS **CPU-only** (slow batch)                  | Zero GPU budget                      |
+| **P1 recommended** | 1× datacenter GPU per ~8–16 concurrent analyses      | Matches dev benchmarks from RTX 5070 |
+| **P2**             | Autoscale GPU pool (still OSS: vLLM, faster-whisper) | Scale                                |
 
 **Not** RTX 5070 in classroom.
 

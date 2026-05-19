@@ -82,23 +82,23 @@ sequenceDiagram
     Note over S: Master clock = audio sample clock
 ```
 
-| Challenge | Mitigation |
-|-----------|------------|
-| A/V drift | Cross-correlate screen OCR events with speech |
+| Challenge           | Mitigation                                           |
+| ------------------- | ---------------------------------------------------- |
+| A/V drift           | Cross-correlate screen OCR events with speech        |
 | Multi-cam alignment | Hardware genlock or software timestamp + calibration |
-| Packet loss | Local ring buffer on agent; resumable upload |
+| Packet loss         | Local ring buffer on agent; resumable upload         |
 
 ---
 
 ## Real-Time vs Batch Responsibilities
 
-| Capability | Hot path (latency) | Cold path (quality) |
-|------------|-------------------|---------------------|
-| Talk ratio estimate | ~5s rolling | Final diarization |
-| Activity detection | Lightweight YOLO | Full transformer fusion |
-| Engagement proxy | Heuristic | Calibrated model |
-| Pedagogy index | Preview score | **Authoritative** admin score |
-| Coaching tips | Live nudges (optional) | Full LLM report |
+| Capability          | Hot path (latency)     | Cold path (quality)           |
+| ------------------- | ---------------------- | ----------------------------- |
+| Talk ratio estimate | ~5s rolling            | Final diarization             |
+| Activity detection  | Lightweight YOLO       | Full transformer fusion       |
+| Engagement proxy    | Heuristic              | Calibrated model              |
+| Pedagogy index      | Preview score          | **Authoritative** admin score |
+| Coaching tips       | Live nudges (optional) | Full LLM report               |
 
 **[ASSUMPTION]** Admin contractual SLAs reference **cold path** scores; hot path labeled "preliminary."
 
@@ -124,24 +124,23 @@ flowchart TB
     MTX --> API --> Q --> GPU --> DB
 ```
 
-| Layer | Where it runs |
-|-------|----------------|
-| Capture / encode | **Android, Windows smartboard** |
-| ASR, CV, LLM | **Central server** (OSS stack) |
-| Model dev / bench | **Developer RTX 5070** only |
+| Layer             | Where it runs                   |
+| ----------------- | ------------------------------- |
+| Capture / encode  | **Android, Windows smartboard** |
+| ASR, CV, LLM      | **Central server** (OSS stack)  |
+| Model dev / bench | **Developer RTX 5070** only     |
 
 See [PRODUCTION_CLIENT_SPEC.md](PRODUCTION_CLIENT_SPEC.md).
 
-
 ## RBAC (Supervision Mode)
 
-| Role | Live view | Individual scores | Raw student video |
-|------|-----------|-------------------|-------------------|
-| Teacher | Own class | Own (preview) | Own sessions |
-| Coach | Assigned | Assigned | If permitted |
-| School admin | School | **Yes** | **Yes** |
-| District admin | District aggregate + drill-down | **Yes** | Policy-dependent |
-| University dean | Department | **Yes** | Policy-dependent |
+| Role            | Live view                       | Individual scores | Raw student video |
+| --------------- | ------------------------------- | ----------------- | ----------------- |
+| Teacher         | Own class                       | Own (preview)     | Own sessions      |
+| Coach           | Assigned                        | Assigned          | If permitted      |
+| School admin    | School                          | **Yes**           | **Yes**           |
+| District admin  | District aggregate + drill-down | **Yes**           | Policy-dependent  |
+| University dean | Department                      | **Yes**           | Policy-dependent  |
 
 Audit: immutable log of every stream view and score export.
 

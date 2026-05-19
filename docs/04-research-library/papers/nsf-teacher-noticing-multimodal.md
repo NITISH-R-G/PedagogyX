@@ -1,10 +1,10 @@
 # P-005: Teacher Noticing and Student Learning in Human-AI Classrooms
 
-| Field | Value |
-|-------|-------|
-| **Source** | NSF Public Access Repository |
-| **Tags** | MM, TE |
-| **Label** | **[FACT]** (government repository entry) |
+| Field      | Value                                    |
+| ---------- | ---------------------------------------- |
+| **Source** | NSF Public Access Repository             |
+| **Tags**   | MM, TE                                   |
+| **Label**  | **[FACT]** (government repository entry) |
 
 ## Problem
 

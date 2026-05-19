@@ -1,11 +1,11 @@
 # P-006: DAiSEE — Engagement Recognition in the Wild
 
-| Field | Value |
-|-------|-------|
+| Field       | Value       |
+| ----------- | ----------- |
 | **Authors** | Kaur et al. |
-| **Year** | 2016 |
-| **Tags** | AFF |
-| **Label** | **[FACT]** |
+| **Year**    | 2016        |
+| **Tags**    | AFF         |
+| **Label**   | **[FACT]**  |
 
 ## Dataset
 

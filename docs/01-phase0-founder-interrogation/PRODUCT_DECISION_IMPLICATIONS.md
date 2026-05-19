@@ -13,16 +13,16 @@ Your choices define a **India-first, supervision-heavy, multimodal real-time pla
 
 ## What Changed vs Original Plan
 
-| Dimension | Was (ADR-0001/002) | Now |
-|-----------|-------------------|-----|
-| Geography | US | **India (DPDP)** |
-| Video | De-identified optional | **Identifiable required** |
-| Latency | Batch post-lesson | **Real-time + batch** |
-| Admin | Coaches only | **Individual AI scores visible** |
-| Ethics | Anti-surveillance default | **Supervision explicitly OK** |
-| Capture | Upload MP4 | **Screen + mic + multi-cam agent** |
-| MVP modality | Audio → video phased | **Multi-cam day one** |
-| Segments | K-12 | **K-12 + university** |
+| Dimension    | Was (ADR-0001/002)        | Now                                |
+| ------------ | ------------------------- | ---------------------------------- |
+| Geography    | US                        | **India (DPDP)**                   |
+| Video        | De-identified optional    | **Identifiable required**          |
+| Latency      | Batch post-lesson         | **Real-time + batch**              |
+| Admin        | Coaches only              | **Individual AI scores visible**   |
+| Ethics       | Anti-surveillance default | **Supervision explicitly OK**      |
+| Capture      | Upload MP4                | **Screen + mic + multi-cam agent** |
+| MVP modality | Audio → video phased      | **Multi-cam day one**              |
+| Segments     | K-12                      | **K-12 + university**              |
 
 ---
 
@@ -48,13 +48,13 @@ Your choices define a **India-first, supervision-heavy, multimodal real-time pla
 
 ## Compliance Impacts **[RISK]**
 
-| Item | Severity |
-|------|----------|
-| Children's identifiable video | **Critical** — DPDP + school consent |
-| Admin scores linked to teachers | Employment law review |
-| Real-time processing | Continuous monitoring disclosure |
-| Screen capture | May capture student names/chat from LMS |
-| University segment | Adults — simpler consent, different buyer |
+| Item                            | Severity                                  |
+| ------------------------------- | ----------------------------------------- |
+| Children's identifiable video   | **Critical** — DPDP + school consent      |
+| Admin scores linked to teachers | Employment law review                     |
+| Real-time processing            | Continuous monitoring disclosure          |
+| Screen capture                  | May capture student names/chat from LMS   |
+| University segment              | Adults — simpler consent, different buyer |
 
 **G2 gate cannot clear without Indian counsel.**
 
@@ -93,13 +93,13 @@ Your choices define a **India-first, supervision-heavy, multimodal real-time pla
 
 ## Sprint 01 Re-Scope
 
-| Original Sprint 01 | Revised Sprint 01 |
-|------------------|-------------------|
-| OpenAPI upload | **Capture agent PRD + sync protocol** |
-| ASR benchmark | **EN+HI ASR benchmark** |
-| Coach UI wireframes | **Admin live dashboard wireframes** |
-| US FERPA memo | **India DPDP memo (counsel)** |
-| Cost model | **Multi-stream GPU cost model** |
+| Original Sprint 01  | Revised Sprint 01                     |
+| ------------------- | ------------------------------------- |
+| OpenAPI upload      | **Capture agent PRD + sync protocol** |
+| ASR benchmark       | **EN+HI ASR benchmark**               |
+| Coach UI wireframes | **Admin live dashboard wireframes**   |
+| US FERPA memo       | **India DPDP memo (counsel)**         |
+| Cost model          | **Multi-stream GPU cost model**       |
 
 **Implementation code still blocked** until G2 + D-10.
 
@@ -107,12 +107,12 @@ Your choices define a **India-first, supervision-heavy, multimodal real-time pla
 
 ## Update: OSS + RTX 5070 (2026-05-19)
 
-| Impact | Detail |
-|--------|--------|
-| **Cost model** | Cap-ex per edge server (~GPU + 64GB RAM) vs cloud GPU-hours |
-| **Real-time scope** | **Reduced** — audio + 1 cam live; multi-cam batch on same 5070 |
-| **Stack** | faster-whisper, YOLO TensorRT, Ollama, MinIO, Postgres, MediaMTX |
-| **Timeline** | GPU scheduler + Compose pilot before K8s |
-| **Risk R-07** | Mitigated at small scale; returns if school expects 20 live rooms on 1 GPU |
+| Impact              | Detail                                                                     |
+| ------------------- | -------------------------------------------------------------------------- |
+| **Cost model**      | Cap-ex per edge server (~GPU + 64GB RAM) vs cloud GPU-hours                |
+| **Real-time scope** | **Reduced** — audio + 1 cam live; multi-cam batch on same 5070             |
+| **Stack**           | faster-whisper, YOLO TensorRT, Ollama, MinIO, Postgres, MediaMTX           |
+| **Timeline**        | GPU scheduler + Compose pilot before K8s                                   |
+| **Risk R-07**       | Mitigated at small scale; returns if school expects 20 live rooms on 1 GPU |
 
 See [HARDWARE_CONSTRAINTS.md](HARDWARE_CONSTRAINTS.md).

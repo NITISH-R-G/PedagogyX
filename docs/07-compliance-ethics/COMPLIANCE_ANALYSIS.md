@@ -6,13 +6,13 @@
 
 ## Jurisdiction Matrix
 
-| Regulation | Applies when | PedagogyX default posture |
-|------------|--------------|---------------------------|
-| **FERPA** | US K-12/higher ed, identifiable students | Treat classroom video with students as education records **[FACT]** |
-| **COPPA** | Under 13 | Parental consent flows; minimize data |
-| **GDPR** | EU | DPIA, lawful basis, special category biometrics restricted |
-| **India DPDP** | India processing | Data localization evaluation |
-| State laws | CA SOPIPA, etc. | Prohibit commercial use of student data |
+| Regulation     | Applies when                             | PedagogyX default posture                                           |
+| -------------- | ---------------------------------------- | ------------------------------------------------------------------- |
+| **FERPA**      | US K-12/higher ed, identifiable students | Treat classroom video with students as education records **[FACT]** |
+| **COPPA**      | Under 13                                 | Parental consent flows; minimize data                               |
+| **GDPR**       | EU                                       | DPIA, lawful basis, special category biometrics restricted          |
+| **India DPDP** | India processing                         | Data localization evaluation                                        |
+| State laws     | CA SOPIPA, etc.                          | Prohibit commercial use of student data                             |
 
 ---
 
@@ -43,26 +43,26 @@
 
 ## Privacy-by-Design Controls
 
-| Control | Implementation |
-|---------|----------------|
-| Tiered analytics | Tenant flag `privacy_tier` ∈ {audio, deid_video, full} |
-| De-identification | Face blur, voice alteration for exports |
-| Retention TTL | Raw video 90d default **[ASSUMPTION]** |
-| RBAC | Coach cannot see unless shared |
-| Audit log | All views/downloads |
-| CMK | Enterprise option |
-| Student voice redaction | NLP + beep on export |
+| Control                 | Implementation                                         |
+| ----------------------- | ------------------------------------------------------ |
+| Tiered analytics        | Tenant flag `privacy_tier` ∈ {audio, deid_video, full} |
+| De-identification       | Face blur, voice alteration for exports                |
+| Retention TTL           | Raw video 90d default **[ASSUMPTION]**                 |
+| RBAC                    | Coach cannot see unless shared                         |
+| Audit log               | All views/downloads                                    |
+| CMK                     | Enterprise option                                      |
+| Student voice redaction | NLP + beep on export                                   |
 
 ---
 
 ## AI-Specific Compliance
 
-| Risk | Mitigation |
-|------|------------|
-| Hallucinated feedback | Human approval, citation-required |
-| Bias in engagement CV | Disaggregated eval, no high-stakes use |
-| Surveillance perception | Teacher-initiated recording default |
-| Cross-lesson search | Admin policy + audit |
+| Risk                    | Mitigation                             |
+| ----------------------- | -------------------------------------- |
+| Hallucinated feedback   | Human approval, citation-required      |
+| Bias in engagement CV   | Disaggregated eval, no high-stakes use |
+| Surveillance perception | Teacher-initiated recording default    |
+| Cross-lesson search     | Admin policy + audit                   |
 
 ---
 

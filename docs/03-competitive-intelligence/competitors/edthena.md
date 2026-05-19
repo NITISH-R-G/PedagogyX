@@ -18,14 +18,14 @@ Edthena is a mature **video-based professional learning** vendor. Recent evoluti
 
 ## Inferred Architecture
 
-| Layer | Inference | Confidence |
-|-------|-----------|------------|
-| Client | Web-first upload; mobile browser capture | High |
-| Media | Cloud transcode + CDN playback | High |
-| ASR | Transcript-driven insights | High |
-| Analytics | NLP on transcript > classroom CV | Medium |
-| AI Coach | LLM orchestration + structured PD modules | Medium |
-| Multi-tenancy | District/school hierarchy | High |
+| Layer         | Inference                                 | Confidence |
+| ------------- | ----------------------------------------- | ---------- |
+| Client        | Web-first upload; mobile browser capture  | High       |
+| Media         | Cloud transcode + CDN playback            | High       |
+| ASR           | Transcript-driven insights                | High       |
+| Analytics     | NLP on transcript > classroom CV          | Medium     |
+| AI Coach      | LLM orchestration + structured PD modules | Medium     |
+| Multi-tenancy | District/school hierarchy                 | High       |
 
 **Pipeline hypothesis:**
 

@@ -7,12 +7,12 @@
 
 ## 1. Target Market
 
-| Attribute | Value |
-|-----------|-------|
-| Geography | **India** (year 1) |
-| Segments | **K-12 schools/districts** + **universities** |
-| Mode | **Supervision** (admin visibility, individual teacher scores) |
-| Comparable products | Smart classroom analytics (China/Taiwan/India), AI Sokrates |
+| Attribute           | Value                                                         |
+| ------------------- | ------------------------------------------------------------- |
+| Geography           | **India** (year 1)                                            |
+| Segments            | **K-12 schools/districts** + **universities**                 |
+| Mode                | **Supervision** (admin visibility, individual teacher scores) |
+| Comparable products | Smart classroom analytics (China/Taiwan/India), AI Sokrates   |
 
 ---
 
@@ -58,13 +58,13 @@
 
 ## 5. Non-Functional (Draft)
 
-| NFR | Target |
-|-----|--------|
-| Data residency | India region only |
-| Hot path latency | p95 < 8s for preview metrics |
-| Cold path SLA | < 45 min for 50-min lesson (TBD after GPU sizing) |
-| Availability | 99.5% MVP |
-| Languages | English + Hindi ASR |
+| NFR              | Target                                            |
+| ---------------- | ------------------------------------------------- |
+| Data residency   | India region only                                 |
+| Hot path latency | p95 < 8s for preview metrics                      |
+| Cold path SLA    | < 45 min for 50-min lesson (TBD after GPU sizing) |
+| Availability     | 99.5% MVP                                         |
+| Languages        | English + Hindi ASR                               |
 
 ---
 

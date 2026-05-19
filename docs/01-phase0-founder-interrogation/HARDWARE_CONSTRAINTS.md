@@ -6,11 +6,11 @@
 
 ## Development vs production
 
-| Environment | Hardware | Role |
-|-------------|----------|------|
-| **Development** | NVIDIA **RTX 5070 12 GB** | Benchmarks, train/export models, local Compose stack — **not production** |
-| **Production clients** | **Android** + **low-end Windows smartboards** | Capture, encode, upload only — **no GPU ML on device** |
-| **Production ML** | **Central server** (spec TBD — D-PROC) | OSS: faster-whisper, TensorRT/YOLO, Ollama |
+| Environment            | Hardware                                      | Role                                                                      |
+| ---------------------- | --------------------------------------------- | ------------------------------------------------------------------------- |
+| **Development**        | NVIDIA **RTX 5070 12 GB**                     | Benchmarks, train/export models, local Compose stack — **not production** |
+| **Production clients** | **Android** + **low-end Windows smartboards** | Capture, encode, upload only — **no GPU ML on device**                    |
+| **Production ML**      | **Central server** (spec TBD — D-PROC)        | OSS: faster-whisper, TensorRT/YOLO, Ollama                                |
 
 ---
 
@@ -33,11 +33,11 @@ No paid ASR/LLM APIs in core path. Cloud **hosting** may cost money; software re
 
 ## Real-time analytics path (revised)
 
-| Layer | Where |
-|-------|--------|
+| Layer                      | Where                                           |
+| -------------------------- | ----------------------------------------------- |
 | Live talk ratio / previews | **Central server** (streaming chunks or WebRTC) |
-| Final pedagogy index | **Central server** batch queue |
-| Dev validation of models | **RTX 5070** workstation |
+| Final pedagogy index       | **Central server** batch queue                  |
+| Dev validation of models   | **RTX 5070** workstation                        |
 
 ---
 
@@ -53,7 +53,7 @@ No paid ASR/LLM APIs in core path. Cloud **hosting** may cost money; software re
 
 ## Still open
 
-| ID | Question |
-|----|----------|
+| ID         | Question                                                         |
+| ---------- | ---------------------------------------------------------------- |
 | **D-PROC** | Central processing: PedagogyX cloud, district server, or hybrid? |
-| **D-DEV** | Exact Android + smartboard OEM models for pilot? |
+| **D-DEV**  | Exact Android + smartboard OEM models for pilot?                 |
