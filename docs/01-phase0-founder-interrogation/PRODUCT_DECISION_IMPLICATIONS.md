@@ -104,6 +104,17 @@ Your choices define a **India-first, supervision-heavy, multimodal real-time pla
 
 ---
 
+## Update: Universal low-end clients + teacher pedagogy focus (2026-05-19)
+
+| Impact | Detail |
+|--------|--------|
+| **D-CLIENT** | **All** low-end Android boards + Windows smartboards — profile certification, **no OEM whitelist** |
+| **D-PEDAGOGY** | Primary outcome: **monitor & assess teacher teaching ability** and pedagogy index |
+| **UX** | Admin dashboards center **teachers/lessons**; defer per-student punitive rankings |
+| **RFC-0002** | Capture agent must degrade gracefully (Android B / SB-min tiers) |
+
+---
+
 ## Update: Free pilot + zero customer budget (2026-05-19)
 
 | Impact | Detail |

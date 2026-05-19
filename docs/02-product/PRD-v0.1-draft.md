@@ -11,7 +11,9 @@
 |-----------|-------|
 | Geography | **India** (year 1) |
 | Segments | **K-12 schools/districts** + **universities** |
-| Mode | **Supervision** (admin visibility, individual teacher scores) |
+| Mode | **Supervision** — monitor & assess **teacher** teaching ability and **pedagogy** |
+| Primary subject of analytics | **Teachers** (per-lesson pedagogy index), not per-student ranking |
+| Client platforms | **All low-end Android boards + Windows smartboards** (profile-certified) |
 | Comparable products | Smart classroom analytics (China/Taiwan/India), AI Sokrates |
 
 ---
@@ -28,18 +30,20 @@
 
 ## 3. Analytics Requirements (v1)
 
+**Purpose:** Measure **how well the teacher teaches** — discourse balance, engagement proxies, pacing, rubric-aligned pedagogy index — for admin review and improvement workflows.
+
 ### Real-time (hot path)
 
-- Rolling teacher/student talk ratio (preview)
-- Activity / attention proxies
-- Live admin dashboard per school
+- Rolling **teacher** vs class talk ratio (preview) — informs **teaching** style, not student grades
+- Activity / attention proxies at **room** level
+- Live admin dashboard: **teacher** / lesson status per school
 
 ### Batch (cold path — authoritative)
 
-- Final diarization and discourse metrics
+- Final diarization and discourse metrics (feeds **teacher** pedagogy score)
 - Multi-cam fusion
-- **Composite pedagogy index** per lesson (admin-visible)
-- Lesson archive with searchable transcript
+- **Composite pedagogy index per teacher per lesson** (admin-visible; primary product artifact)
+- Lesson archive with searchable transcript for **coach/admin review of instruction**
 
 ### AI coaching
 
@@ -72,7 +76,7 @@
 
 - US FERPA-first deployment package
 - Public teacher leaderboards
-- **Per-student punitive scores** (pending founder confirm)
+- **Per-student punitive scores** — **out of scope v1** (founder: focus is **teacher pedagogy**)
 - iOS capture agent
 
 ---
@@ -94,5 +98,4 @@ See [SUCCESS_METRIC_OPTIONS.md](../01-phase0-founder-interrogation/SUCCESS_METRI
 ## 8. Blockers
 
 - India legal memo (G2)
-- D-DEV: confirm pilot site device make/model
-- Per-student admin scores (founder confirm)
+- D-DEV: log pilot site make/model for compatibility matrix (any low-end profile-passing board)

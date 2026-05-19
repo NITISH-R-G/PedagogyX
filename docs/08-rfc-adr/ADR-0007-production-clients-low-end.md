@@ -9,10 +9,14 @@
 
 Production does **not** run on developer GPU hardware. Classrooms use:
 
-- **Android** (tablets / smart panels / boxes)
-- **Windows smartboards** — **low-end** CPU/RAM (typical embedded PC: Celeron, 4–8 GB RAM, Intel UHD)
+- **Any low-end Android** interactive panel, tablet, or box used as the classroom board
+- **Any low-end Windows smartboard** — embedded PC or OPS (typical: Celeron-class, **4 GB RAM** minimum target, Intel UHD)
 
-All heavy ML runs **off-device** on central OSS infrastructure (spec TBD).
+**Founder mandate (2026-05-19):** Support **all** devices in these categories that meet **reference profiles** (Android A/B, Windows SB / SB-min) — **no OEM whitelist**. Unknown brands are in scope if they pass certification tests.
+
+All heavy ML runs **off-device** on central OSS infrastructure (hybrid D-PROC — ADR-0008).
+
+**Product purpose:** Thin clients capture lessons so central analytics can **monitor and assess teacher pedagogy** — not to run student ranking on the board.
 
 ## Decision
 

@@ -1,7 +1,20 @@
 # Production Client Specification — Android & Windows Smartboards
 
-**Status:** Draft v0.1  
+**Status:** Draft v0.2  
 **ADR:** [ADR-0007](../08-rfc-adr/ADR-0007-production-clients-low-end.md)
+
+---
+
+## Compatibility mandate (founder 2026-05-19)
+
+| Principle | Detail |
+|-----------|--------|
+| **Platforms** | **All low-end Android boards** + **all low-end Windows smartboards** that meet profile budgets below |
+| **Not required** | Specific OEM or model — certification is **profile-based** (RAM, encode, CPU %) |
+| **Product goal** | Capture lessons for **teacher pedagogy monitoring and assessment** (admin sees **per-teacher** lesson quality, not per-student league tables on the client) |
+| **Client role** | Thin capture + upload only; pedagogy scoring on **central** GPU path |
+
+Pilot sites may log make/model for the compatibility matrix; see [INDIA_PILOT_DEVICE_REFERENCE.md](../01-phase0-founder-interrogation/INDIA_PILOT_DEVICE_REFERENCE.md) for **example** brands only.
 
 ---
 
@@ -19,7 +32,7 @@ flowchart TB
         W[Windows smartboard client]
     end
 
-    subgraph central [Central OSS backend - India TBD]
+    subgraph central [Central OSS backend - hybrid India cloud]
         API[API + MediaMTX]
         WORKERS[GPU/CPU ML workers]
         STORE[MinIO + Postgres]
@@ -33,16 +46,20 @@ flowchart TB
 
 ---
 
-## Reference low-end targets (benchmark before v1)
+## Reference low-end profiles (certify any hardware)
 
-| Profile | Example specs | Goal |
-|---------|---------------|------|
-| **Android A** | 4 GB RAM, Snapdragon 6xx / MediaTek G85 | 480p cam + screen + mic encode |
-| **Android B** | 2–3 GB RAM, older panel | Screen + mic only; defer cam |
-| **Windows SB** | Celeron N5105, 4 GB RAM, 64 GB eMMC | 720p screen + mic; one 480p cam |
-| **Windows SB min** | 4 GB RAM, HDD | Screen + mic only |
+Any Android panel or Windows smartboard **in scope** if it passes the profile for its tier (automated soak test + manual pilot checklist).
 
-**[ACTION]** Confirm actual OEM at pilot site using [INDIA_PILOT_DEVICE_REFERENCE.md](../01-phase0-founder-interrogation/INDIA_PILOT_DEVICE_REFERENCE.md) (research list — ViewSonic, BenQ, Samsung Flip, LG CreateBoard, Teachmint, Promark, etc.).
+| Profile | Minimum class | Encode goal | If fails |
+|---------|---------------|-------------|----------|
+| **Android A** | 4 GB RAM, SoC with HW H.264 | Screen + mic + optional 480p cam | Downgrade to B |
+| **Android B** | 2–3 GB RAM, older SoC | Screen + mic only | Document as unsupported for cam |
+| **Windows SB** | Celeron N5105-class, 4 GB RAM | 720p screen + mic; optional 480p cam | Downgrade to SB-min |
+| **Windows SB min** | 4 GB RAM, slow disk | Screen + mic only | Minimum supported Windows tier |
+
+**Examples** (non-exhaustive): ViewSonic, BenQ, Samsung Flip, LG CreateBoard, Teachmint, Promark, generic GeM panels — see device reference.
+
+**[ACTION]** At pilot: log make/model/Android/Windows version; map to profile A/B/SB/SB-min.
 
 ---
 

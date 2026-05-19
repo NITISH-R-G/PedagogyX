@@ -42,8 +42,9 @@
 
 ## Still Required from Founder
 
-1. **Per-student admin scores** — yes or no for v1?
-2. **D-DEV** — Confirm **exact** device make/model at first pilot school (checklist in device reference)
+1. **D-DEV** — Log device make/model at first pilot (compatibility matrix; **any** low-end Android/Windows board in scope)
+
+**Product focus (2026-05-19):** **All low-end Android + Windows smartboards**; **teacher pedagogy** monitoring/assessment (not per-student punitive scores in v1).
 
 **D-20 (2026-05-19):** **Primary M-A** (observation coverage); **Secondary M-B** (time-to-insight), **M-C** (admin action rate).
 

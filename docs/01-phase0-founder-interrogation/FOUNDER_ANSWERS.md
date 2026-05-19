@@ -25,13 +25,27 @@
 | **D-GPU** | Max GPU hardware | **RTX 5070 12 GB** | Cloud GPU | **Closed** — ADR-0006 |
 | **D-OSS** | Stack preference | **Free & open source first** | Mixed | **Closed** — ADR-0005 |
 | **D-20** | Year-1 success metric | **Primary M-A**; **Secondary M-B, M-C** | Unknown | Coverage + time-to-insight + admin action on flags |
-| **D-DEV** | India OEM devices | **Research list** (founder IDK) | — | [INDIA_PILOT_DEVICE_REFERENCE.md](INDIA_PILOT_DEVICE_REFERENCE.md); confirm at pilot site |
-| **D-CLIENT** | Production devices | **Android + low-end Windows smartboards** | Phone-only | ADR-0007 |
+| **D-DEV** | Device validation | **Any** panel meeting low-end profiles; OEM list is **examples only** | Named SKUs | [INDIA_PILOT_DEVICE_REFERENCE.md](INDIA_PILOT_DEVICE_REFERENCE.md) for pilot checklist |
+| **D-CLIENT** | Production devices | **All low-end Android boards + all low-end Windows smartboards** (profile-based, no OEM whitelist) | Phone-only | ADR-0007; certify Android A/B + Windows SB profiles |
+| **D-PEDAGOGY** | Primary product outcome | **Monitor & assess teacher teaching ability and pedagogy** | Mixed student/teacher analytics | Per-**teacher** scores and evidence; not per-student punitive ranking in v1 |
 | **D-PROC** | Where ML runs in production | **C — Hybrid** (LAN edge buffer + India cloud GPU analytics) | Central TBD | ADR-0008 |
 
 ---
 
 ## Interpretation Notes (Architecture Team)
+
+### Product focus (2026-05-19)
+
+PedagogyX v1 exists to **monitor and assess how teachers teach** — instructional quality, discourse patterns, pacing, and composite **pedagogy** signals — for **school and university admins**, not to rank individual students.
+
+| In scope (v1) | Out of scope / defer (v1) |
+|---------------|---------------------------|
+| Per-**teacher** lesson pedagogy index | Per-**student** report cards or punitive student scores |
+| Admin/coach review of **teacher** sessions | Student identity as a primary dashboard unit |
+| Capture from **any** certified low-end Android / Windows smartboard | iOS-only or high-end workstation-only deployments |
+| Evidence clips tied to **teaching** moments | Social/emotional profiling of students as product goal |
+
+Student video/audio may still be processed where legally permitted (D-03) to infer **classroom-level** discourse metrics (e.g. student talk ratio) that inform **teacher** pedagogy scores.
 
 ### Capture stack clarification needed
 
@@ -60,8 +74,7 @@ Founder choices align with **supervision + analytics** platforms (China smart cl
 
 ### Unresolved blockers (next founder reply)
 
-1. **D-DEV** — Confirm **exact** panel/tablet model at first pilot site (use checklist in device reference)
-2. **Per-student admin scores** — yes or no for v1 (if not already implied by D-06)
+1. **D-DEV** — Log make/model at first pilot for compatibility matrix (any low-end board that passes profiles)
 
 ---
 
