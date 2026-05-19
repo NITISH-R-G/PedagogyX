@@ -31,23 +31,23 @@ This is **not** the same ethical posture as US teacher-coaching-first vendors.
 
 ## Elevated Risks (Founder-Accepted Tradeoffs)
 
-| Risk | Mitigation |
-|------|------------|
-| Chilling effect on student participation | Schools disclose recording; classroom signage |
-| Teacher morale / union issues | Less acute in India context but monitor; coaching use case messaging |
-| Algorithmic bias across regions/languages | Disaggregated eval; human spot audits |
+| Risk                                            | Mitigation                                                               |
+| ----------------------------------------------- | ------------------------------------------------------------------------ |
+| Chilling effect on student participation        | Schools disclose recording; classroom signage                            |
+| Teacher morale / union issues                   | Less acute in India context but monitor; coaching use case messaging     |
+| Algorithmic bias across regions/languages       | Disaggregated eval; human spot audits                                    |
 | Children’s psychological harm from being scored | **No individual student grades in v1 admin UI** **[PROPOSAL — confirm]** |
-| Scope creep to punitive HR | Contract clause: scores not sole employment input |
+| Scope creep to punitive HR                      | Contract clause: scores not sole employment input                        |
 
 ---
 
 ## Modes (Technical)
 
-| Mode | When |
-|------|------|
-| `supervision` | India v1 default |
-| `coaching` | Teacher-private reflection; de-id options |
-| `research` | Anonymized exports only |
+| Mode          | When                                      |
+| ------------- | ----------------------------------------- |
+| `supervision` | India v1 default                          |
+| `coaching`    | Teacher-private reflection; de-id options |
+| `research`    | Anonymized exports only                   |
 
 Export to US/EU requires mode downgrade + legal review.
 

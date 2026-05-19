@@ -1,12 +1,12 @@
 # P-002: Identifying Teacher Questions Using ASR in Classrooms
 
-| Field | Value |
-|-------|-------|
-| **Authors** | Donnelly et al. |
-| **Year** | 2016 |
-| **Venue** | ACL Workshop BEA |
-| **Tags** | CDA |
-| **Label** | **[FACT]** |
+| Field       | Value            |
+| ----------- | ---------------- |
+| **Authors** | Donnelly et al.  |
+| **Year**    | 2016             |
+| **Venue**   | ACL Workshop BEA |
+| **Tags**    | CDA              |
+| **Label**   | **[FACT]**       |
 
 ## Problem
 

@@ -1,10 +1,10 @@
 # P-007: Classroom Group Engagement Recognition Dataset (2025)
 
-| Field | Value |
-|-------|-------|
-| **Venue** | Scientific Data (Nature) |
-| **Year** | 2025 |
-| **Tags** | AFF, CV |
+| Field     | Value                         |
+| --------- | ----------------------------- |
+| **Venue** | Scientific Data (Nature)      |
+| **Year**  | 2025                          |
+| **Tags**  | AFF, CV                       |
 | **Label** | **[FACT]** publication exists |
 
 ## Contribution

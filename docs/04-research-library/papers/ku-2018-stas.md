@@ -1,13 +1,13 @@
 # P-001: Sokrates Teaching Analytics System (STAS)
 
-| Field | Value |
-|-------|-------|
-| **Authors** | Ku, Chen, Liu, Wu, Chan, HABOOK Group |
-| **Year** | 2018 |
-| **Venue** | ICCE 2018 |
-| **Tags** | TE, SYS |
-| **Code** | Proprietary (HiTeach integration) |
-| **Label** | **[FACT]** published; metrics operational at scale per vendor |
+| Field       | Value                                                         |
+| ----------- | ------------------------------------------------------------- |
+| **Authors** | Ku, Chen, Liu, Wu, Chan, HABOOK Group                         |
+| **Year**    | 2018                                                          |
+| **Venue**   | ICCE 2018                                                     |
+| **Tags**    | TE, SYS                                                       |
+| **Code**    | Proprietary (HiTeach integration)                             |
+| **Label**   | **[FACT]** published; metrics operational at scale per vendor |
 
 ## Problem
 

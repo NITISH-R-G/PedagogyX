@@ -21,13 +21,13 @@ Vosaic (FACTS/Nelnet) targets **video annotation workflows** with growing **AI a
 
 ## Inferred Stack
 
-| Component | Likelihood |
-|-----------|------------|
-| Web SPA + iOS native | High |
-| SaaS multi-tenant Postgres + object storage | High |
-| FFmpeg-based transcode | Medium |
-| Cloud ASR | High |
-| CV engagement | Low–medium (blur suggests limited retention of face data) |
+| Component                                   | Likelihood                                                |
+| ------------------------------------------- | --------------------------------------------------------- |
+| Web SPA + iOS native                        | High                                                      |
+| SaaS multi-tenant Postgres + object storage | High                                                      |
+| FFmpeg-based transcode                      | Medium                                                    |
+| Cloud ASR                                   | High                                                      |
+| CV engagement                               | Low–medium (blur suggests limited retention of face data) |
 
 ---
 

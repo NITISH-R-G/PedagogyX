@@ -5,14 +5,13 @@
 
 ---
 
-
 ## Production clients (low-end — no ML)
 
-| Platform | OSS stack |
-|----------|-----------|
-| **Android** | Kotlin, MediaProjection, MediaCodec, Camera2, WorkManager |
-| **Windows smartboard** | Tauri 2 or .NET + FFmpeg / Media Foundation |
-| **On-device ML** | Silero VAD only (optional) |
+| Platform               | OSS stack                                                 |
+| ---------------------- | --------------------------------------------------------- |
+| **Android**            | Kotlin, MediaProjection, MediaCodec, Camera2, WorkManager |
+| **Windows smartboard** | Tauri 2 or .NET + FFmpeg / Media Foundation               |
+| **On-device ML**       | Silero VAD only (optional)                                |
 
 All ASR/CV/LLM on **central server** — see [PRODUCTION_CLIENT_SPEC.md](../05-architecture/PRODUCTION_CLIENT_SPEC.md).
 
@@ -20,30 +19,30 @@ All ASR/CV/LLM on **central server** — see [PRODUCTION_CLIENT_SPEC.md](../05-a
 
 ## Layer map
 
-| Layer | OSS choice | License | Avoid (paid API) |
-|-------|------------|---------|------------------|
-| **Capture agent** | **Tauri** (Rust) + GStreamer / FFmpeg | MIT / LGPL | Commercial SDKs |
-| **Media server** | **MediaMTX** or **Janus** WebRTC | MIT / GPL | Twilio, Agora |
-| **Transcode** | **FFmpeg** | LGPL | AWS Elemental |
-| **Object storage** | **MinIO** | AGPL | S3-only lock-in (S3 API OK) |
-| **DB** | **PostgreSQL** | PostgreSQL | — |
-| **Analytics OLAP** | **ClickHouse** | Apache-2.0 | — |
-| **Queue** | **Redpanda** or **NATS JetStream** | BSL / Apache | SQS-only design |
-| **Orchestration** | **k3s** (light K8s) or **Docker Compose** (pilot) | Apache | — |
-| **Auth** | **Keycloak** | Apache-2.0 | Auth0 |
-| **Observability** | **Prometheus + Grafana + Loki** | Apache / AGPL | Datadog default |
-| **ASR** | **faster-whisper** (CTranslate2) | MIT | Deepgram, Google STT |
-| **Diarization** | **WhisperX** / **sortformer** (verify license) | varies | — |
-| **VAD** | **silero-vad** | MIT | — |
-| **CV detect** | **Ultralytics YOLO11** → ONNX → **TensorRT** | AGPL* | Commercial CV APIs |
-| **OCR (slides)** | **PaddleOCR** or **Tesseract** | Apache | Google Vision |
-| **Embeddings** | **sentence-transformers** (e.g. `paraphrase-multilingual-MiniLM`) | Apache | OpenAI embeddings |
-| **Vector DB** | **Qdrant** (self-hosted) | Apache-2.0 | Pinecone |
-| **LLM serving** | **Ollama** or **vLLM** | MIT / Apache | OpenAI, Anthropic |
-| **LLM weights** | **Qwen2.5-7B-Instruct**, **Llama-3.2-3B** (Q4 quant) | Apache / Llama license | — |
-| **Inference runtime** | **ONNX Runtime** + **TensorRT** | MIT / NVIDIA EULA | — |
-| **API** | **Go** (Fiber/Chi) or **Python FastAPI** | BSD / MIT | — |
-| **Web UI** | **Next.js** | MIT | — |
+| Layer                 | OSS choice                                                        | License                | Avoid (paid API)            |
+| --------------------- | ----------------------------------------------------------------- | ---------------------- | --------------------------- |
+| **Capture agent**     | **Tauri** (Rust) + GStreamer / FFmpeg                             | MIT / LGPL             | Commercial SDKs             |
+| **Media server**      | **MediaMTX** or **Janus** WebRTC                                  | MIT / GPL              | Twilio, Agora               |
+| **Transcode**         | **FFmpeg**                                                        | LGPL                   | AWS Elemental               |
+| **Object storage**    | **MinIO**                                                         | AGPL                   | S3-only lock-in (S3 API OK) |
+| **DB**                | **PostgreSQL**                                                    | PostgreSQL             | —                           |
+| **Analytics OLAP**    | **ClickHouse**                                                    | Apache-2.0             | —                           |
+| **Queue**             | **Redpanda** or **NATS JetStream**                                | BSL / Apache           | SQS-only design             |
+| **Orchestration**     | **k3s** (light K8s) or **Docker Compose** (pilot)                 | Apache                 | —                           |
+| **Auth**              | **Keycloak**                                                      | Apache-2.0             | Auth0                       |
+| **Observability**     | **Prometheus + Grafana + Loki**                                   | Apache / AGPL          | Datadog default             |
+| **ASR**               | **faster-whisper** (CTranslate2)                                  | MIT                    | Deepgram, Google STT        |
+| **Diarization**       | **WhisperX** / **sortformer** (verify license)                    | varies                 | —                           |
+| **VAD**               | **silero-vad**                                                    | MIT                    | —                           |
+| **CV detect**         | **Ultralytics YOLO11** → ONNX → **TensorRT**                      | AGPL\*                 | Commercial CV APIs          |
+| **OCR (slides)**      | **PaddleOCR** or **Tesseract**                                    | Apache                 | Google Vision               |
+| **Embeddings**        | **sentence-transformers** (e.g. `paraphrase-multilingual-MiniLM`) | Apache                 | OpenAI embeddings           |
+| **Vector DB**         | **Qdrant** (self-hosted)                                          | Apache-2.0             | Pinecone                    |
+| **LLM serving**       | **Ollama** or **vLLM**                                            | MIT / Apache           | OpenAI, Anthropic           |
+| **LLM weights**       | **Qwen2.5-7B-Instruct**, **Llama-3.2-3B** (Q4 quant)              | Apache / Llama license | —                           |
+| **Inference runtime** | **ONNX Runtime** + **TensorRT**                                   | MIT / NVIDIA EULA      | —                           |
+| **API**               | **Go** (Fiber/Chi) or **Python FastAPI**                          | BSD / MIT              | —                           |
+| **Web UI**            | **Next.js**                                                       | MIT                    | —                           |
 
 \* YOLO AGPL: ensure compliance (source offer) or use Apache-licensed detectors if needed.
 
@@ -51,11 +50,11 @@ All ASR/CV/LLM on **central server** — see [PRODUCTION_CLIENT_SPEC.md](../05-a
 
 ## India-specific OSS notes
 
-| Need | OSS approach |
-|------|----------------|
+| Need                | OSS approach                                                                    |
+| ------------------- | ------------------------------------------------------------------------------- |
 | Hindi + English ASR | `whisper-large-v3` with language detect; fine-tune LoRA on consented data later |
-| Low bandwidth | Agent-side H.265 encode; upload after class if live fails |
-| On-prem only | MinIO + Postgres on school LAN; optional sync to district server |
+| Low bandwidth       | Agent-side H.265 encode; upload after class if live fails                       |
+| On-prem only        | MinIO + Postgres on school LAN; optional sync to district server                |
 
 ---
 
@@ -68,12 +67,12 @@ All ASR/CV/LLM on **central server** — see [PRODUCTION_CLIENT_SPEC.md](../05-a
 
 ## What we do NOT run on RTX 5070 12 GB (v1)
 
-| Capability | Reason |
-|------------|--------|
-| Video-LLM (Qwen2-VL 7B) + multi-cam + Whisper large concurrently | VRAM overflow |
-| 4× 1080p live CV streams | Bandwidth + VRAM |
-| 70B LLM | Impossible on 12 GB |
-| Cloud auto-scale GPU | Hardware constraint |
+| Capability                                                       | Reason              |
+| ---------------------------------------------------------------- | ------------------- |
+| Video-LLM (Qwen2-VL 7B) + multi-cam + Whisper large concurrently | VRAM overflow       |
+| 4× 1080p live CV streams                                         | Bandwidth + VRAM    |
+| 70B LLM                                                          | Impossible on 12 GB |
+| Cloud auto-scale GPU                                             | Hardware constraint |
 
 ---
 

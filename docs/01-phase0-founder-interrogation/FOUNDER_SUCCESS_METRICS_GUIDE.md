@@ -10,7 +10,7 @@
 
 ## Why you must pick one
 
-Without a primary metric, engineering optimizes for “everything” (accuracy, speed, cost, teacher happiness) and nothing wins. Sales and pilots also need a single sentence: *“Year 1 success means ______.”*
+Without a primary metric, engineering optimizes for “everything” (accuracy, speed, cost, teacher happiness) and nothing wins. Sales and pilots also need a single sentence: _“Year 1 success means **\_\_**.”_
 
 For **PedagogyX today** (India, supervision, multi-cam, admin scores, **free pilot**):
 
@@ -23,7 +23,7 @@ For **PedagogyX today** (India, supervision, multi-cam, admin scores, **free pil
 
 ## M-A — Observation coverage
 
-**What it measures:** Of all classrooms you *intended* to monitor, what fraction had at least **one fully analyzed lesson per week**?
+**What it measures:** Of all classrooms you _intended_ to monitor, what fraction had at least **one fully analyzed lesson per week**?
 
 **Example:** 20 pilot classrooms; 17 had a valid upload + score last week → **85% coverage**.
 
@@ -82,7 +82,7 @@ For **PedagogyX today** (India, supervision, multi-cam, admin scores, **free pil
 **Cons:**
 
 - Needs clear **flagging rules** and enough admins with time.
-- Low rate might mean bad AI *or* bad process—not easy to diagnose.
+- Low rate might mean bad AI _or_ bad process—not easy to diagnose.
 
 **Engineering optimizes for:** Notifications, audit logs, dashboard UX, explainability clips.
 
@@ -155,24 +155,24 @@ For **PedagogyX today** (India, supervision, multi-cam, admin scores, **free pil
 
 ## Comparison table
 
-| ID | One-line | Free pilot fit | Needs long baseline? |
-|----|----------|----------------|----------------------|
-| **M-A** | Are classrooms actually analyzed weekly? | **Excellent** | No |
-| **M-B** | How fast after class is data ready? | **Excellent** | No |
-| **M-C** | Do admins open flagged lessons? | Good | Some flags needed |
-| **M-D** | Do pilots convert to paid? | **Poor primary** (no payment expected) | Yes |
-| **M-E** | Do pedagogy scores improve over time? | Good secondary | **Yes** |
-| **M-F** | Does student talk ratio rise? | Good secondary | **Yes** |
+| ID      | One-line                                 | Free pilot fit                         | Needs long baseline? |
+| ------- | ---------------------------------------- | -------------------------------------- | -------------------- |
+| **M-A** | Are classrooms actually analyzed weekly? | **Excellent**                          | No                   |
+| **M-B** | How fast after class is data ready?      | **Excellent**                          | No                   |
+| **M-C** | Do admins open flagged lessons?          | Good                                   | Some flags needed    |
+| **M-D** | Do pilots convert to paid?               | **Poor primary** (no payment expected) | Yes                  |
+| **M-E** | Do pedagogy scores improve over time?    | Good secondary                         | **Yes**              |
+| **M-F** | Does student talk ratio rise?            | Good secondary                         | **Yes**              |
 
 ---
 
 ## Suggested defaults for PedagogyX (if you remain unsure)
 
-| Role | Suggestion | Why |
-|------|------------|-----|
-| **Primary** | **M-A** | Proves deployment in free school/university pilots |
-| **Secondary** | **M-B** | Proves hybrid architecture delivers timely dashboards |
-| **Secondary** | **M-C** or **M-E** | Supervision workflow vs score improvement story |
+| Role          | Suggestion         | Why                                                   |
+| ------------- | ------------------ | ----------------------------------------------------- |
+| **Primary**   | **M-A**            | Proves deployment in free school/university pilots    |
+| **Secondary** | **M-B**            | Proves hybrid architecture delivers timely dashboards |
+| **Secondary** | **M-C** or **M-E** | Supervision workflow vs score improvement story       |
 
 Reply when ready: `Primary: M-A , Secondary: M-B, M-C` (example).
 

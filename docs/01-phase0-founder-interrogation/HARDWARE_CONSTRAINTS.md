@@ -6,11 +6,11 @@
 
 ## Development vs production
 
-| Environment | Hardware | Role |
-|-------------|----------|------|
-| **Development** | NVIDIA **RTX 5070 12 GB** | Benchmarks, train/export models, local Compose stack — **not production** |
-| **Production clients** | **Android** + **low-end Windows smartboards** | Capture, encode, upload only — **no GPU ML on device** |
-| **Production ML** | **Hybrid** — school/district **LAN edge** (buffer/ingest) + **India cloud GPU** (analytics) | OSS: faster-whisper, TensorRT/YOLO, Ollama on cloud; edge per ADR-0008 |
+| Environment            | Hardware                                                                                    | Role                                                                      |
+| ---------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| **Development**        | NVIDIA **RTX 5070 12 GB**                                                                   | Benchmarks, train/export models, local Compose stack — **not production** |
+| **Production clients** | **Android** + **low-end Windows smartboards**                                               | Capture, encode, upload only — **no GPU ML on device**                    |
+| **Production ML**      | **Hybrid** — school/district **LAN edge** (buffer/ingest) + **India cloud GPU** (analytics) | OSS: faster-whisper, TensorRT/YOLO, Ollama on cloud; edge per ADR-0008    |
 
 ---
 
@@ -33,11 +33,11 @@ No paid ASR/LLM APIs in core path. Cloud **hosting** may cost money; software re
 
 ## Real-time analytics path (revised)
 
-| Layer | Where |
-|-------|--------|
+| Layer                      | Where                                           |
+| -------------------------- | ----------------------------------------------- |
 | Live talk ratio / previews | **Central server** (streaming chunks or WebRTC) |
-| Final pedagogy index | **Central server** batch queue |
-| Dev validation of models | **RTX 5070** workstation |
+| Final pedagogy index       | **Central server** batch queue                  |
+| Dev validation of models   | **RTX 5070** workstation                        |
 
 ---
 
@@ -53,7 +53,7 @@ No paid ASR/LLM APIs in core path. Cloud **hosting** may cost money; software re
 
 ## Still open
 
-| ID | Question |
-|----|----------|
+| ID        | Question                                                                                                                |
+| --------- | ----------------------------------------------------------------------------------------------------------------------- |
 | **D-DEV** | Confirm pilot site **make/model** (research list in [INDIA_PILOT_DEVICE_REFERENCE.md](INDIA_PILOT_DEVICE_REFERENCE.md)) |
-| **D-20** | Primary success metric — [FOUNDER_SUCCESS_METRICS_GUIDE.md](FOUNDER_SUCCESS_METRICS_GUIDE.md) |
+| **D-20**  | Primary success metric — [FOUNDER_SUCCESS_METRICS_GUIDE.md](FOUNDER_SUCCESS_METRICS_GUIDE.md)                           |
