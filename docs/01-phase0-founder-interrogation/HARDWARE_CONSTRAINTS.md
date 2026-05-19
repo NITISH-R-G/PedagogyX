@@ -1,31 +1,59 @@
 # Hardware & OSS Constraints (Founder)
 
-**Recorded:** 2026-05-19
+**Last updated:** 2026-05-19 (amended)
 
-| Constraint | Value |
-|------------|-------|
-| **GPU max** | NVIDIA **RTX 5070**, **12 GB** VRAM |
-| **Stack** | **Free & open source** for core platform |
-| **Cloud AI APIs** | **Not used** in core path (ASR, LLM, CV) |
-| **Deployment** | On-prem / school edge server |
+---
 
-## What this means for v1
+## Development vs production
 
-| Feature | Delivery |
-|---------|----------|
-| Live talk ratio | Yes — faster-whisper **small** on GPU/CPU |
-| Live multi-cam HD CV | **No** on one 5070 — one 480p cam max |
-| Multi-cam + screen analytics | Yes — **after class** batch queue |
-| Admin final pedagogy score | After cold pipeline (same night or next morning) |
-| LLM coaching report | **Ollama** Qwen2.5-7B-Q4 on same GPU |
+| Environment | Hardware | Role |
+|-------------|----------|------|
+| **Development** | NVIDIA **RTX 5070 12 GB** | Benchmarks, train/export models, local Compose stack — **not production** |
+| **Production clients** | **Android** + **low-end Windows smartboards** | Capture, encode, upload only — **no GPU ML on device** |
+| **Production ML** | **Central server** (spec TBD — D-PROC) | OSS: faster-whisper, TensorRT/YOLO, Ollama |
 
-## To scale beyond ~2 live rooms per GPU
+---
 
-- Add more **RTX 5070** edge nodes (still OSS), or
-- Accept **audio-only live** for all rooms + batch video overnight
+## OSS policy
+
+**Free & open source** for core platform — see [ADR-0005](../08-rfc-adr/ADR-0005-foss-first-stack.md).
+
+No paid ASR/LLM APIs in core path. Cloud **hosting** may cost money; software remains OSS.
+
+---
+
+## Production client limits (smartboards)
+
+- **No** on-device Whisper, YOLO, or 7B LLM
+- **Yes** hardware H.264 encode when available
+- **Yes** offline buffer + resumable upload
+- Multi-cam: **screen + mic + 0–1 cam** on device; extra cameras via **RTSP to server**
+
+---
+
+## Real-time analytics path (revised)
+
+| Layer | Where |
+|-------|--------|
+| Live talk ratio / previews | **Central server** (streaming chunks or WebRTC) |
+| Final pedagogy index | **Central server** batch queue |
+| Dev validation of models | **RTX 5070** workstation |
+
+---
 
 ## Docs
 
-- [GPU_BUDGET_RTX5070.md](../05-architecture/GPU_BUDGET_RTX5070.md)
+- [PRODUCTION_CLIENT_SPEC.md](../05-architecture/PRODUCTION_CLIENT_SPEC.md)
+- [ADR-0006](../08-rfc-adr/ADR-0006-rtx5070-compute-budget.md) (dev GPU)
+- [ADR-0007](../08-rfc-adr/ADR-0007-production-clients-low-end.md)
+- [GPU_BUDGET_RTX5070.md](../05-architecture/GPU_BUDGET_RTX5070.md) (dev benchmarking)
 - [OSS_STACK_REFERENCE.md](../06-stack-evaluation/OSS_STACK_REFERENCE.md)
-- [ADR-0005](../08-rfc-adr/ADR-0005-foss-first-stack.md), [ADR-0006](../08-rfc-adr/ADR-0006-rtx5070-compute-budget.md)
+
+---
+
+## Still open
+
+| ID | Question |
+|----|----------|
+| **D-PROC** | Central processing: PedagogyX cloud, district server, or hybrid? |
+| **D-DEV** | Exact Android + smartboard OEM models for pilot? |

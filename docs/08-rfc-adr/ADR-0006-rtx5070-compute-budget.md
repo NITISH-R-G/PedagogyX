@@ -1,65 +1,47 @@
-# ADR-0006: RTX 5070 (12 GB) Maximum GPU — Compute Budget
+# ADR-0006: RTX 5070 (12 GB) — Development & Benchmark GPU Only
 
 | Field | Value |
 |-------|-------|
-| **Status** | Accepted (founder-directed) |
-| **Date** | 2026-05-19 |
-| **Hardware** | NVIDIA GeForce RTX 5070, **12 GB GDDR7** **[FACT]**
+| **Status** | **Amended** (2026-05-19) |
+| **Date** | 2026-05-19 (original), amended same day |
+| **Hardware** | NVIDIA GeForce RTX 5070, **12 GB GDDR7** |
 
-## Context
+## Context (correction)
 
-Founder stated **RTX 5070 is the max GPU** available. This is a **single consumer GPU** constraint—not a cloud GPU farm. Earlier v1 scope (multi-cam **real-time** + batch + LLM) **cannot run at full fidelity concurrently** on one 12 GB card per deployment unit without strict scheduling and degraded hot path.
+Founder clarified: **RTX 5070 is for development**, not where the production app runs.
+
+**Production clients:** **Android** devices and **Windows smartboards** with **low-end specs** (classroom floor).
 
 ## Decision
 
-### Deployment unit
+### RTX 5070 role — **DEV ONLY**
 
-**[ASSUMPTION]** One RTX 5070 per **edge node** (school server or classroom PC), not per cloud tenant.
+| Use | Allowed |
+|-----|---------|
+| Local integration testing | Yes |
+| Model export (ONNX / TensorRT) | Yes |
+| Benchmark faster-whisper, YOLO, Ollama before deploy | Yes |
+| Training / LoRA fine-tune (small) | Yes |
+| Production inference in schools | **No** |
 
-| Model | Description |
-|-------|-------------|
-| **A — School edge server** (recommended) | 1× RTX 5070 serves **4–8 classrooms** sequentially / round-robin |
-| **B — Per-classroom PC** | 1 GPU per room — best latency, highest hardware cost |
-| **C — Cloud GPU** | **Out of scope** until budget allows — violates current hardware constraint |
+### Production inference location
 
-### Hot path (real-time) — **reduced to fit 12 GB**
+**[ASSUMPTION until D-PROC answered]** Central **OSS processing service** (India-hosted VPS or district server with GPU)—**not** on smartboards.
 
-| Component | Model | VRAM (approx) | Notes |
-|-----------|-------|---------------|-------|
-| ASR streaming | `faster-whisper` **small** or **medium** INT8 | 1–3 GB | CPU fallback if GPU saturated |
-| Activity CV | YOLO11n / YOLOv8n INT8 TensorRT | 1–2 GB | **One** cam stream @ 480p for live |
-| Screen | Frame diff + OCR (PaddleOCR / Tesseract) on CPU | 0 GPU | Avoid GPU OCR in hot path |
-| LLM live nudges | **Disabled** on GPU | — | No room with video + ASR |
+See [ADR-0007](ADR-0007-production-clients-low-end.md).
 
-**Hot path rule:** At most **one** of {medium ASR, small YOLO} on GPU simultaneously unless quantized nano models only.
+### Dev machine pipeline validation (5070)
 
-### Cold path (authoritative) — **serialized jobs**
+Use 12 GB VRAM rules from [GPU_BUDGET_RTX5070.md](../05-architecture/GPU_BUDGET_RTX5070.md) to:
 
-Run as **queue** on same GPU after lesson ends (or night batch):
+- Prove models fit and meet latency targets **before** deploying weights to central servers
+- Size central server GPU requirements (e.g. “production needs same VRAM profile per N concurrent lessons”)
 
-1. Full ASR (`medium` or `large-v3` INT8) — ~4–6 GB peak
-2. Diarization (WhisperX / pyannote — license-check) — run when ASR unloaded
-3. Multi-cam CV batch at 720p — one model load at a time
-4. LLM summary via **Ollama** `Qwen2.5-7B-Instruct` Q4_K_M (~5–6 GB) — **exclusive** GPU job
+## Supersedes
 
-**Never** load large-v3 + 7B LLM + YOLO simultaneously on 12 GB.
+Previous text implying one RTX 5070 **per school edge node** in production — **withdrawn**.
 
-### Founder scope adjustment (required honesty)
+## Related
 
-| Original v1 ask | RTX 5070 reality |
-|-----------------|------------------|
-| Live multi-cam CV | **Defer** — 1 cam preview @ 480p OR audio-only live |
-| Live admin dashboard | **Audio + preview metrics** live; **full pedagogy index** after batch |
-| Many concurrent live classes on one box | **Queue** or **audio-only** for excess rooms |
-
-Founder can override by adding GPUs or accepting **non-real-time** video analytics.
-
-## Consequences
-
-- Update [SYSTEM_ARCHITECTURE.md](../05-architecture/SYSTEM_ARCHITECTURE.md) — edge queue scheduler required
-- Update SLAs: live = preliminary; final scores after batch on same node
-- Pilot sizing: start **1–2 classrooms per GPU**, measure, then tune
-
-## Validation
-
-Benchmark script on RTX 5070: concurrent streams vs VRAM (Sprint 01 TB-009).
+- [ADR-0007](ADR-0007-production-clients-low-end.md)
+- [PRODUCTION_CLIENT_SPEC.md](../05-architecture/PRODUCTION_CLIENT_SPEC.md)
