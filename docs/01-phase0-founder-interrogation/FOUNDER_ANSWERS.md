@@ -2,7 +2,7 @@
 
 **Recorded:** 2026-05-19  
 **Source:** Founder reply to Tier-1 interrogation  
-**Status:** G0 nearly complete — **G2 legal still blocked**; **D-20** success metric TBD (default M-A+M-B until chosen)
+**Status:** **G0 complete** — **G2 legal still blocked** (implementation code)
 
 ---
 
@@ -24,7 +24,7 @@
 | **D-12** | Cloud LLM on student-adjacent data | **OSS only — Ollama/vLLM on-prem** | Private/vPC | **Closed** — Qwen2.5-7B-Q4 on RTX 5070 |
 | **D-GPU** | Max GPU hardware | **RTX 5070 12 GB** | Cloud GPU | **Closed** — ADR-0006 |
 | **D-OSS** | Stack preference | **Free & open source first** | Mixed | **Closed** — ADR-0005 |
-| **D-20** | Year-1 success metric | **TBD** (founder requested detailed guide) | — | [FOUNDER_SUCCESS_METRICS_GUIDE.md](FOUNDER_SUCCESS_METRICS_GUIDE.md); **default M-A + M-B** if silent |
+| **D-20** | Year-1 success metric | **Primary M-A**; **Secondary M-B, M-C** | Unknown | Coverage + time-to-insight + admin action on flags |
 | **D-DEV** | India OEM devices | **Research list** (founder IDK) | — | [INDIA_PILOT_DEVICE_REFERENCE.md](INDIA_PILOT_DEVICE_REFERENCE.md); confirm at pilot site |
 | **D-CLIENT** | Production devices | **Android + low-end Windows smartboards** | Phone-only | ADR-0007 |
 | **D-PROC** | Where ML runs in production | **C — Hybrid** (LAN edge buffer + India cloud GPU analytics) | Central TBD | ADR-0008 |
@@ -60,8 +60,8 @@ Founder choices align with **supervision + analytics** platforms (China smart cl
 
 ### Unresolved blockers (next founder reply)
 
-1. **D-20** — Pick primary success metric: `Primary: M-?` — see [FOUNDER_SUCCESS_METRICS_GUIDE.md](FOUNDER_SUCCESS_METRICS_GUIDE.md)
-2. **D-DEV** — Confirm **exact** panel/tablet model at first pilot site (use checklist in device reference)
+1. **D-DEV** — Confirm **exact** panel/tablet model at first pilot site (use checklist in device reference)
+2. **Per-student admin scores** — yes or no for v1 (if not already implied by D-06)
 
 ---
 
@@ -69,9 +69,9 @@ Founder choices align with **supervision + analytics** platforms (China smart cl
 
 | Role | Status |
 |------|--------|
-| Founder Tier-1 | **Complete except D-20** (D-DEV = research until site visit) |
+| Founder Tier-1 | **Complete** (D-DEV = confirm at pilot site) |
 | Legal (India DPDP) | Not started |
 | Architecture freeze | **Denied** until G2 legal memo |
-| Success metric default | **M-A + M-B** if D-20 still open at Sprint 01 end |
+| **D-20 (2026-05-19)** | **Primary M-A**, **Secondary M-B, M-C** — founder accepted architecture team suggestion |
 
 **D-PROC (2026-05-19):** **C — Hybrid** — site LAN edge (buffer/ingest) + PedagogyX India cloud GPU analytics. See [ADR-0008](../08-rfc-adr/ADR-0008-d-proc-hybrid-central-ml.md).

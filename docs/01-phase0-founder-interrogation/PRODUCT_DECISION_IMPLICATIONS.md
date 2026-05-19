@@ -83,8 +83,7 @@ Your choices define a **India-first, supervision-heavy, multimodal real-time pla
 
 ## Recommended Immediate Founder Actions
 
-1. Pick **D-20** primary metric (guide published); **D-05, D-10, D-12** closed
-2. Pick **primary success metric** (suggest **M-A + M-B**: coverage + time-to-insight)
+1. **D-20 closed:** **M-A** primary, **M-B** + **M-C** secondary (2026-05-19)
 3. Confirm: **per-student** scores on admin UI — yes/no?
 4. Engage **India privacy counsel** this week
 5. Name **one pilot partner** (state, chain, or university)

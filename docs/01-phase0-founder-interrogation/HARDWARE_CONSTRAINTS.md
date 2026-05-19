@@ -56,4 +56,4 @@ No paid ASR/LLM APIs in core path. Cloud **hosting** may cost money; software re
 | ID | Question |
 |----|----------|
 | **D-DEV** | Confirm pilot site **make/model** (research list in [INDIA_PILOT_DEVICE_REFERENCE.md](INDIA_PILOT_DEVICE_REFERENCE.md)) |
-| **D-20** | Primary success metric — [FOUNDER_SUCCESS_METRICS_GUIDE.md](FOUNDER_SUCCESS_METRICS_GUIDE.md) |
+| **D-20** | Closed: **M-A** primary, **M-B** + **M-C** secondary |

@@ -24,7 +24,7 @@
 
 - D-10 closed (₹0 customer budget — founder-funded pilot infra)
 - D-12 answered (OSS on-prem)
-- Primary success metric selected **or** accept default **M-A + M-B**
+- **D-20** closed: **Primary M-A**; **Secondary M-B, M-C**
 - Legal memo scheduled or received
 - RFC-0002 accepted
 

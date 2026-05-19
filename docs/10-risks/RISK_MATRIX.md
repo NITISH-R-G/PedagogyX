@@ -15,7 +15,7 @@
 | R-09 | Teacher trust / public backlash | 4 | 4 | 16 | Contractual use limits | New |
 | R-10 | Dual segment (K-12 + univ) dilution | 4 | 3 | 12 | Separate templates | New |
 | R-11 | Screen capture PII leakage | 4 | 4 | 16 | Redact LMS chat; policies | New |
-| R-12 | No success metric → wrong build | **5** | 4 | **20** | Founder pick M-A/B | Open |
+| R-12 | No success metric → wrong build | **5** | 4 | **20** | **M-A / M-B / M-C** selected | Mitigated |
 
 ---
 

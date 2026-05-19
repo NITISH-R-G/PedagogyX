@@ -4,7 +4,7 @@
 
 **Quick reference:** [SUCCESS_METRIC_OPTIONS.md](SUCCESS_METRIC_OPTIONS.md)
 
-**Your status:** **TBD** — architecture will default to **M-A + M-B** until you reply `Primary: M-?`.
+**Your status:** **Closed (2026-05-19)** — **Primary M-A**; **Secondary M-B, M-C** (founder accepted team suggestion).
 
 ---
 

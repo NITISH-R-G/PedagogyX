@@ -27,8 +27,12 @@ You indicated **“idk”** for the primary success metric. Pick **one primary**
 
 ---
 
-## Founder action
+## Founder selection (2026-05-19)
 
-Reply with: `Primary: M-? , Secondary: M-?, M-?`
+**Accepted architecture team suggestion:**
 
-**Architecture default if still silent after Sprint 01:** **M-A + M-B** (deployment + latency).
+- **Primary:** **M-A** — Observation coverage
+- **Secondary:** **M-B** — Time-to-insight
+- **Secondary:** **M-C** — Admin action rate
+
+Canonical log: [FOUNDER_ANSWERS.md](FOUNDER_ANSWERS.md)

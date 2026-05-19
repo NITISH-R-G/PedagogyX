@@ -26,7 +26,7 @@
 | **D-CLIENT** | Production devices? | **Android + Win smartboard** | ✅ |
 | **D-PROC** | Where ML runs? | **C — Hybrid** (LAN edge + India cloud) | ✅ |
 | **D-DEV** | India OEM models? | **Research reference** — confirm at pilot | 🟡 |
-| **D-20** | Year-1 success metric? | **TBD** (guide published) | 🟡 |
+| **D-20** | Year-1 success metric? | **Primary M-A**; **Secondary M-B, M-C** | ✅ |
 
 ---
 

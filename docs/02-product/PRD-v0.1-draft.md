@@ -79,13 +79,20 @@
 
 ## 7. Success Metric
 
-**TBD** — see [SUCCESS_METRIC_OPTIONS.md](../01-phase0-founder-interrogation/SUCCESS_METRIC_OPTIONS.md)
+**Founder selection (2026-05-19):**
 
-**Recommended primary:** M-A (classroom coverage) + M-B (time-to-insight)
+| Role | Metric |
+|------|--------|
+| **Primary** | **M-A** — Observation coverage (% classrooms with ≥1 analyzed session/week) |
+| **Secondary** | **M-B** — Time-to-insight (median minutes class end → admin dashboard ready) |
+| **Secondary** | **M-C** — Admin action rate (% flagged lessons reviewed within 48h) |
+
+See [SUCCESS_METRIC_OPTIONS.md](../01-phase0-founder-interrogation/SUCCESS_METRIC_OPTIONS.md).
 
 ---
 
 ## 8. Blockers
 
-- D-05, D-10, D-12
 - India legal memo (G2)
+- D-DEV: confirm pilot site device make/model
+- Per-student admin scores (founder confirm)
