@@ -25,6 +25,8 @@
 | **D-GPU** | Max GPU hardware | **RTX 5070 12 GB** | Cloud GPU | **Closed** — ADR-0006 |
 | **D-OSS** | Stack preference | **Free & open source first** | Mixed | **Closed** — ADR-0005 |
 | **D-20** | Year-1 success metric | **Unknown (TBD)** | — | See [SUCCESS_METRIC_OPTIONS.md](SUCCESS_METRIC_OPTIONS.md) |
+| **D-CLIENT** | Production devices | **Android + low-end Windows smartboards** | Phone-only | ADR-0007 |
+| **D-PROC** | Where ML runs in production | **C — Hybrid** (LAN edge buffer + India cloud GPU analytics) | Central TBD | ADR-0008 |
 
 ---
 
@@ -53,8 +55,8 @@ Founder choices align with **supervision + analytics** platforms (China smart cl
 
 1. **D-05** — Who signs: state/scheme, district, school principal, university registrar?
 2. **D-10** — Max ₹/USD per classroom/month for GPU + storage?
-3. **D-12** — Azure OpenAI India / self-hosted Llama / no LLM on raw student video?
-4. **Success metric** — pick one primary from options doc?
+3. **Success metric** — pick one primary from options doc?
+4. **D-DEV** — Exact smartboard/Android **OEM models** in India for minimum spec (blocks pilot hardware list)
 
 ---
 
@@ -62,9 +64,8 @@ Founder choices align with **supervision + analytics** platforms (China smart cl
 
 | Role | Status |
 |------|--------|
-| Founder Tier-1 | Partial (8/10 answered) |
+| Founder Tier-1 | Partial (D-05, D-10, D-20, D-DEV open) |
 | Legal (India DPDP) | Not started |
-| Architecture freeze | **Denied** until D-10, D-12, legal memo |
+| Architecture freeze | **Denied** until D-10, legal memo (G2) |
 
-| **D-CLIENT** | Production devices | **Android + low-end Windows smartboards** (2026-05-19) |
-| **D-PROC** | Where ML runs in production | **TBD** (central cloud vs district server) |
+**D-PROC (2026-05-19):** **C — Hybrid** — site LAN edge (buffer/ingest) + PedagogyX India cloud GPU analytics. See [ADR-0008](../08-rfc-adr/ADR-0008-d-proc-hybrid-central-ml.md).

@@ -26,7 +26,7 @@ Founder clarified: **RTX 5070 is for development**, not where the production app
 
 ### Production inference location
 
-**[ASSUMPTION until D-PROC answered]** Central **OSS processing service** (India-hosted VPS or district server with GPU)—**not** on smartboards.
+**Production inference (D-PROC = Hybrid):** GPU ML on **India cloud** OSS workers; **LAN edge** handles buffer/ingest only—**not** on smartboards. See [ADR-0008](ADR-0008-d-proc-hybrid-central-ml.md).
 
 See [ADR-0007](ADR-0007-production-clients-low-end.md).
 

@@ -126,6 +126,11 @@ flowchart TB
 
 ---
 
-## Open: D-PROC
+## D-PROC (closed 2026-05-19)
 
-Where central ML runs (managed cloud vs district server) — blocks production infra sizing.
+**Founder choice: C — Hybrid.**
+
+- **LAN edge** (district/school node): ingest, offline buffer, resumable forward to cloud — no full GPU ML on edge in v1.
+- **India cloud**: PedagogyX-managed OSS GPU workers (ASR, CV, LLM, authoritative scores).
+
+See [ADR-0008](../08-rfc-adr/ADR-0008-d-proc-hybrid-central-ml.md). Production infra sizing still depends on **D-10** budget.

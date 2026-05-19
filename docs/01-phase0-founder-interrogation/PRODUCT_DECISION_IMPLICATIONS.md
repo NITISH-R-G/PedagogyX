@@ -83,7 +83,7 @@ Your choices define a **India-first, supervision-heavy, multimodal real-time pla
 
 ## Recommended Immediate Founder Actions
 
-1. Answer **D-05, D-10, D-12** (buyer, budget, LLM)
+1. Answer **D-05, D-10** (buyer, budget); **D-12** closed (OSS on-prem)
 2. Pick **primary success metric** (suggest **M-A + M-B**: coverage + time-to-insight)
 3. Confirm: **per-student** scores on admin UI — yes/no?
 4. Engage **India privacy counsel** this week
@@ -102,6 +102,19 @@ Your choices define a **India-first, supervision-heavy, multimodal real-time pla
 | Cost model | **Multi-stream GPU cost model** |
 
 **Implementation code still blocked** until G2 + D-10.
+
+---
+
+## Update: D-PROC Hybrid (2026-05-19)
+
+| Impact | Detail |
+|--------|--------|
+| **Deployment** | Two reference stacks: **edge** (LAN buffer/ingest) + **cloud** (GPU analytics) |
+| **Sprint 01** | RFC-0002 capture/sync; S01-10 Compose profiles; Android + Windows capture RFCs |
+| **Ops** | PedagogyX operates cloud GPU; districts host edge node (Compose/k3s) |
+| **Still blocked** | Implementation until G2; **D-10** for sizing |
+
+See [ADR-0008](../08-rfc-adr/ADR-0008-d-proc-hybrid-central-ml.md).
 
 ---
 

@@ -112,22 +112,27 @@ flowchart TB
         AND[Android app]
         WIN[Windows smartboard app]
     end
-    subgraph central [Central OSS backend - India D-PROC TBD]
+    subgraph edge [Site LAN edge - D-PROC hybrid]
+        EDGE[Edge ingest + buffer]
+    end
+    subgraph cloud [PedagogyX India cloud OSS]
         MTX[MediaMTX / ingest]
         API[API]
         Q[Job queue]
-        GPU[GPU workers - NOT in classroom]
+        GPU[GPU workers]
         DB[(Postgres + MinIO)]
     end
-    AND --> MTX
-    WIN --> MTX
+    AND --> EDGE
+    WIN --> EDGE
+    EDGE -->|WAN upload| MTX
     MTX --> API --> Q --> GPU --> DB
 ```
 
 | Layer | Where it runs |
 |-------|----------------|
 | Capture / encode | **Android, Windows smartboard** |
-| ASR, CV, LLM | **Central server** (OSS stack) |
+| Buffer / LAN ingest | **District/school edge node** (hybrid — ADR-0008) |
+| ASR, CV, LLM | **India cloud** GPU workers (OSS stack) |
 | Model dev / bench | **Developer RTX 5070** only |
 
 See [PRODUCTION_CLIENT_SPEC.md](PRODUCTION_CLIENT_SPEC.md).
@@ -160,6 +165,6 @@ Not in v1: iOS screen capture (policy restrictions).
 
 ## Open Blockers
 
-- D-10 budget → GPU sizing
-- D-12 LLM → coaching narrative architecture
+- D-10 budget → GPU sizing (cloud pool + edge hardware)
 - Legal G2 → consent flows in agent installer
+- D-DEV → India OEM smartboard/Android models for minimum specs
