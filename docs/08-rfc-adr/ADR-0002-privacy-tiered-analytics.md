@@ -2,29 +2,31 @@
 
 | Field | Value |
 |-------|-------|
-| **Status** | Accepted (provisional) |
-| **Date** | 2026-05-19 |
+| **Status** | Accepted — **default tier changed** |
+| **Date** | 2026-05-19 (amended) |
 
 ## Context
 
-Student biometric CV creates GDPR/FERPA/union risk. Audio-only products (TeachFX) succeed with narrower data.
+Originally assumed Western default `audio_only`. Founder requires identifiable multi-cam video in India v1.
 
 ## Decision
 
-Every tenant configures `privacy_tier`:
+Retain tiers for **future export markets**, but **India v1 default tenant config:**
 
-| Tier | Modalities | Student identifiability |
-|------|------------|-------------------------|
-| `audio_only` | Mic audio | No video |
-| `deidentified_video` | Video with face blur default | No student ID |
-| `full_video` | Raw video | Requires explicit legal approval + DPIA |
+| Tier | v0.1 default | India v1 default |
+|------|--------------|------------------|
+| `audio_only` | Default | Opt-in cost saver |
+| `deidentified_video` | Optional | Optional |
+| `full_video` | Opt-in rare | **Default** |
 
-ML pipelines are **modular** per tier; billing and SLAs differ.
+Schools may downgrade tier only with legal approval + feature loss disclosure.
 
 ## Consequences
 
-Engineering must enforce tier at ingest (reject upstream CV jobs). Sales must not oversell tiers.
+- Engineering implements full CV pipeline in Phase 1, not Phase 2
+- Higher storage, GPU, and compliance cost
+- `coaching` mode still available for teacher-private workflows
 
-## Validation
+## Related
 
-Founder answers **D-03**, **D-11–D-15**.
+[ADR-0003](ADR-0003-india-supervision-v1-scope.md)

@@ -25,3 +25,6 @@
 - Primary success metric selected
 - Legal memo scheduled or received
 - RFC-0002 accepted
+
+| S01-09 | RTX 5070 full pipeline benchmark suite | ML |
+| S01-10 | Docker Compose OSS pilot stack | Platform |

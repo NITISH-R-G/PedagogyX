@@ -1,125 +1,86 @@
-# Stack Evaluation — Executive Summary
+# Stack Evaluation — OSS-First + RTX 5070 Constraint
 
-**Status:** Draft v0.1 | **Recommendation:** Hybrid (see bottom)
+**Status:** v0.2 | **ADRs:** [ADR-0005](../08-rfc-adr/ADR-0005-foss-first-stack.md), [ADR-0006](../08-rfc-adr/ADR-0006-rtx5070-compute-budget.md)
 
-Scoring: 1 (poor) – 5 (excellent) for PedagogyX context
-
----
-
-## Backend Languages
-
-| Criterion | Go | Rust | Python | Node.js | Java |
-|-----------|----|------|--------|---------|------|
-| ML integration | 2 | 2 | **5** | 2 | 3 |
-| Media/FFmpeg ops | 4 | **5** | 3 | 2 | 3 |
-| API latency | **5** | **5** | 3 | 4 | 4 |
-| Hiring pool | 4 | 3 | **5** | 5 | 4 |
-| Concurrency | **5** | **5** | 3 | 4 | 4 |
-| **PedagogyX fit** | Control plane | Transcode workers | ML + agents | Avoid core | Enterprise optional |
-
-**Recommendation:** **Python** for ML plane; **Go** for API/ingest orchestration; **Rust** optional for transcode hot path at scale.
+**Canonical OSS list:** [OSS_STACK_REFERENCE.md](OSS_STACK_REFERENCE.md)
 
 ---
 
-## ML Frameworks
+## Executive recommendation
 
-| Framework | Training | Inference | Edge | Notes |
-|-----------|----------|-----------|------|-------|
-| **PyTorch** | **5** | 4 | 3 | Default research/training |
-| TensorFlow | 3 | 4 | 4 | TFX production maturity |
-| JAX | 4 | 3 | 2 | Research, TPU |
-| ONNX | — | **5** | **5** | Exchange format |
-| TensorRT | — | **5** | 4 | NVIDIA GPUs |
+| Layer | Choice | Why |
+|-------|--------|-----|
+| Policy | **100% OSS core path** | Founder mandate |
+| Compute | **On-prem edge** with **RTX 5070 12GB** | No cloud GPU budget |
+| API | **Go** (ingest/control) + **Python** (ML workers) | Performance + ML ecosystem |
+| ML train | **PyTorch** → export **ONNX** → **TensorRT** | 5070 inference |
+| LLM | **Ollama** + **Qwen2.5-7B-Q4** | Fits 12 GB alone |
+| ASR | **faster-whisper** | OSS, no API fees |
+| Media | **FFmpeg** + **MediaMTX** | OSS |
+| Data | **PostgreSQL** + **MinIO** + **ClickHouse** | OSS |
+| Orchestration | **Docker Compose** (pilot) → **k3s** | OSS |
+| Cloud | **Optional** — only for non-GPU static hosting | Avoid GPU SaaS |
 
-**Recommendation:** Train **PyTorch** → export **ONNX** → **TensorRT** on NVIDIA inference nodes.
-
----
-
-## Video Pipelines
-
-| Tech | Live stream | Batch transcode | Classroom fit |
-|------|-------------|-----------------|---------------|
-| **FFmpeg** | Via libav | **5** | Universal |
-| GStreamer | **5** | 4 | Hardware integrators |
-| WebRTC | **5** | 1 | Phase 3 live coaching |
-| RTSP | 4 | 3 | Fixed cameras |
-| DeepStream | 4 | 4 | Multi-cam edge |
-
-**Recommendation:** **FFmpeg** batch MVP; **WebRTC** when IRIS-class live ships.
+**Removed from default plan:** AWS Transcribe, OpenAI, commercial ASR, managed vector SaaS.
 
 ---
 
-## Databases
+## Backend languages (unchanged preference, OSS-aligned)
 
-| Store | Use case | Verdict |
-|-------|----------|---------|
-| **PostgreSQL** | Tenants, RBAC, lesson metadata | **Required** |
-| **ClickHouse** | Time-series metrics, district rollups | **Recommended** |
-| S3 | Raw media | **Required** |
-| **Qdrant/Milvus** | Semantic search over lessons | Phase 2 |
-| Neo4j | Interaction graphs | Phase 3 |
-| MongoDB | Document blobs | Skip (Postgres JSONB) |
-| Cassandra | Write-heavy events | Only if Kafka+CH insufficient |
-| Weaviate | Managed vectors | Optional vs Qdrant |
+| Role | Language |
+|------|----------|
+| API gateway, auth proxy, upload | **Go** |
+| ML workers, eval scripts | **Python 3.11+** |
+| Capture agent | **Tauri (Rust)** + FFmpeg |
+
+---
+
+## ML frameworks
+
+| Use | Tool |
+|-----|------|
+| Training / export | PyTorch |
+| Serving | ONNX Runtime + TensorRT |
+| LLM | Ollama or vLLM (OSS) |
+| Experiment tracking | **MLflow** (OSS) |
+
+---
+
+## Video
+
+| Use | Tool |
+|-----|------|
+| Transcode | FFmpeg |
+| Live ingest | MediaMTX |
+| Future live coach | Janus (GPL — review) |
 
 ---
 
 ## Frontend
 
-| Option | Coach web | Mobile capture | Verdict |
-|--------|-----------|----------------|---------|
-| **Next.js (React)** | **5** | 3 (PWA) | Primary web |
-| Flutter | 3 | **5** | Phase 2 native capture |
-| Tauri | 4 | 2 | Desktop reviewer tool optional |
-| Electron | 3 | 2 | Avoid |
+**Next.js** — OSS, self-hosted static export or Node server on same edge box.
 
 ---
 
-## Infrastructure
+## Infrastructure at pilot scale (1× RTX 5070)
 
-| Option | PedagogyX MVP | Scale |
-|--------|---------------|-------|
-| **Kubernetes (EKS/GKE)** | Standard | GPU node pools |
-| Nomad | Simpler ops | Less ML ecosystem examples |
-| Serverless | Upload triggers | GPU limits |
-| **Terraform** | IaC | Required |
-
----
-
-## Cloud
-
-| Provider | Pros | Cons |
-|----------|------|------|
-| **AWS** | Broad GPU, S3, Transcribe, Bedrock | Complex pricing |
-| GCP | Video ML APIs | Smaller edu sales lore |
-| Azure | Teams integration | Same |
-| Self-hosted GPU | Cost at scale | Ops burden |
-
-**Recommendation:** **AWS** primary **[ASSUMPTION]** for US K-12; EU region on AWS or GCP for GDPR.
-
----
-
-## Reference Stack (MVP)
-
-```
-Next.js → Go API → Kafka → {Python GPU workers, FFmpeg CPU workers}
-         ↓
-    Postgres + S3 + ClickHouse
-         ↓
-    Private LLM or vLLM for coaching drafts
+```text
+Single server (64 GB RAM recommended, 2 TB NVMe)
+├── Docker Compose
+├── 1× RTX 5070 for all GPU jobs (scheduled)
+└── Serve 1–2 live classrooms + overnight batch for 8–16 recordings
 ```
 
+**Not viable on one 5070:** 20 simultaneous live multi-cam ML sessions.
+
 ---
 
-## Hiring Reality Check
+## Cost model shift
 
-**[FACT]** World-class classroom CV is **research-heavy**; team needs:
+| Before (cloud) | After (OSS + 5070) |
+|----------------|---------------------|
+| $/GPU-hour AWS | Cap-ex: GPU + server ~$1.5–2k/node |
+| $/ASR minute | Electricity + ops time |
+| Scaling | Buy more 5070 nodes |
 
-- 1–2 ML engineers (speech + optional CV)
-- 1 backend (Go)
-- 1 frontend
-- 1 pedagogy/learning scientist
-- 0.5 security/compliance
-- Legal counsel on retainer
-
-Before coding, confirm funding matches.
+See [GPU_BUDGET_RTX5070.md](../05-architecture/GPU_BUDGET_RTX5070.md).

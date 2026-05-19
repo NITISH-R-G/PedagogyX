@@ -20,7 +20,9 @@
 | **D-09** | MVP modality? | **Multi-cam** | ✅ |
 | **D-10** | Budget ceiling per classroom/year? | **TBD** | 🔴 |
 | **D-11** | ASR languages (inferred)? | **TBD** (assume EN + HI) | 🟡 |
-| **D-12** | Cloud LLM on student-adjacent data? | **TBD** | 🔴 |
+| **D-12** | Cloud LLM? | **OSS on-prem only** | ✅ |
+| **D-GPU** | Max GPU? | **RTX 5070 12 GB** | ✅ |
+| **D-OSS** | OSS-first? | **Yes** | ✅ |
 
 ---
 

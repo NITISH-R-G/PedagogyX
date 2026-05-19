@@ -1,18 +1,20 @@
-# AI / ML Architecture v0.2 (India Supervision)
+# AI / ML Architecture v0.3 (OSS + RTX 5070 12 GB)
 
-**Status:** Draft — multi-cam + real-time + identifiable students
+**Status:** Draft — OSS-only; RTX 5070 12 GB budget  
+**Refs:** [OSS_STACK_REFERENCE.md](../06-stack-evaluation/OSS_STACK_REFERENCE.md), [GPU_BUDGET_RTX5070.md](GPU_BUDGET_RTX5070.md)
 
 ---
 
 ## v1 Model Stack (Founder-Aligned)
 
-| Stream | Models / techniques | Hot | Cold |
-|--------|---------------------|-----|------|
-| `audio_mic` | ASR (Whisper-class), diarization, talk ratio | Yes | Yes |
-| `screen` | Slide OCR, UI change detection, app classification | Partial | Yes |
-| `cam_*` | Person detect, pose, hand-raise, head-up proxy | Yes | Yes |
-| Fusion | Temporal transformer / rules (Flanders/S-T proxies) | Heuristic | Full |
-| LLM | Rubric narrative, lesson summary | Optional live | Yes |
+| Stream | OSS model | Hot (5070) | Cold (5070) |
+|--------|-----------|------------|-------------|
+| `audio_mic` | **faster-whisper** small→medium INT8 | Yes (small) | Yes (medium/large-v3) |
+| `screen` | Frame diff + **PaddleOCR**/Tesseract (CPU) | CPU only | Yes |
+| `cam_1` | **YOLO11n** TensorRT 480p | Yes (5 fps max) | 720p batch |
+| `cam_2+` | YOLO11n sequential | **No** | Yes (queued) |
+| Fusion | Python rules / sklearn | Heuristic | Full |
+| LLM | **Ollama** Qwen2.5-7B-Q4 | **No** | Yes (exclusive VRAM) |
 
 **Languages:** English + Hindi ASR **[ASSUMPTION]** until D-11 confirmed.
 
@@ -36,27 +38,24 @@
 
 ---
 
-## Real-Time Inference Architecture
+## Real-Time Inference (Single RTX 5070)
 
 ```mermaid
 flowchart LR
-    subgraph gpu [GPU Node Pool]
-        T1[Stream decoder]
-        T2[Triton/ONNX models]
+    subgraph gpu [RTX 5070 12GB]
+        FW[faster-whisper SMALL]
+        YOLO[YOLO11n TRT 480p]
     end
-    ING[Ingest] --> T1 --> T2
-    T2 --> REDIS[(Feature cache)]
-    REDIS --> AGG[2s window aggregator]
-    AGG --> WS[WebSocket to dashboard]
+    ING[MediaMTX] --> FW & YOLO
+    FW --> REDIS[(Redis)]
+    YOLO --> REDIS
+    REDIS --> WS[WebSocket dashboard]
 ```
 
-**SLO draft (hot path):**
+**SLO (hot path):** talk ratio p95 < 10s; cam1 5 fps max; drop cam if GPU saturated.
 
-- Preview talk ratio: p95 < **8s** delay
-- Activity labels: p95 < **5s**
-- GPU autoscale on concurrent classrooms per school
+**Cold path:** final pedagogy index after overnight queue on same GPU.
 
----
 
 ## Identifiable Student Processing
 
@@ -70,15 +69,15 @@ Mitigations:
 
 ---
 
-## LLM Policy (D-12 unresolved)
+## LLM Policy (OSS + RTX 5070)
 
-| Option | India fit |
-|--------|-------------|
-| Self-hosted Llama/Mistral on GPU | Best if D-12 forbids cloud |
-| Azure OpenAI India region | If counsel approves DPA |
-| No LLM on raw video frames | Redact to text + slide text only |
+| Option | Status |
+|--------|--------|
+| **Ollama / vLLM** on edge box | **Default** |
+| Cloud OpenAI / Azure | **Out of core path** |
+| Vision LLM | **Deferred** (VRAM) |
 
-**Default implementation:** LLM inputs = **transcript + structured metrics JSON** only (no raw child images in prompt).
+**Default:** Qwen2.5-7B-Instruct Q4 via Ollama; inputs = transcript + metrics JSON only.
 
 ---
 

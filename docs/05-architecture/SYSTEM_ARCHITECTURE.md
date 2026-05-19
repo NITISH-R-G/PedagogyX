@@ -1,19 +1,21 @@
-# System Architecture v0.2 (India Supervision)
+# System Architecture v0.3 (India Supervision, OSS Edge)
 
 **Status:** Draft — aligned to [FOUNDER_ANSWERS.md](../01-phase0-founder-interrogation/FOUNDER_ANSWERS.md)  
 **Supersedes:** v0.1 assumptions (US coaching-only)  
-**ADRs:** [ADR-0003](../08-rfc-adr/ADR-0003-india-supervision-v1-scope.md), [ADR-0004](../08-rfc-adr/ADR-0004-capture-screen-multicam.md)
+**ADRs:** [ADR-0003](../08-rfc-adr/ADR-0003-india-supervision-v1-scope.md), [ADR-0004](../08-rfc-adr/ADR-0004-capture-screen-multicam.md), [ADR-0005](../08-rfc-adr/ADR-0005-foss-first-stack.md), [ADR-0006](../08-rfc-adr/ADR-0006-rtx5070-compute-budget.md)  
+**OSS stack:** [OSS_STACK_REFERENCE.md](../06-stack-evaluation/OSS_STACK_REFERENCE.md) | **GPU:** [GPU_BUDGET_RTX5070.md](GPU_BUDGET_RTX5070.md)
 
 ---
 
 ## Architectural Principles (Revised)
 
-1. **India data residency** default (ap-south-1)
-2. **Dual analytics path:** real-time (hot) + batch (cold, authoritative scores)
-3. **Multi-stream sync** — screen + mic + multi-cam
-4. **Supervision mode** — admin dashboards with individual teacher metrics
-5. **Segment templates** — K-12 vs university org policies
-6. Human review **recommended** for AI narratives; **not blocking** admin quantitative scores
+1. **OSS-first** — self-hosted; no proprietary ASR/LLM APIs ([ADR-0005](../08-rfc-adr/ADR-0005-foss-first-stack.md))
+2. **Edge compute** — **RTX 5070 12 GB** max per node; GPU job scheduler ([ADR-0006](../08-rfc-adr/ADR-0006-rtx5070-compute-budget.md))
+3. **India data residency** — school LAN / on-prem MinIO + Postgres
+4. **Dual path:** **audio + 1 cam live** (hot) + **full multi-cam + screen** batch (cold, authoritative)
+5. **Multi-stream sync** — screen + mic + multi-cam
+6. **Supervision mode** — admin dashboards; **final** scores after cold queue
+7. **Segment templates** — K-12 vs university
 
 ---
 
@@ -102,27 +104,37 @@ sequenceDiagram
 
 ---
 
-## Deployment (India Reference)
+## Deployment (OSS Edge — India Pilot)
 
 ```mermaid
 flowchart LR
-    subgraph in [ap-south-1]
-        EKS[EKS cluster]
-        GPU[GPU pool - inference]
-        SFU[Media SFU]
-        S3[(S3)]
-        RDS[(Postgres)]
-        CH[(ClickHouse)]
+    subgraph school [School LAN]
+        AGENT[Capture agents]
+        MTX[MediaMTX]
+        EDGE[Edge server]
+        GPU[RTX 5070 12GB]
+        MINIO[(MinIO)]
+        PG[(PostgreSQL)]
+        OLL[Ollama]
     end
-    SCH[Schools] --> AGENT
-    AGENT --> SFU
-    SFU --> GPU
-    GPU --> CH
+    AGENT --> MTX --> EDGE
+    EDGE --> GPU
+    EDGE --> MINIO & PG
+    GPU --> OLL
 ```
 
-**Bandwidth:** Multi-cam + screen may require **5–15 Mbps uplink** per classroom **[HYPOTHESIS]** — needs pilot measurement.
+| Component | OSS |
+|-----------|-----|
+| Ingest | MediaMTX |
+| Queue | NATS JetStream |
+| Storage | MinIO |
+| DB | PostgreSQL |
+| GPU jobs | faster-whisper, TensorRT YOLO, Ollama |
 
----
+**Pilot capacity (one RTX 5070):** ~1–2 live audio/1-cam previews + overnight batch for 8–16 lessons/day.
+
+See [GPU_BUDGET_RTX5070.md](GPU_BUDGET_RTX5070.md).
+
 
 ## RBAC (Supervision Mode)
 

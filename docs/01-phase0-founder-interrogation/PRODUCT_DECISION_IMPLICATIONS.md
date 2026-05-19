@@ -102,3 +102,17 @@ Your choices define a **India-first, supervision-heavy, multimodal real-time pla
 | Cost model | **Multi-stream GPU cost model** |
 
 **Implementation code still blocked** until G2 + D-10.
+
+---
+
+## Update: OSS + RTX 5070 (2026-05-19)
+
+| Impact | Detail |
+|--------|--------|
+| **Cost model** | Cap-ex per edge server (~GPU + 64GB RAM) vs cloud GPU-hours |
+| **Real-time scope** | **Reduced** — audio + 1 cam live; multi-cam batch on same 5070 |
+| **Stack** | faster-whisper, YOLO TensorRT, Ollama, MinIO, Postgres, MediaMTX |
+| **Timeline** | GPU scheduler + Compose pilot before K8s |
+| **Risk R-07** | Mitigated at small scale; returns if school expects 20 live rooms on 1 GPU |
+
+See [HARDWARE_CONSTRAINTS.md](HARDWARE_CONSTRAINTS.md).

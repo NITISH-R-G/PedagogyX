@@ -21,7 +21,9 @@
 | **D-09** | MVP modality | **Multi-camera** | Single cam | Multi-stream sync, higher GPU cost |
 | **D-10** | Budget per classroom/year | *Not answered* | Unknown | **BLOCKER** for unit economics |
 | **D-11** | ASR languages | *Not answered* | English | **Assume** English + Hindi for India unless corrected |
-| **D-12** | Cloud LLM on student-adjacent data | *Not answered* | Private/vPC | **BLOCKER** — default India: in-region private inference |
+| **D-12** | Cloud LLM on student-adjacent data | **OSS only — Ollama/vLLM on-prem** | Private/vPC | **Closed** — Qwen2.5-7B-Q4 on RTX 5070 |
+| **D-GPU** | Max GPU hardware | **RTX 5070 12 GB** | Cloud GPU | **Closed** — ADR-0006 |
+| **D-OSS** | Stack preference | **Free & open source first** | Mixed | **Closed** — ADR-0005 |
 | **D-20** | Year-1 success metric | **Unknown (TBD)** | — | See [SUCCESS_METRIC_OPTIONS.md](SUCCESS_METRIC_OPTIONS.md) |
 
 ---
