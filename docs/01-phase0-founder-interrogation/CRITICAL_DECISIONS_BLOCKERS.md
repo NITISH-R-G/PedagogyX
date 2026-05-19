@@ -13,18 +13,20 @@
 | **D-02** | Year-1 geography | **India** | ✅ |
 | **D-03** | Identifiable student video in v1? | **Yes** | ✅ (triggers G2 legal) |
 | **D-04** | Real-time coaching in v1? | **Yes** | ✅ |
-| **D-05** | Economic buyer? | **TBD** | 🔴 |
+| **D-05** | Economic buyer? | **School + university**; **free pilot**, no payment expected | ✅ |
 | **D-06** | Admins see individual AI pedagogy scores? | **Yes** | ✅ |
 | **D-07** | China-style supervision acceptable? | **Yes** (some markets) | ✅ |
 | **D-08** | Capture model? | **Screen recording + microphone** | ✅ |
 | **D-09** | MVP modality? | **Multi-cam** | ✅ |
-| **D-10** | Budget ceiling per classroom/year? | **TBD** | 🔴 |
+| **D-10** | Budget ceiling per classroom/year? | **₹0 / $0 customer** (founder-funded pilot infra) | ✅ |
 | **D-11** | ASR languages (inferred)? | **TBD** (assume EN + HI) | 🟡 |
 | **D-12** | Cloud LLM? | **OSS on-prem only** | ✅ |
 | **D-GPU** | Dev GPU? | **RTX 5070 — dev only** | ✅ |
 | **D-OSS** | OSS-first? | **Yes** | ✅ |
 | **D-CLIENT** | Production devices? | **Android + Win smartboard** | ✅ |
 | **D-PROC** | Where ML runs? | **C — Hybrid** (LAN edge + India cloud) | ✅ |
+| **D-DEV** | India OEM models? | **Research reference** — confirm at pilot | 🟡 |
+| **D-20** | Year-1 success metric? | **TBD** (guide published) | 🟡 |
 
 ---
 

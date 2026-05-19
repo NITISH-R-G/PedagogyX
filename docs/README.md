@@ -1,6 +1,6 @@
 # PedagogyX — Research & Architecture Documentation Hub
 
-**Status:** Phase 0 — **Founder Tier-1 answers received (partial)**  
+**Status:** Phase 0 — **Founder Tier-1 nearly complete** (D-20 metric TBD)  
 **Last updated:** 2026-05-19  
 **Product direction:** [India-first supervision, multi-cam real-time](../docs/01-phase0-founder-interrogation/FOUNDER_ANSWERS.md)
 
@@ -10,12 +10,12 @@
 
 | Gate | Criteria | Status |
 |------|----------|--------|
-| **G0** | Founder Tier-1 blockers | 🟡 **Partial** (D-05, D-10 open; D-PROC closed) |
+| **G0** | Founder Tier-1 blockers | 🟢 **Complete** except **D-20** (default M-A+M-B) |
 | **G1** | Product scope locked | 🟡 India supervision scope locked |
 | **G2** | India DPDP legal sign-off | 🔴 **Blocked** — counsel required |
 | **G3** | Reference architecture v0.2 | 🟢 Draft complete |
 | **G4** | ML eval plan | 🟡 Revised for EN+HI, multi-cam |
-| **G5** | Infra cost model | 🔴 Needs D-10 budget |
+| **G5** | Infra cost model | 🟡 **Internal** founder-funded pilot (D-10 = ₹0 customer) |
 | **G6** | DPIA + threat model | 🟡 India DPIA draft |
 | **G7** | First vertical slice spec | 🔴 Blocked on G2 + capture agent PRD |
 
@@ -25,7 +25,9 @@
 
 **[FOUNDER_ANSWERS.md](01-phase0-founder-interrogation/FOUNDER_ANSWERS.md)** — canonical log  
 **[PRODUCT_DECISION_IMPLICATIONS.md](01-phase0-founder-interrogation/PRODUCT_DECISION_IMPLICATIONS.md)** — engineering impact  
-**[SUCCESS_METRIC_OPTIONS.md](01-phase0-founder-interrogation/SUCCESS_METRIC_OPTIONS.md)** — pick primary metric
+**[SUCCESS_METRIC_OPTIONS.md](01-phase0-founder-interrogation/SUCCESS_METRIC_OPTIONS.md)** — pick primary metric  
+**[FOUNDER_SUCCESS_METRICS_GUIDE.md](01-phase0-founder-interrogation/FOUNDER_SUCCESS_METRICS_GUIDE.md)** — detailed M-A…M-F guide  
+**[INDIA_PILOT_DEVICE_REFERENCE.md](01-phase0-founder-interrogation/INDIA_PILOT_DEVICE_REFERENCE.md)** — smartboard/tablet OEM research (D-DEV)
 
 ---
 
@@ -40,13 +42,15 @@
 
 ## Still Required from Founder
 
-1. **D-05** — Who is the economic buyer?
-2. **D-10** — Budget per classroom per year (₹ or USD)
-3. **Success metric** — choose M-A through M-F
-4. **Per-student admin scores** — yes or no for v1?
-5. **D-DEV** — Exact India smartboard/Android **OEM models** for minimum specs
+1. **D-20** — Primary success metric (`Primary: M-?`) — see [FOUNDER_SUCCESS_METRICS_GUIDE.md](01-phase0-founder-interrogation/FOUNDER_SUCCESS_METRICS_GUIDE.md)
+2. **Per-student admin scores** — yes or no for v1?
+3. **D-DEV** — Confirm **exact** device make/model at first pilot school (checklist in device reference)
 
-**Recorded (2026-05-19):** **D-PROC = C (Hybrid)** — [ADR-0008](08-rfc-adr/ADR-0008-d-proc-hybrid-central-ml.md). Sprint 01 may spec central OSS backend + capture RFCs.
+**Recorded (2026-05-19):**
+
+- **D-PROC = C (Hybrid)** — [ADR-0008](08-rfc-adr/ADR-0008-d-proc-hybrid-central-ml.md)
+- **D-05** — School / university buyer; **free pilot**, no payment expected
+- **D-10** — **₹0 customer budget** per classroom (founder bears infra during test)
 
 
 ## Hardware & OSS (2026-05-19)
