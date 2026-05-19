@@ -8,16 +8,16 @@
 
 ## Backlog
 
-| ID | Deliverable | Owner |
-|----|-------------|-------|
-| S01-01 | RFC-0002 Capture Agent & Sync Protocol | Arch |
-| S01-02 | India DPDP counsel engagement brief | Founder |
-| S01-03 | Multi-stream GPU cost spreadsheet (D-10) | Arch |
-| S01-04 | EN+HI ASR vendor benchmark plan | ML |
-| S01-05 | Admin live dashboard wireframes | Product |
-| S01-06 | Pedagogy index validity literature review | Research |
-| S01-07 | Pilot school archetype doc (K-12 vs univ) | Product |
-| S01-08 | Threat model STRIDE v0.1 | Security |
+| ID | Deliverable | Owner | Status |
+|----|-------------|-------|--------|
+| S01-01 | RFC-0002 Capture Agent & Sync Protocol | Arch | ✅ Done |
+| S01-02 | India DPDP counsel engagement brief | Founder | |
+| S01-03 | Multi-stream GPU cost spreadsheet (D-10) | Arch | |
+| S01-04 | EN+HI ASR vendor benchmark plan | ML | ✅ Done |
+| S01-05 | Admin live dashboard wireframes | Product | |
+| S01-06 | Pedagogy index validity literature review | Research | ✅ Done |
+| S01-07 | Pilot school archetype doc (K-12 vs univ) | Product | ✅ Done |
+| S01-08 | Threat model STRIDE v0.1 | Security | ✅ Done |
 
 ## Exit criteria
 
