@@ -34,7 +34,9 @@ def _make_silent_wav(path: Path, duration_sec: float = 60.0, sample_rate: int = 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Whisper ASR benchmark")
-    parser.add_argument("--model", default="medium", choices=["tiny", "small", "medium", "large-v3"])
+    parser.add_argument(
+        "--model", default="medium", choices=["tiny", "small", "medium", "large-v3"]
+    )
     parser.add_argument("--device", default="auto", choices=["auto", "cuda", "cpu"])
     parser.add_argument("--duration-sec", type=float, default=300.0, help="Synthetic audio length")
     parser.add_argument("--compute-type", default="int8", help="CTranslate2 compute type")

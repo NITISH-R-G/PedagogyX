@@ -27,11 +27,11 @@ ollama pull qwen2.5:7b-instruct-q4_K_M
 
 ## Founder actions (unblock MVP)
 
-| Action | Doc / link |
-| ------ | ---------- |
-| G2 checklist (all steps) | [G2_READINESS_CHECKLIST.md](docs/07-compliance-ethics/G2_READINESS_CHECKLIST.md) |
-| Send counsel email | [COUNSEL_OUTREACH_PACKAGE.md](docs/07-compliance-ethics/COUNSEL_OUTREACH_PACKAGE.md) · [Issue #11](https://github.com/NITISH-R-G/PedagogyX/issues/11) |
-| Name pilot school | [PILOT_SCHOOL_INTAKE.md](docs/01-phase0-founder-interrogation/PILOT_SCHOOL_INTAKE.md) |
+| Action                   | Doc / link                                                                                                                                            |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| G2 checklist (all steps) | [G2_READINESS_CHECKLIST.md](docs/07-compliance-ethics/G2_READINESS_CHECKLIST.md)                                                                      |
+| Send counsel email       | [COUNSEL_OUTREACH_PACKAGE.md](docs/07-compliance-ethics/COUNSEL_OUTREACH_PACKAGE.md) · [Issue #11](https://github.com/NITISH-R-G/PedagogyX/issues/11) |
+| Name pilot school        | [PILOT_SCHOOL_INTAKE.md](docs/01-phase0-founder-interrogation/PILOT_SCHOOL_INTAKE.md)                                                                 |
 
 ---
 
