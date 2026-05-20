@@ -2,7 +2,7 @@
 
 | Field                   | Value                                                                                                          |
 | ----------------------- | -------------------------------------------------------------------------------------------------------------- |
-| **Depends on**          | Founder answers Sprint 00 (partial ✅)                                                                         |
+| **Depends on**          | Founder answers Sprint 00 ✅                                                                                   |
 | **Goal**                | Capture protocol, India compliance path, GPU cost model, admin UX spec, **hybrid edge+cloud OSS backend spec** |
 | **Implementation code** | Still **forbidden** until G2                                                                                   |
 | **D-PROC**              | **C — Hybrid** ✅ (2026-05-19) — unblocks S01-01, S01-10 architecture                                          |
@@ -27,6 +27,6 @@
 
 - D-10 closed (₹0 customer budget — founder-funded pilot infra)
 - D-12 answered (OSS on-prem)
-- Primary success metric selected **or** accept default **M-A + M-B**
+- **D-20 closed:** Primary **M-A**; Secondary **M-B, M-C**
 - Legal memo scheduled or received
 - RFC-0002 accepted

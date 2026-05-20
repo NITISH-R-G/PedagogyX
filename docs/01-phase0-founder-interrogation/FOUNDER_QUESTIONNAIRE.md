@@ -122,7 +122,7 @@
 97. Maximum acceptable processing time per 50-min lesson?
 98. SLA for enterprise customers?
 99. Priority queue for paid tiers?
-100. Reprocessing when models upgrade — automatic?
+100.  Reprocessing when models upgrade — automatic?
 
 ---
 

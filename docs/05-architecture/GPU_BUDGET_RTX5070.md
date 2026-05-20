@@ -34,7 +34,7 @@
 
 ## Hot path (live) — feasible subset
 
-```mermaid
+````mermaid
 flowchart TB
     subgraph gpu [RTX 5070 12GB]
         W[faster-whisper SMALL int8 ~1.5GB]
@@ -108,3 +108,4 @@ To get full real-time multi-cam, you need **more GPUs** or **cloud GPUs** (contr
 Use benchmark results from this GPU to **size central server GPUs** (e.g. if one 5070 handles 2 live + 16 batch lessons/day, rent equivalent GPU in India cloud for N schools).
 
 **D-PROC closed (Hybrid):** size **India cloud** GPUs from 5070 benchmarks; edge nodes are buffer/ingest only (no classroom GPU). See [ADR-0008](../08-rfc-adr/ADR-0008-d-proc-hybrid-central-ml.md).
+````

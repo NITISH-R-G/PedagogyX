@@ -62,7 +62,7 @@ Legend: **M** = mature, **P** = partial, **N** = none/unknown, **?** = inferred
 
 ## Inferred Architecture Patterns (Industry)
 
-```text
+````text
 [Capture] → [Upload/API] → [Transcode] → [Object Store]
                 ↓
          [Transcription ASR]
@@ -86,3 +86,4 @@ Legend: **M** = mature, **P** = partial, **N** = none/unknown, **?** = inferred
 | Human coaching labor          | Everyone (AI reduces margin pressure) |
 
 **PedagogyX implication:** Tier processing (audio tier → single cam → multi-cam) mandatory for unit economics.
+````

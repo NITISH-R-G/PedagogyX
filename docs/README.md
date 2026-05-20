@@ -1,6 +1,6 @@
 # PedagogyX — Research & Architecture Documentation Hub
 
-**Status:** Phase 0 — **Founder Tier-1 nearly complete** (D-20 metric TBD)  
+**Status:** Phase 0 — **Founder Tier-1 complete** (G2 legal blocks implementation)  
 **Last updated:** 2026-05-19  
 **Product direction:** [India-first supervision, multi-cam real-time](../docs/01-phase0-founder-interrogation/FOUNDER_ANSWERS.md)
 
@@ -10,7 +10,7 @@
 
 | Gate   | Criteria                    | Status                                                    |
 | ------ | --------------------------- | --------------------------------------------------------- |
-| **G0** | Founder Tier-1 blockers     | 🟢 **Complete** except **D-20** (default M-A+M-B)         |
+| **G0** | Founder Tier-1 blockers     | 🟢 **Complete**                                           |
 | **G1** | Product scope locked        | 🟡 India supervision scope locked                         |
 | **G2** | India DPDP legal sign-off   | 🔴 **Blocked** — counsel required                         |
 | **G3** | Reference architecture v0.2 | 🟢 Draft complete                                         |
@@ -42,15 +42,17 @@
 
 ## Still Required from Founder
 
-1. **D-20** — Primary success metric (`Primary: M-?`) — see [FOUNDER_SUCCESS_METRICS_GUIDE.md](01-phase0-founder-interrogation/FOUNDER_SUCCESS_METRICS_GUIDE.md)
-2. **Per-student admin scores** — yes or no for v1?
-3. **D-DEV** — Confirm **exact** device make/model at first pilot school (checklist in device reference)
+1. **D-DEV** — Log device make/model at first pilot (compatibility matrix; **any** low-end Android/Windows board in scope)
 
 **Recorded (2026-05-19):**
 
 - **D-PROC = C (Hybrid)** — [ADR-0008](08-rfc-adr/ADR-0008-d-proc-hybrid-central-ml.md)
 - **D-05** — School / university buyer; **free pilot**, no payment expected
 - **D-10** — **₹0 customer budget** per classroom (founder bears infra during test)
+- **D-20** — **Primary M-A**; **Secondary M-B, M-C**
+- **D-CLIENT / D-PEDAGOGY** — All low-end Android + Windows smartboards; **teacher pedagogy** monitoring/assessment
+
+---
 
 ## Hardware & OSS (2026-05-19)
 

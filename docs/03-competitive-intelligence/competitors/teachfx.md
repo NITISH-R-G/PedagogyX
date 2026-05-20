@@ -20,7 +20,7 @@ TeachFX proves **audio-only** can scale teacher PD with **talk ratio** and disco
 
 ## Inferred Pipeline
 
-```text
+````text
 Audio capture → Cloud ASR + diarization → Talk metrics + pattern classifiers → Teacher feedback UI
 ```text
 
@@ -53,3 +53,4 @@ Audio capture → Cloud ASR + diarization → Talk metrics + pattern classifiers
 
 - https://teachfx.com/
 - https://teachfx.com/mission
+````

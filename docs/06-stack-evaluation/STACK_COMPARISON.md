@@ -72,7 +72,7 @@ Docker Compose full stack; benchmarks per [GPU_BUDGET_RTX5070.md](../05-architec
 
 | Layer    | Host                                                         |
 | -------- | ------------------------------------------------------------ |
-| Clients  | Android + Windows smartboard (low spec)                      |
+| Clients  | All low-end Android + Windows smartboard (profile-certified) |
 | API + ML | Hybrid: LAN edge buffer + India cloud OSS GPU (D-PROC **C**) |
 | Dev GPU  | RTX 5070 **not in classroom**                                |
 
