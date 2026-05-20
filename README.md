@@ -11,16 +11,16 @@ Production implementation is **not authorized** until phase gates in [docs/READM
 
 Start here: **[docs/README.md](docs/README.md)**
 
-| Priority action        | Document                                                                                              |
-| ---------------------- | ----------------------------------------------------------------------------------------------------- |
-| Founder answers needed | [FOUNDER_QUESTIONNAIRE.md](docs/01-phase0-founder-interrogation/FOUNDER_QUESTIONNAIRE.md)             |
-| Blocking decisions     | [CRITICAL_DECISIONS_BLOCKERS.md](docs/01-phase0-founder-interrogation/CRITICAL_DECISIONS_BLOCKERS.md) |
-| Architecture           | [SYSTEM_ARCHITECTURE.md](docs/05-architecture/SYSTEM_ARCHITECTURE.md)                                 |
-| Competitors            | [COMPETITOR_MATRIX.md](docs/03-competitive-intelligence/COMPETITOR_MATRIX.md)                         |
+| Priority action          | Document                                                                                                   |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| **G2 — send to counsel** | [INDIA_DPDP_COUNSEL_ENGAGEMENT_BRIEF.md](docs/07-compliance-ethics/INDIA_DPDP_COUNSEL_ENGAGEMENT_BRIEF.md) |
+| Active sprint            | [SPRINT_02_PLAN.md](docs/09/agile/SPRINT_02_PLAN.md)                                                       |
+| Dev benchmarks (5070)    | [benchmarks/README.md](benchmarks/README.md)                                                               |
+| Architecture             | [SYSTEM_ARCHITECTURE.md](docs/05-architecture/SYSTEM_ARCHITECTURE.md)                                      |
 
 ## Repository Contents
 
-This branch contains **technical documentation only** — RFCs, ADRs, competitive intelligence, research summaries, compliance drafts, and agile artifacts.
+This repository contains **Phase 0 documentation** plus **`benchmarks/`** dev scripts for RTX 5070 validation (ADR-0006). MVP application code awaits **G2** legal sign-off.
 
 ## License
 

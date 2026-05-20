@@ -1,0 +1,5 @@
+*.json
+_sample_silence.wav
+.venv/
+yolo11n.pt
+*.pt
