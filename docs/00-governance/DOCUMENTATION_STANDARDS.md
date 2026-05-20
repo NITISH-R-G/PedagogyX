@@ -22,10 +22,10 @@
 
 ## RFC Lifecycle
 
-```
+````text
 Draft → Review (founder + tech lead) → Accepted → Implementation
                 ↘ Rejected / Superseded
-```
+```text
 
 ## ADR Lifecycle
 
@@ -42,3 +42,4 @@ Located under `docs/09-agile/`:
 ## Diagrams
 
 Prefer **Mermaid** in Markdown for version control. Complex diagrams may later move to Excalidraw/Figma with exported PNG in `docs/assets/` (not created in Phase 0).
+````

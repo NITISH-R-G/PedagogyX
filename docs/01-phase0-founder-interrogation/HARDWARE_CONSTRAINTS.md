@@ -6,11 +6,11 @@
 
 ## Development vs production
 
-| Environment            | Hardware                                      | Role                                                                      |
-| ---------------------- | --------------------------------------------- | ------------------------------------------------------------------------- |
-| **Development**        | NVIDIA **RTX 5070 12 GB**                     | Benchmarks, train/export models, local Compose stack — **not production** |
-| **Production clients** | **Android** + **low-end Windows smartboards** | Capture, encode, upload only — **no GPU ML on device**                    |
-| **Production ML**      | **Central server** (spec TBD — D-PROC)        | OSS: faster-whisper, TensorRT/YOLO, Ollama                                |
+| Environment            | Hardware                                                                                    | Role                                                                      |
+| ---------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| **Development**        | NVIDIA **RTX 5070 12 GB**                                                                   | Benchmarks, train/export models, local Compose stack — **not production** |
+| **Production clients** | **All low-end Android boards + Windows smartboards** (profile-certified, any OEM)           | Capture, encode, upload only — **no GPU ML on device**                    |
+| **Production ML**      | **Hybrid** — school/district **LAN edge** (buffer/ingest) + **India cloud GPU** (analytics) | OSS: faster-whisper, TensorRT/YOLO, Ollama on cloud; edge per ADR-0008    |
 
 ---
 
@@ -53,7 +53,6 @@ No paid ASR/LLM APIs in core path. Cloud **hosting** may cost money; software re
 
 ## Still open
 
-| ID         | Question                                                         |
-| ---------- | ---------------------------------------------------------------- |
-| **D-PROC** | Central processing: PedagogyX cloud, district server, or hybrid? |
-| **D-DEV**  | Exact Android + smartboard OEM models for pilot?                 |
+| ID        | Question                                                                                                                    |
+| --------- | --------------------------------------------------------------------------------------------------------------------------- |
+| **D-DEV** | Log pilot site **make/model** for compatibility matrix ([INDIA_PILOT_DEVICE_REFERENCE.md](INDIA_PILOT_DEVICE_REFERENCE.md)) |

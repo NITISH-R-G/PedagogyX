@@ -77,13 +77,9 @@ All heavy ML runs **off-device** on central OSS infrastructure (spec TBD).
 - Minimum smartboard spec doc required ([PRODUCTION_CLIENT_SPEC.md](../05-architecture/PRODUCTION_CLIENT_SPEC.md))
 - Dev team uses **5070** to validate server-side model configs only
 
-## Open question (founder)
+## D-PROC (closed 2026-05-19)
 
-**D-PROC:** Where does central processing run?
-
-- A) PedagogyX managed cloud (India region, rented GPU)
-- B) District-owned server room
-- C) Hybrid
+Founder chose **C — Hybrid**: LAN edge buffer/ingest + PedagogyX India cloud GPU analytics. See [ADR-0008](ADR-0008-d-proc-hybrid-central-ml.md).
 
 ## Validation
 

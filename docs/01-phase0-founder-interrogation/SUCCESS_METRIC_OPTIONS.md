@@ -2,6 +2,8 @@
 
 You indicated **“idk”** for the primary success metric. Pick **one primary** and up to **two secondary** metrics so engineering can optimize pipelines and sales can run pilots.
 
+**Detailed explanations (pros/cons, free pilot fit):** [FOUNDER_SUCCESS_METRICS_GUIDE.md](FOUNDER_SUCCESS_METRICS_GUIDE.md)
+
 ---
 
 ## Recommended for your stated product (India, supervision, multi-cam, admin scores)

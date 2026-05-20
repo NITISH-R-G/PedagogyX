@@ -83,7 +83,7 @@ Your choices define a **India-first, supervision-heavy, multimodal real-time pla
 
 ## Recommended Immediate Founder Actions
 
-1. Answer **D-05, D-10, D-12** (buyer, budget, LLM)
+1. Pick **D-20** primary metric (guide published); **D-05, D-10, D-12** closed
 2. Pick **primary success metric** (suggest **M-A + M-B**: coverage + time-to-insight)
 3. Confirm: **per-student** scores on admin UI — yes/no?
 4. Engage **India privacy counsel** this week
@@ -101,7 +101,32 @@ Your choices define a **India-first, supervision-heavy, multimodal real-time pla
 | US FERPA memo       | **India DPDP memo (counsel)**         |
 | Cost model          | **Multi-stream GPU cost model**       |
 
-**Implementation code still blocked** until G2 + D-10.
+**Implementation code still blocked** until G2. Pilot infra sized to **founder cost** (D-10 = ₹0 customer budget).
+
+---
+
+## Update: Free pilot + zero customer budget (2026-05-19)
+
+| Impact    | Detail                                                                            |
+| --------- | --------------------------------------------------------------------------------- |
+| **D-05**  | Signatories: **school principal / university dean or IT** — not state procurement |
+| **D-10**  | **₹0 / $0** per classroom from customer; no revenue expectation in test year      |
+| **Infra** | Minimize cloud GPU hours; one edge node + one cloud GPU pool; dev on RTX 5070     |
+| **G5**    | Track **internal** burn, not school OPEX                                          |
+| **M-D**   | Do **not** use paid renewal as primary success metric in year 1                   |
+
+---
+
+## Update: D-PROC Hybrid (2026-05-19)
+
+| Impact            | Detail                                                                         |
+| ----------------- | ------------------------------------------------------------------------------ |
+| **Deployment**    | Two reference stacks: **edge** (LAN buffer/ingest) + **cloud** (GPU analytics) |
+| **Sprint 01**     | RFC-0002 capture/sync; S01-10 Compose profiles; Android + Windows capture RFCs |
+| **Ops**           | PedagogyX operates cloud GPU; districts host edge node (Compose/k3s)           |
+| **Still blocked** | Implementation until G2; **D-10** for sizing                                   |
+
+See [ADR-0008](../08-rfc-adr/ADR-0008-d-proc-hybrid-central-ml.md).
 
 ---
 

@@ -34,7 +34,7 @@
 
 ## Hot path (live) — feasible subset
 
-```mermaid
+````mermaid
 flowchart TB
     subgraph gpu [RTX 5070 12GB]
         W[faster-whisper SMALL int8 ~1.5GB]
@@ -49,7 +49,7 @@ flowchart TB
     IN --> SCR
     W --> DASH[Live dashboard previews]
     Y --> DASH
-```
+```text
 
 **Not on GPU live:** 2nd camera, large ASR, LLM, 1080p, screen OCR.
 
@@ -57,14 +57,14 @@ flowchart TB
 
 ## Scheduling algorithm (edge worker)
 
-```
+```text
 priority_queue:
   1. LIVE_AUDIO_METRICS     (preempt none; 2s cadence)
   2. LIVE_CAM1_DETECTION    (5 fps max)
   3. COLD_ASR               (when lesson ends)
   4. COLD_CV_CAMS           (sequential per stream)
   5. COLD_LLM               (last; needs full VRAM)
-```
+```text
 
 If VRAM OOM: drop LIVE_CAM1 → audio-only live.
 
@@ -107,4 +107,5 @@ To get full real-time multi-cam, you need **more GPUs** or **cloud GPUs** (contr
 
 Use benchmark results from this GPU to **size central server GPUs** (e.g. if one 5070 handles 2 live + 16 batch lessons/day, rent equivalent GPU in India cloud for N schools).
 
-**D-PROC open:** managed cloud vs district-owned server.
+**D-PROC closed (Hybrid):** size **India cloud** GPUs from 5070 benchmarks; edge nodes are buffer/ingest only (no classroom GPU). See [ADR-0008](../08-rfc-adr/ADR-0008-d-proc-hybrid-central-ml.md).
+````
