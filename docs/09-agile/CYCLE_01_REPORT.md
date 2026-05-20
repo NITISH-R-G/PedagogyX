@@ -54,7 +54,21 @@
 
 1. **Highest Impact:** Establish documentation quality baselines and CI enforcement to prevent regression as architecture expands. (Completed this cycle)
 2. **Lowest Complexity:** Apply bulk formatting (Prettier) to fix Markdown table styles and spacing. (Completed this cycle)
-3. **Strategic Importance:** Secure founder answers for D-10 and D-12 to unblock the GPU compute pipeline and cost models. (Pending)
+3. **Strategic Importance:** Secure founder answers for D-10 and D-12 to unblock the GPU compute pipeline and cost models. (**Completed** — D-10 ₹0 customer; D-12 OSS; D-20 M-A/M-B/M-C; D-PROC Hybrid)
+
+---
+
+## Post-merge update (2026-05-20)
+
+**PR #6 merged.** Founder Tier-1 complete (G0). Sprint 01 doc deliverables added:
+
+| ID     | Deliverable                    | Doc                                                                                    |
+| ------ | ------------------------------ | -------------------------------------------------------------------------------------- |
+| S01-03 | GPU pilot cost model           | [GPU_PILOT_COST_MODEL.md](../05-architecture/GPU_PILOT_COST_MODEL.md)                  |
+| S01-05 | Admin dashboard wireframes     | [ADMIN_LIVE_DASHBOARD_WIREFRAMES.md](../02-product/ADMIN_LIVE_DASHBOARD_WIREFRAMES.md) |
+| S01-10 | Docker Compose edge+cloud spec | [DOCKER_COMPOSE_PILOT_STACK.md](../06-stack-evaluation/DOCKER_COMPOSE_PILOT_STACK.md)  |
+
+**Still open:** S01-02 (legal counsel brief — Founder), S01-09 (5070 benchmark scripts — ML). **G2** blocks implementation code.
 
 ---
 
