@@ -43,7 +43,10 @@ Estimate **founder-funded** monthly burn for free pilots — not school OPEX. Us
 
 ---
 
-## Capacity model (from RTX 5070 benchmarks — to validate)
+## Capacity model (benchmarks)
+
+**Automated CPU baseline (2026-05-20):** [benchmarks/BENCHMARK_RESULTS_SUMMARY.md](../../benchmarks/BENCHMARK_RESULTS_SUMMARY.md)  
+**Production sizing:** pending RTX 5070 CUDA re-run (S02-03).
 
 | Workload                                  | Target on 12 GB GPU      | Pilot cap                           |
 | ----------------------------------------- | ------------------------ | ----------------------------------- |

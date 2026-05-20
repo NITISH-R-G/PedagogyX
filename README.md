@@ -13,7 +13,7 @@ Start here: **[docs/README.md](docs/README.md)**
 
 | Priority action          | Document                                                                                                   |
 | ------------------------ | ---------------------------------------------------------------------------------------------------------- |
-| **G2 — send to counsel** | [INDIA_DPDP_COUNSEL_ENGAGEMENT_BRIEF.md](docs/07-compliance-ethics/INDIA_DPDP_COUNSEL_ENGAGEMENT_BRIEF.md) |
+| **G2 — counsel (1-click prep)** | [COUNSEL_OUTREACH_PACKAGE.md](docs/07-compliance-ethics/COUNSEL_OUTREACH_PACKAGE.md) · [Issue #11](https://github.com/NITISH-R-G/PedagogyX/issues/11) |
 | Active sprint            | [SPRINT_02_PLAN.md](docs/09/agile/SPRINT_02_PLAN.md)                                                       |
 | Dev benchmarks (5070)    | [benchmarks/README.md](benchmarks/README.md)                                                               |
 | Architecture             | [SYSTEM_ARCHITECTURE.md](docs/05-architecture/SYSTEM_ARCHITECTURE.md)                                      |

@@ -14,15 +14,16 @@ else
   echo "WARN: nvidia-smi not found — GPU benchmarks may fall back to CPU or skip"
 fi
 
+mkdir -p results
+
 VENV="$ROOT/.venv"
-if [[ ! -d "$VENV" ]]; then
+if [[ ! -x "$VENV/bin/python" ]]; then
+  echo "Creating venv at $VENV ..."
   python3 -m venv "$VENV"
   "$VENV/bin/pip" install -q -r requirements-bench.txt
 fi
 # shellcheck disable=SC1091
 source "$VENV/bin/activate"
-
-mkdir -p results
 
 run() {
   echo "--- $*"

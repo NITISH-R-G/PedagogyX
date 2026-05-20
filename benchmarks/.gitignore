@@ -3,3 +3,6 @@ _sample_silence.wav
 .venv/
 yolo11n.pt
 *.pt
+pipeline_run.log
+
+# Committed: BENCHMARK_RESULTS_SUMMARY.md + selected results documented in summary
