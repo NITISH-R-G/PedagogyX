@@ -7,36 +7,36 @@
 
 ## Tier 1 — Founder answers recorded
 
-| ID | Question | **Founder answer** | Gate |
-|----|----------|-------------------|------|
-| **D-01** | Primary customer | **K-12 district + university** | ✅ |
-| **D-02** | Year-1 geography | **India** | ✅ |
-| **D-03** | Identifiable student video in v1? | **Yes** | ✅ (triggers G2 legal) |
-| **D-04** | Real-time coaching in v1? | **Yes** | ✅ |
-| **D-05** | Economic buyer? | **School + university**; **free pilot**, no payment expected | ✅ |
-| **D-06** | Admins see individual AI pedagogy scores? | **Yes** | ✅ |
-| **D-07** | China-style supervision acceptable? | **Yes** (some markets) | ✅ |
-| **D-08** | Capture model? | **Screen recording + microphone** | ✅ |
-| **D-09** | MVP modality? | **Multi-cam** | ✅ |
-| **D-10** | Budget ceiling per classroom/year? | **₹0 / $0 customer** (founder-funded pilot infra) | ✅ |
-| **D-11** | ASR languages (inferred)? | **TBD** (assume EN + HI) | 🟡 |
-| **D-12** | Cloud LLM? | **OSS on-prem only** | ✅ |
-| **D-GPU** | Dev GPU? | **RTX 5070 — dev only** | ✅ |
-| **D-OSS** | OSS-first? | **Yes** | ✅ |
-| **D-CLIENT** | Production devices? | **Android + Win smartboard** | ✅ |
-| **D-PROC** | Where ML runs? | **C — Hybrid** (LAN edge + India cloud) | ✅ |
-| **D-DEV** | India OEM models? | **Research reference** — confirm at pilot | 🟡 |
-| **D-20** | Year-1 success metric? | **TBD** (guide published) | 🟡 |
+| ID           | Question                                  | **Founder answer**                                           | Gate                   |
+| ------------ | ----------------------------------------- | ------------------------------------------------------------ | ---------------------- |
+| **D-01**     | Primary customer                          | **K-12 district + university**                               | ✅                     |
+| **D-02**     | Year-1 geography                          | **India**                                                    | ✅                     |
+| **D-03**     | Identifiable student video in v1?         | **Yes**                                                      | ✅ (triggers G2 legal) |
+| **D-04**     | Real-time coaching in v1?                 | **Yes**                                                      | ✅                     |
+| **D-05**     | Economic buyer?                           | **School + university**; **free pilot**, no payment expected | ✅                     |
+| **D-06**     | Admins see individual AI pedagogy scores? | **Yes**                                                      | ✅                     |
+| **D-07**     | China-style supervision acceptable?       | **Yes** (some markets)                                       | ✅                     |
+| **D-08**     | Capture model?                            | **Screen recording + microphone**                            | ✅                     |
+| **D-09**     | MVP modality?                             | **Multi-cam**                                                | ✅                     |
+| **D-10**     | Budget ceiling per classroom/year?        | **₹0 / $0 customer** (founder-funded pilot infra)            | ✅                     |
+| **D-11**     | ASR languages (inferred)?                 | **TBD** (assume EN + HI)                                     | 🟡                     |
+| **D-12**     | Cloud LLM?                                | **OSS on-prem only**                                         | ✅                     |
+| **D-GPU**    | Dev GPU?                                  | **RTX 5070 — dev only**                                      | ✅                     |
+| **D-OSS**    | OSS-first?                                | **Yes**                                                      | ✅                     |
+| **D-CLIENT** | Production devices?                       | **Android + Win smartboard**                                 | ✅                     |
+| **D-PROC**   | Where ML runs?                            | **C — Hybrid** (LAN edge + India cloud)                      | ✅                     |
+| **D-DEV**    | India OEM models?                         | **Research reference** — confirm at pilot                    | 🟡                     |
+| **D-20**     | Year-1 success metric?                    | **TBD** (guide published)                                    | 🟡                     |
 
 ---
 
 ## Tier 2 — Still open
 
-| ID | Question | Default until answered |
-|----|----------|------------------------|
-| **D-13** | Label data in-house or vendor? | Vendor |
-| **D-14** | Synthetic data OK? | Yes with disclosure |
-| **D-15** | Explainability level? | Rubric + evidence clips |
+| ID       | Question                       | Default until answered  |
+| -------- | ------------------------------ | ----------------------- |
+| **D-13** | Label data in-house or vendor? | Vendor                  |
+| **D-14** | Synthetic data OK?             | Yes with disclosure     |
+| **D-15** | Explainability level?          | Rubric + evidence clips |
 
 ---
 
@@ -48,12 +48,12 @@ D-16 through D-20 — see [FOUNDER_QUESTIONNAIRE.md](FOUNDER_QUESTIONNAIRE.md)
 
 ## Contradiction Alerts — **ACTIVE**
 
-| Tension | Founder choice | Risk |
-|---------|----------------|------|
+| Tension                                      | Founder choice  | Risk                                        |
+| -------------------------------------------- | --------------- | ------------------------------------------- |
 | India DPDP + child data + identifiable video | Yes to ID video | Consent, purpose limitation, retention caps |
-| Real-time + multi-cam + screen capture | All in v1 | Cost, bandwidth, school IT burden |
-| Supervision + admin individual scores | Yes | Teacher trust, press, parent complaints |
-| Dual customer (K-12 + university) | Both | Two compliance paths, two UX |
+| Real-time + multi-cam + screen capture       | All in v1       | Cost, bandwidth, school IT burden           |
+| Supervision + admin individual scores        | Yes             | Teacher trust, press, parent complaints     |
+| Dual customer (K-12 + university)            | Both            | Two compliance paths, two UX                |
 
 **Legal review required before G2** — see [INDIA_DPDP_ARCHITECTURE.md](../07-compliance-ethics/INDIA_DPDP_ARCHITECTURE.md)
 
@@ -61,8 +61,8 @@ D-16 through D-20 — see [FOUNDER_QUESTIONNAIRE.md](FOUNDER_QUESTIONNAIRE.md)
 
 ## Sign-off
 
-| Role | Name | Date | Status |
-|------|------|------|--------|
-| Founder | | 2026-05-19 | Partial |
-| Legal counsel (India) | | | Not started |
-| Technical lead | | | Architecture revision in progress |
+| Role                  | Name | Date       | Status                            |
+| --------------------- | ---- | ---------- | --------------------------------- |
+| Founder               |      | 2026-05-19 | Partial                           |
+| Legal counsel (India) |      |            | Not started                       |
+| Technical lead        |      |            | Architecture revision in progress |

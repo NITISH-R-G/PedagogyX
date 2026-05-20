@@ -9,12 +9,12 @@
 
 ## Applicable Framework (High Level)
 
-| Law / guidance | Relevance |
-|----------------|-----------|
+| Law / guidance                                        | Relevance                                                              |
+| ----------------------------------------------------- | ---------------------------------------------------------------------- |
 | **Digital Personal Data Protection Act, 2023 (DPDP)** | Processing of digital personal data; children's data heightened duties |
-| **IT Rules / sector guidance** | Schools as data fiduciaries; vendor as Data Processor |
-| **NCERT / state education policies** | Varies by state — deployment contracts must cite purpose |
-| **RTE Act** (context) | Child rights, dignity — marketing must not undermine |
+| **IT Rules / sector guidance**                        | Schools as data fiduciaries; vendor as Data Processor                  |
+| **NCERT / state education policies**                  | Varies by state — deployment contracts must cite purpose               |
+| **RTE Act** (context)                                 | Child rights, dignity — marketing must not undermine                   |
 
 **[FACT]** DPDP imposes obligations on Data Fiduciaries and Processors; children's consent rules are stricter (verifiable parental consent where applicable).
 
@@ -22,13 +22,13 @@
 
 ## Data Categories PedagogyX Will Process (v1)
 
-| Category | Examples | Sensitivity |
-|----------|----------|-------------|
-| Student personal data | Face, voice, name on screen | High |
-| Teacher personal data | Voice, video, performance scores | High |
-| Biometric-adjacent | Face recognition for ID | **Very high** — minimize to detection not storage where possible |
-| Derived analytics | Engagement scores, pedagogy index | Medium — may still be personal data if re-identifiable |
-| Screen content | Slides, LMS, chat | May contain third-party PII |
+| Category              | Examples                          | Sensitivity                                                      |
+| --------------------- | --------------------------------- | ---------------------------------------------------------------- |
+| Student personal data | Face, voice, name on screen       | High                                                             |
+| Teacher personal data | Voice, video, performance scores  | High                                                             |
+| Biometric-adjacent    | Face recognition for ID           | **Very high** — minimize to detection not storage where possible |
+| Derived analytics     | Engagement scores, pedagogy index | Medium — may still be personal data if re-identifiable           |
+| Screen content        | Slides, LMS, chat                 | May contain third-party PII                                      |
 
 ---
 
@@ -52,17 +52,17 @@ flowchart TB
     RESIDENCY --> ENC
 ```
 
-| Control | Implementation |
-|---------|----------------|
+| Control            | Implementation                                                                                     |
+| ------------------ | -------------------------------------------------------------------------------------------------- |
 | **Data residency** | Primary storage + inference in **AWS ap-south-1** (Mumbai) or Azure Central India **[ASSUMPTION]** |
-| **DPA** | Processor agreement with school/state; subprocessor list |
-| **Notice** | English + Hindi notices; recording indicator in capture agent |
-| **Consent** | School-obtained verifiable parental consent for minors; document artifact IDs in metadata |
-| **Purpose** | Contract limits use to **educational quality / supervision** — no advertising |
-| **Retention** | Configurable TTL; default proposal **90 days raw**, **1 year aggregates** pending counsel |
-| **Access** | Admin RBAC; every view logged |
-| **Rights** | Deletion/export APIs for fiduciary requests |
-| **Cross-border** | No US replication without SCC + legal review **[ASSUMPTION]** |
+| **DPA**            | Processor agreement with school/state; subprocessor list                                           |
+| **Notice**         | English + Hindi notices; recording indicator in capture agent                                      |
+| **Consent**        | School-obtained verifiable parental consent for minors; document artifact IDs in metadata          |
+| **Purpose**        | Contract limits use to **educational quality / supervision** — no advertising                      |
+| **Retention**      | Configurable TTL; default proposal **90 days raw**, **1 year aggregates** pending counsel          |
+| **Access**         | Admin RBAC; every view logged                                                                      |
+| **Rights**         | Deletion/export APIs for fiduciary requests                                                        |
+| **Cross-border**   | No US replication without SCC + legal review **[ASSUMPTION]**                                      |
 
 ---
 

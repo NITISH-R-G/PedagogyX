@@ -22,10 +22,10 @@
 
 ## RFC Lifecycle
 
-```
+```text
 Draft → Review (founder + tech lead) → Accepted → Implementation
                 ↘ Rejected / Superseded
-```
+```text
 
 ## ADR Lifecycle
 

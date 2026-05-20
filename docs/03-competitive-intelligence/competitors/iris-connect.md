@@ -22,12 +22,12 @@ IRIS Connect combines **secure video capture**, **structured pathways**, and **l
 
 ## Inferred Architecture
 
-| Subsystem | Notes |
-|-----------|-------|
-| Edge capture | App + hardware kits sync to cloud |
+| Subsystem      | Notes                                                    |
+| -------------- | -------------------------------------------------------- |
+| Edge capture   | App + hardware kits sync to cloud                        |
 | Real-time path | WebRTC or similar for Go Live — **low latency critical** |
-| Async path | Standard upload → transcode → review |
-| PD platform | LMS-like pathways, not just media |
+| Async path     | Standard upload → transcode → review                     |
+| PD platform    | LMS-like pathways, not just media                        |
 
 ```mermaid
 flowchart LR

@@ -10,14 +10,14 @@ Chinese **智慧课堂** and **AI巡课督导** systems deliver **full-stack mul
 
 ## Representative Capabilities **[FACT / vendor claims]**
 
-| Capability | Examples |
-|------------|----------|
-| Teacher behavior | Teaching, board writing, questioning, movement |
-| Student behavior | Hand raise, head-up rate, attention, on/off-task |
-| Speech analytics | Speed, word frequency, emotion, sensitive phrases |
-| Pedagogical models | Flanders interaction, S-T mapping |
-| CV stack | YOLO variants, LSTM temporal modeling (Tencent article cites YOLOv12, 96.8% lab accuracy) |
-| Scale | Reports of 320 classrooms / 12 schools (Shenzhen pilot, Tencent); 50 schools / 9 districts (益课 platform) |
+| Capability         | Examples                                                                                                   |
+| ------------------ | ---------------------------------------------------------------------------------------------------------- |
+| Teacher behavior   | Teaching, board writing, questioning, movement                                                             |
+| Student behavior   | Hand raise, head-up rate, attention, on/off-task                                                           |
+| Speech analytics   | Speed, word frequency, emotion, sensitive phrases                                                          |
+| Pedagogical models | Flanders interaction, S-T mapping                                                                          |
+| CV stack           | YOLO variants, LSTM temporal modeling (Tencent article cites YOLOv12, 96.8% lab accuracy)                  |
+| Scale              | Reports of 320 classrooms / 12 schools (Shenzhen pilot, Tencent); 50 schools / 9 districts (益课 platform) |
 
 ---
 

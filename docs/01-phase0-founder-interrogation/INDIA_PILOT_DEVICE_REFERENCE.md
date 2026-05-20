@@ -11,11 +11,11 @@ Founder answer: **“IDK — search the internet.”** Use this doc for architec
 
 ## How to use this document
 
-| Tier | Meaning |
-|------|---------|
+| Tier                  | Meaning                                                                                                        |
+| --------------------- | -------------------------------------------------------------------------------------------------------------- |
 | **Reference profile** | Abstract spec (RAM, SoC class) — see [PRODUCTION_CLIENT_SPEC.md](../05-architecture/PRODUCTION_CLIENT_SPEC.md) |
-| **Likely OEM** | Brands commonly sold into Indian K-12 / higher-ed — validate on physical hardware |
-| **Pilot action** | Record `make`, `model`, `Android version`, `RAM`, `storage` from **Settings → About** on day 0 |
+| **Likely OEM**        | Brands commonly sold into Indian K-12 / higher-ed — validate on physical hardware                              |
+| **Pilot action**      | Record `make`, `model`, `Android version`, `RAM`, `storage` from **Settings → About** on day 0                 |
 
 ---
 
@@ -25,18 +25,18 @@ Most Indian “smart classrooms” use **65–86″ interactive flat panels (IFP
 
 ### India-focused manufacturers / brands
 
-| Brand | Notes | Typical sizes | OS (typical) |
-|-------|-------|---------------|--------------|
-| **ViewSonic** ViewBoard | Widely cited as strong IFPD share in India; education line (e.g. IN6501 class) | 65–86″ | Android 13+ on panel |
-| **BenQ** Board | Google EDLA-certified education boards; EZWrite / InstaShare | 65–86″ | Android on panel |
-| **Samsung** Flip / Flip Pro | Business/education interactive displays in India | 75–85″ | Android 14 (newer Flip Pro) |
-| **LG** CreateBoard (TR3DK series) | Common in institutional quotes; DMS (ConnectedCare) | 75–86″ | Android 13 |
-| **Newline** | EDLA-oriented; verify local support in your state | 65–86″ | Android |
-| **Teachmint** (IFP) | India-based; Bengaluru; X2 Neo / Plus / Pro series | 65–86″ | Android 14 (marketing) |
-| **Promark** | India smart board vendor (multiple PRO series) | 65–98″ | Android 8–13 |
-| **DeltaView** | India AI digital board vendor | Varies | Android |
-| **Edutech Solutions** | EDLA-certified panels (marketing) | 65–86″ | Android 16 (vendor claim) |
-| **Studynlearn / Smartschool** | Noida-based IFP + content bundles | 65″+ | Android |
+| Brand                             | Notes                                                                          | Typical sizes | OS (typical)                |
+| --------------------------------- | ------------------------------------------------------------------------------ | ------------- | --------------------------- |
+| **ViewSonic** ViewBoard           | Widely cited as strong IFPD share in India; education line (e.g. IN6501 class) | 65–86″        | Android 13+ on panel        |
+| **BenQ** Board                    | Google EDLA-certified education boards; EZWrite / InstaShare                   | 65–86″        | Android on panel            |
+| **Samsung** Flip / Flip Pro       | Business/education interactive displays in India                               | 75–85″        | Android 14 (newer Flip Pro) |
+| **LG** CreateBoard (TR3DK series) | Common in institutional quotes; DMS (ConnectedCare)                            | 75–86″        | Android 13                  |
+| **Newline**                       | EDLA-oriented; verify local support in your state                              | 65–86″        | Android                     |
+| **Teachmint** (IFP)               | India-based; Bengaluru; X2 Neo / Plus / Pro series                             | 65–86″        | Android 14 (marketing)      |
+| **Promark**                       | India smart board vendor (multiple PRO series)                                 | 65–98″        | Android 8–13                |
+| **DeltaView**                     | India AI digital board vendor                                                  | Varies        | Android                     |
+| **Edutech Solutions**             | EDLA-certified panels (marketing)                                              | 65–86″        | Android 16 (vendor claim)   |
+| **Studynlearn / Smartschool**     | Noida-based IFP + content bundles                                              | 65″+          | Android                     |
 
 **Price context (public listings, not PedagogyX quotes):** many 65–75″ IFPs cluster roughly **₹73k–₹2.5L** depending on brand, OPS PC, and warranty — use for **hardware planning only**, not customer budget (see D-10).
 
@@ -53,12 +53,12 @@ Many installs pair the panel with a **low-end OPS/mini-PC** (Celeron N5105-class
 
 Used for student devices, teacher tablets, or **companion capture** (camera relay). Not always the primary board.
 
-| Brand / provider | Notes | Typical form |
-|------------------|-------|--------------|
-| **Prabhaktech** | Education tablets 7–10″, MDM, India institutional focus | Android |
-| **RDP** | Make-in-India tablets; GeM listings; 8–10″ Essential series | Android |
-| **Acer** Chromebook Tab 510 | **Chrome OS** (not Android) — only if school standardizes Chrome tablets | ChromeOS |
-| **Generic GeM / state scheme tablets** | Often 7–10″, 2–4 GB RAM — treat as **Android B** profile | Android |
+| Brand / provider                       | Notes                                                                    | Typical form |
+| -------------------------------------- | ------------------------------------------------------------------------ | ------------ |
+| **Prabhaktech**                        | Education tablets 7–10″, MDM, India institutional focus                  | Android      |
+| **RDP**                                | Make-in-India tablets; GeM listings; 8–10″ Essential series              | Android      |
+| **Acer** Chromebook Tab 510            | **Chrome OS** (not Android) — only if school standardizes Chrome tablets | ChromeOS     |
+| **Generic GeM / state scheme tablets** | Often 7–10″, 2–4 GB RAM — treat as **Android B** profile                 | Android      |
 
 **COSMIQ** and similar vendors often sell **panels + software ecosystem**; tablet may be secondary.
 
@@ -68,11 +68,11 @@ Used for student devices, teacher tablets, or **companion capture** (camera rela
 
 Until OEM is confirmed, **certify the client against profiles**, not brand names:
 
-| Profile | Smartboard / panel | Android tablet |
-|---------|-------------------|----------------|
-| **A (target)** | IFP + OPS: Celeron N5105+, **4 GB RAM**, 64 GB storage; or panel SoC with **4 GB+** | **4 GB RAM**, Android 10+, hardware H.264 |
-| **B (minimum)** | **4 GB RAM**, screen + mic only (defer extra cam) | **2–3 GB RAM**, screen + mic only |
-| **Below minimum** | < 4 GB RAM or no H.264 encode | Defer cam; short sessions only |
+| Profile           | Smartboard / panel                                                                  | Android tablet                            |
+| ----------------- | ----------------------------------------------------------------------------------- | ----------------------------------------- |
+| **A (target)**    | IFP + OPS: Celeron N5105+, **4 GB RAM**, 64 GB storage; or panel SoC with **4 GB+** | **4 GB RAM**, Android 10+, hardware H.264 |
+| **B (minimum)**   | **4 GB RAM**, screen + mic only (defer extra cam)                                   | **2–3 GB RAM**, screen + mic only         |
+| **Below minimum** | < 4 GB RAM or no H.264 encode                                                       | Defer cam; short sessions only            |
 
 ---
 

@@ -1,10 +1,10 @@
 # P-004: Multi-Scale Deformable Transformers for Student Behavior Detection
 
-| Field | Value |
-|-------|-------|
-| **Year** | 2024 |
-| **arXiv** | 2410.07834 |
-| **Tags** | CV |
+| Field     | Value               |
+| --------- | ------------------- |
+| **Year**  | 2024                |
+| **arXiv** | 2410.07834          |
+| **Tags**  | CV                  |
 | **Label** | **[FACT]** preprint |
 
 ## Problem

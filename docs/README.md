@@ -8,16 +8,16 @@
 
 ## Phase Gates
 
-| Gate | Criteria | Status |
-|------|----------|--------|
-| **G0** | Founder Tier-1 blockers | 🟢 **Complete** except **D-20** (default M-A+M-B) |
-| **G1** | Product scope locked | 🟡 India supervision scope locked |
-| **G2** | India DPDP legal sign-off | 🔴 **Blocked** — counsel required |
-| **G3** | Reference architecture v0.2 | 🟢 Draft complete |
-| **G4** | ML eval plan | 🟡 Revised for EN+HI, multi-cam |
-| **G5** | Infra cost model | 🟡 **Internal** founder-funded pilot (D-10 = ₹0 customer) |
-| **G6** | DPIA + threat model | 🟡 India DPIA draft |
-| **G7** | First vertical slice spec | 🔴 Blocked on G2 + capture agent PRD |
+| Gate   | Criteria                    | Status                                                    |
+| ------ | --------------------------- | --------------------------------------------------------- |
+| **G0** | Founder Tier-1 blockers     | 🟢 **Complete** except **D-20** (default M-A+M-B)         |
+| **G1** | Product scope locked        | 🟡 India supervision scope locked                         |
+| **G2** | India DPDP legal sign-off   | 🔴 **Blocked** — counsel required                         |
+| **G3** | Reference architecture v0.2 | 🟢 Draft complete                                         |
+| **G4** | ML eval plan                | 🟡 Revised for EN+HI, multi-cam                           |
+| **G5** | Infra cost model            | 🟡 **Internal** founder-funded pilot (D-10 = ₹0 customer) |
+| **G6** | DPIA + threat model         | 🟡 India DPIA draft                                       |
+| **G7** | First vertical slice spec   | 🔴 Blocked on G2 + capture agent PRD                      |
 
 ---
 
@@ -51,7 +51,6 @@
 - **D-PROC = C (Hybrid)** — [ADR-0008](08-rfc-adr/ADR-0008-d-proc-hybrid-central-ml.md)
 - **D-05** — School / university buyer; **free pilot**, no payment expected
 - **D-10** — **₹0 customer budget** per classroom (founder bears infra during test)
-
 
 ## Hardware & OSS (2026-05-19)
 

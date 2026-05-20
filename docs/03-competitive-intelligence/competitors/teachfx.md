@@ -20,9 +20,9 @@ TeachFX proves **audio-only** can scale teacher PD with **talk ratio** and disco
 
 ## Inferred Pipeline
 
-```
+```text
 Audio capture → Cloud ASR + diarization → Talk metrics + pattern classifiers → Teacher feedback UI
-```
+```text
 
 **No video** simplifies FERPA surface and cost.
 

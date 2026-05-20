@@ -1,9 +1,9 @@
 # P-003: Student Speaker Diarization in Group Discussion (EDM 2024)
 
-| Field | Value |
-|-------|-------|
-| **Tags** | CDA, EDM |
-| **Year** | 2024 |
+| Field     | Value                                       |
+| --------- | ------------------------------------------- |
+| **Tags**  | CDA, EDM                                    |
+| **Year**  | 2024                                        |
 | **Label** | **[FACT]** (short paper in EDM proceedings) |
 
 ## Problem

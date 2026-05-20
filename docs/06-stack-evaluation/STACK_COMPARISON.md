@@ -8,18 +8,18 @@
 
 ## Executive recommendation
 
-| Layer | Choice | Why |
-|-------|--------|-----|
-| Policy | **100% OSS core path** | Founder mandate |
-| Compute | **On-prem edge** with **RTX 5070 12GB** | No cloud GPU budget |
-| API | **Go** (ingest/control) + **Python** (ML workers) | Performance + ML ecosystem |
-| ML train | **PyTorch** → export **ONNX** → **TensorRT** | 5070 inference |
-| LLM | **Ollama** + **Qwen2.5-7B-Q4** | Fits 12 GB alone |
-| ASR | **faster-whisper** | OSS, no API fees |
-| Media | **FFmpeg** + **MediaMTX** | OSS |
-| Data | **PostgreSQL** + **MinIO** + **ClickHouse** | OSS |
-| Orchestration | **Docker Compose** (pilot) → **k3s** | OSS |
-| Cloud | **Optional** — only for non-GPU static hosting | Avoid GPU SaaS |
+| Layer         | Choice                                            | Why                        |
+| ------------- | ------------------------------------------------- | -------------------------- |
+| Policy        | **100% OSS core path**                            | Founder mandate            |
+| Compute       | **On-prem edge** with **RTX 5070 12GB**           | No cloud GPU budget        |
+| API           | **Go** (ingest/control) + **Python** (ML workers) | Performance + ML ecosystem |
+| ML train      | **PyTorch** → export **ONNX** → **TensorRT**      | 5070 inference             |
+| LLM           | **Ollama** + **Qwen2.5-7B-Q4**                    | Fits 12 GB alone           |
+| ASR           | **faster-whisper**                                | OSS, no API fees           |
+| Media         | **FFmpeg** + **MediaMTX**                         | OSS                        |
+| Data          | **PostgreSQL** + **MinIO** + **ClickHouse**       | OSS                        |
+| Orchestration | **Docker Compose** (pilot) → **k3s**              | OSS                        |
+| Cloud         | **Optional** — only for non-GPU static hosting    | Avoid GPU SaaS             |
 
 **Removed from default plan:** AWS Transcribe, OpenAI, commercial ASR, managed vector SaaS.
 
@@ -27,31 +27,31 @@
 
 ## Backend languages (unchanged preference, OSS-aligned)
 
-| Role | Language |
-|------|----------|
-| API gateway, auth proxy, upload | **Go** |
-| ML workers, eval scripts | **Python 3.11+** |
-| Capture agent | **Tauri (Rust)** + FFmpeg |
+| Role                            | Language                  |
+| ------------------------------- | ------------------------- |
+| API gateway, auth proxy, upload | **Go**                    |
+| ML workers, eval scripts        | **Python 3.11+**          |
+| Capture agent                   | **Tauri (Rust)** + FFmpeg |
 
 ---
 
 ## ML frameworks
 
-| Use | Tool |
-|-----|------|
-| Training / export | PyTorch |
-| Serving | ONNX Runtime + TensorRT |
-| LLM | Ollama or vLLM (OSS) |
-| Experiment tracking | **MLflow** (OSS) |
+| Use                 | Tool                    |
+| ------------------- | ----------------------- |
+| Training / export   | PyTorch                 |
+| Serving             | ONNX Runtime + TensorRT |
+| LLM                 | Ollama or vLLM (OSS)    |
+| Experiment tracking | **MLflow** (OSS)        |
 
 ---
 
 ## Video
 
-| Use | Tool |
-|-----|------|
-| Transcode | FFmpeg |
-| Live ingest | MediaMTX |
+| Use               | Tool                 |
+| ----------------- | -------------------- |
+| Transcode         | FFmpeg               |
+| Live ingest       | MediaMTX             |
 | Future live coach | Janus (GPL — review) |
 
 ---
@@ -70,11 +70,11 @@ Docker Compose full stack; benchmarks per [GPU_BUDGET_RTX5070.md](../05-architec
 
 ### Production
 
-| Layer | Host |
-|-------|------|
-| Clients | Android + Windows smartboard (low spec) |
+| Layer    | Host                                                         |
+| -------- | ------------------------------------------------------------ |
+| Clients  | Android + Windows smartboard (low spec)                      |
 | API + ML | Hybrid: LAN edge buffer + India cloud OSS GPU (D-PROC **C**) |
-| Dev GPU | RTX 5070 **not in classroom** |
+| Dev GPU  | RTX 5070 **not in classroom**                                |
 
 ### Obsolete note — school-edge 5070
 
@@ -91,10 +91,10 @@ Single server (64 GB RAM recommended, 2 TB NVMe)
 
 ## Cost model shift
 
-| Before (cloud) | After (OSS + 5070) |
-|----------------|---------------------|
+| Before (cloud) | After (OSS + 5070)                 |
+| -------------- | ---------------------------------- |
 | $/GPU-hour AWS | Cap-ex: GPU + server ~$1.5–2k/node |
-| $/ASR minute | Electricity + ops time |
-| Scaling | Buy more 5070 nodes |
+| $/ASR minute   | Electricity + ops time             |
+| Scaling        | Buy more 5070 nodes                |
 
 See [GPU_BUDGET_RTX5070.md](../05-architecture/GPU_BUDGET_RTX5070.md).

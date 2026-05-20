@@ -1,9 +1,9 @@
 # ADR-0001: Post-Hoc Batch Processing Before Real-Time
 
-| Field | Value |
-|-------|-------|
+| Field      | Value                                                                |
+| ---------- | -------------------------------------------------------------------- |
 | **Status** | **Superseded** by [ADR-0003](ADR-0003-india-supervision-v1-scope.md) |
-| **Date** | 2026-05-19 (superseded same day) |
+| **Date**   | 2026-05-19 (superseded same day)                                     |
 
 ## Context
 
