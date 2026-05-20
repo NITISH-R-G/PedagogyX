@@ -14,12 +14,12 @@ PedagogyX is in **Phase 0** (Research & Architecture). Primary artifacts are Mar
 - **Format check:** `npx prettier --check 'docs/**/*.md'`
 - **CI:** `.github/workflows/docs-lint.yml` runs on PRs to `main`
 
-### Benchmarks (dev GPU host — not cloud VM)
+### Benchmarks (dev GPU host — CPU OK until RTX 5070)
 
-- **Location:** `benchmarks/`
-- **Run:** `cd benchmarks && ./bench_full_pipeline.sh` (needs `python3-venv`, NVIDIA GPU, optional Ollama)
-- **Smoke on CPU:** `python3 benchmarks/bench_whisper.py --model tiny --device cpu --duration-sec 5`
-- Cloud Agent VMs typically **lack GPU** — do not treat CPU results as production sizing; copy JSON from founder RTX 5070 machine into `benchmarks/results/` manually or via PR.
+- **Today (no GPU):** `./scripts/dev-verify.sh` or `cd benchmarks && ./bench_full_pipeline.sh cpu`
+- **Tomorrow (RTX 5070):** `cd benchmarks && ./bench_full_pipeline.sh gpu`
+- **Guide:** [benchmarks/DEV_WITHOUT_GPU.md](benchmarks/DEV_WITHOUT_GPU.md)
+- Cloud Agent VMs have **no NVIDIA GPU** — CPU profile is intentional for now.
 
 ### Gates
 

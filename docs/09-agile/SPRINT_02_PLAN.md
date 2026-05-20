@@ -1,24 +1,24 @@
 # Sprint 02 — Legal Gate & Dev Validation
 
-| Field                   | Value                                                              |
-| ----------------------- | ------------------------------------------------------------------ |
-| **Depends on**          | Sprint 01 ✅ (docs complete)                                       |
-| **Goal**                | **G2 legal path** + run RTX 5070 benchmarks on founder dev machine |
-| **Implementation code** | **Forbidden** until G2 sign-off                                    |
+| Field                   | Value                                                                                    |
+| ----------------------- | ---------------------------------------------------------------------------------------- |
+| **Depends on**          | Sprint 01 ✅ (docs complete)                                                             |
+| **Goal**                | **G2 legal path** + benchmarks (**CPU OK today**, GPU profile on RTX 5070 from tomorrow) |
+| **Implementation code** | **Forbidden** until G2 sign-off                                                          |
 
 ---
 
 ## Backlog
 
-| ID     | Deliverable                                                                                                              | Owner   | Status     |
-| ------ | ------------------------------------------------------------------------------------------------------------------------ | ------- | ---------- |
-| S02-01 | Send [INDIA_DPDP_COUNSEL_ENGAGEMENT_BRIEF.md](../07-compliance-ethics/INDIA_DPDP_COUNSEL_ENGAGEMENT_BRIEF.md) to counsel | Founder | 🔴 Action  |
-| S02-02 | Receive signed legal memo → unlock **G2**                                                                                | Founder | 🔴 Blocked |
-| S02-03 | Run `benchmarks/bench_full_pipeline.sh` on RTX 5070                                                                      | ML/Dev  |            |
-| S02-04 | Update [GPU_PILOT_COST_MODEL.md](../05-architecture/GPU_PILOT_COST_MODEL.md) with measured RTF                           | Arch    |            |
-| S02-05 | Privacy notice + consent flow wireframes (post-counsel)                                                                  | Product |            |
-| S02-06 | Pilot school named + D-DEV device checklist filled                                                                       | Founder |            |
-| S02-07 | RFC-0002 formal acceptance sign-off                                                                                      | Arch    |            |
+| ID     | Deliverable                                                                                                                                   | Owner   | Status                                                                    |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------- |
+| S02-01 | Send counsel brief — [COUNSEL_OUTREACH_PACKAGE.md](../07-compliance-ethics/COUNSEL_OUTREACH_PACKAGE.md) + `./scripts/build-counsel-packet.sh` | Founder | 📋 Ready — [Issue #11](https://github.com/NITISH-R-G/PedagogyX/issues/11) |
+| S02-02 | Receive signed legal memo → unlock **G2**                                                                                                     | Founder | 🔴 Blocked                                                                |
+| S02-03 | `./bench_full_pipeline.sh cpu` (today) · `gpu` (RTX 5070 tomorrow) — see [DEV_WITHOUT_GPU.md](../../benchmarks/DEV_WITHOUT_GPU.md)            | ML/Dev  | ✅ CPU profile passing                                                    |
+| S02-04 | Update [GPU_PILOT_COST_MODEL.md](../05-architecture/GPU_PILOT_COST_MODEL.md) with measured RTF                                                | Arch    | 🟡 Partial (CPU baseline linked)                                          |
+| S02-05 | Privacy notice + consent flow wireframes (post-counsel)                                                                                       | Product |                                                                           |
+| S02-06 | Pilot school named + D-DEV device checklist filled                                                                                            | Founder |                                                                           |
+| S02-07 | RFC-0002 formal acceptance sign-off                                                                                                           | Arch    |                                                                           |
 
 ---
 

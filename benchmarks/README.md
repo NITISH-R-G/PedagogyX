@@ -2,7 +2,7 @@
 
 Dev-only scripts to measure RTF, VRAM, and latency before sizing India cloud GPUs.
 
-**Requires:** NVIDIA GPU + CUDA for full runs. Scripts exit gracefully on CPU-only VMs.
+**No RTX 5070 today?** Use **`cpu` profile** — full pipeline works. See [DEV_WITHOUT_GPU.md](DEV_WITHOUT_GPU.md).
 
 ## Setup
 
@@ -13,25 +13,23 @@ source .venv/bin/activate
 pip install -r requirements-bench.txt
 ```
 
-Optional system deps: [Ollama](https://ollama.com/) for `bench_ollama.py`, TensorRT for YOLO TRT path.
+Optional: [Ollama](https://ollama.com/) for LLM step — `ollama pull llama3.2:1b` (cpu) or `qwen2.5:7b-instruct-q4_K_M` (gpu).
 
 ## Run
 
 ```bash
-./bench_full_pipeline.sh
+# Today (no GPU)
+./bench_full_pipeline.sh cpu
+
+# Tomorrow (RTX 5070)
+./bench_full_pipeline.sh gpu
 ```
 
-Or individually:
-
-```bash
-python bench_whisper.py --model medium --device cuda
-python bench_yolo_trt.py --device cuda
-python bench_ollama.py --model qwen2.5:7b-instruct-q4_K_M
-```
+From repo root: `./scripts/dev-verify.sh` (lint + cpu benchmarks).
 
 ## Output
 
-Results append to `benchmarks/results/` as JSON. Copy summary into [GPU_PILOT_COST_MODEL.md](../docs/05-architecture/GPU_PILOT_COST_MODEL.md).
+Results in `benchmarks/results/` — see [BENCHMARK_RESULTS_SUMMARY.md](BENCHMARK_RESULTS_SUMMARY.md).
 
 ## Policy
 
