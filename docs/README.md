@@ -49,7 +49,7 @@
 
 1. **G2** — Counsel package ready: [COUNSEL_OUTREACH_PACKAGE.md](07-compliance-ethics/COUNSEL_OUTREACH_PACKAGE.md) · track on [GitHub #11](https://github.com/NITISH-R-G/PedagogyX/issues/11)
 2. **D-DEV** — Log device make/model at first pilot (compatibility matrix; **any** low-end Android/Windows board in scope)
-3. **S02-03** — Run `benchmarks/bench_full_pipeline.sh` on RTX 5070 workstation; PR results JSON
+3. **S02-03 CPU** — `./scripts/dev-verify.sh` works today; **GPU** `./bench_full_pipeline.sh gpu` from tomorrow on RTX 5070
 
 **Recorded (2026-05-19):**
 

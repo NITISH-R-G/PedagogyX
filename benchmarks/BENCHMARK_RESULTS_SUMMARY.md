@@ -1,45 +1,69 @@
 # Benchmark Results Summary
 
-**Run date:** 2026-05-20 (UTC)  
-**Host:** Cursor Cloud VM — **CPU only** (no `nvidia-smi`)  
-**Purpose:** Baseline automation; **replace with RTX 5070 CUDA run** for production sizing (S02-03).
+**Last run:** 2026-05-20 (UTC)  
+**Active profile:** **`cpu`** — works **without RTX 5070** (use until founder machine available)  
+**Tomorrow:** run `./bench_full_pipeline.sh gpu` on RTX 5070 for production sizing.
 
 ---
 
-## Measured (CPU, silent audio — lower bound RTF)
+## CPU profile — **PASS** (dev-ready today)
 
-| Script  | Model / config        | Wall (s) | Metric                             | JSON                                |
-| ------- | --------------------- | -------- | ---------------------------------- | ----------------------------------- |
-| Whisper | medium, 120 s audio   | 2.27     | RTF **0.019**                      | `results/whisper_medium_cpu.json`   |
-| Whisper | large-v3, 120 s audio | 3.84     | RTF **0.032**                      | `results/whisper_large-v3_cpu.json` |
-| YOLO11n | 480p, 200 frames      | 5.93     | **33.8 FPS**                       | `results/yolo_480p_cpu.json`        |
-| YOLO11n | 720p, 100 frames      | 3.12     | **32.1 FPS**                       | `results/yolo_720p_cpu.json`        |
-| Ollama  | qwen2.5 7B Q4         | —        | **Skipped** (Ollama not installed) | —                                   |
+| Step               | Result | Metric              |
+| ------------------ | ------ | ------------------- |
+| Whisper small      | OK     | 30 s audio, CPU     |
+| Whisper medium     | OK     | 60 s audio, CPU     |
+| YOLO11n 480p       | OK     | ~33 FPS CPU         |
+| Ollama llama3.2:1b | OK     | **~10.6 tok/s** CPU |
 
-**Caveat:** Silent audio RTF is **not representative** of real classroom speech; use GPU run with sample lesson audio on RTX 5070.
-
----
-
-## Extrapolated RTX 5070 planning numbers (from [GPU_BUDGET_RTX5070.md](../docs/05-architecture/GPU_BUDGET_RTX5070.md))
-
-Until GPU JSON exists, size pilots using these **estimates**:
-
-| Job                      | Est. wall (50 min lesson) | VRAM    |
-| ------------------------ | ------------------------- | ------- |
-| ASR medium INT8          | 8–15 min                  | ~3 GB   |
-| ASR large-v3 INT8        | 15–25 min                 | ~5 GB   |
-| CV 480p batch            | 5–10 min                  | ~2 GB   |
-| LLM Qwen2.5-7B Q4 report | 2–5 min                   | ~5–6 GB |
-
-**Pilot capacity (1× 12 GB GPU):** ~2 live preview lessons + overnight batch for ~16 rooms (see [GPU_PILOT_COST_MODEL.md](../docs/05-architecture/GPU_PILOT_COST_MODEL.md)).
-
----
-
-## Re-run on RTX 5070 (founder machine)
+Run again:
 
 ```bash
-cd benchmarks && ./bench_full_pipeline.sh
-# Requires: NVIDIA driver, Ollama + qwen2.5:7b-instruct-q4_K_M
+cd benchmarks && ./bench_full_pipeline.sh cpu
 ```
 
-Commit new JSON under `benchmarks/results/` with `_cuda` suffix and update this file.
+Full dev check from repo root:
+
+```bash
+./scripts/dev-verify.sh
+```
+
+See [DEV_WITHOUT_GPU.md](DEV_WITHOUT_GPU.md).
+
+---
+
+## GPU profile — **pending** (RTX 5070 from tomorrow)
+
+```bash
+cd benchmarks
+ollama pull qwen2.5:7b-instruct-q4_K_M
+./bench_full_pipeline.sh gpu
+```
+
+Commit JSON under `results/*_cuda.json` and update this file.
+
+---
+
+## Planning estimates (until GPU run)
+
+Use [GPU_PILOT_COST_MODEL.md](../docs/05-architecture/GPU_PILOT_COST_MODEL.md) and [GPU_BUDGET_RTX5070.md](../docs/05-architecture/GPU_BUDGET_RTX5070.md) for pilot capacity until CUDA numbers land.
+
+| Job (50 min lesson, est.) | Wall      | VRAM    |
+| ------------------------- | --------- | ------- |
+| ASR medium INT8           | 8–15 min  | ~3 GB   |
+| ASR large-v3 INT8         | 15–25 min | ~5 GB   |
+| CV 480p batch             | 5–10 min  | ~2 GB   |
+| LLM Qwen2.5-7B Q4         | 2–5 min   | ~5–6 GB |
+
+**Pilot capacity (1× 12 GB GPU):** ~2 live previews + overnight batch ~16 rooms.
+
+---
+
+## Historical CPU baseline (silent audio — not speech-realistic)
+
+| Script           | Config       | RTF / FPS |
+| ---------------- | ------------ | --------- |
+| Whisper medium   | 120 s silent | RTF 0.019 |
+| Whisper large-v3 | 120 s silent | RTF 0.032 |
+| YOLO 480p        | 200 frames   | 33.8 FPS  |
+
+Use GPU profile with real lesson audio for authoritative sizing.

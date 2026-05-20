@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import time
 from datetime import datetime, timezone
@@ -22,7 +23,10 @@ DEFAULT_PROMPT = (
 def main() -> int:
     parser = argparse.ArgumentParser(description="Ollama LLM benchmark")
     parser.add_argument("--host", default="http://127.0.0.1:11434")
-    parser.add_argument("--model", default="qwen2.5:7b-instruct-q4_K_M")
+    parser.add_argument(
+        "--model",
+        default=os.environ.get("BENCH_OLLAMA_MODEL", "qwen2.5:7b-instruct-q4_K_M"),
+    )
     parser.add_argument("--prompt", default=DEFAULT_PROMPT)
     args = parser.parse_args()
 
