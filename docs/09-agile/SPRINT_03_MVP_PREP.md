@@ -85,4 +85,6 @@ See [RFC-0003](../08-rfc-adr/RFC-0003-monorepo-scaffold-post-g2.md). **No `servi
 - [RFC-0003](../08-rfc-adr/RFC-0003-monorepo-scaffold-post-g2.md)
 - [DOCKER_COMPOSE_PILOT_STACK.md](../06-stack-evaluation/DOCKER_COMPOSE_PILOT_STACK.md)
 - [RFC-0002](../08-rfc-adr/RFC-0002-capture-agent-sync-protocol.md)
+- [MOCK_CAPTURE_AGENT_SPEC.md](../06-stack-evaluation/MOCK_CAPTURE_AGENT_SPEC.md)
+- [PRIVACY_NOTICE_CONSENT_WIREFRAMES.md](../02-product/PRIVACY_NOTICE_CONSENT_WIREFRAMES.md)
 - [ADMIN_LIVE_DASHBOARD_WIREFRAMES.md](../02-product/ADMIN_LIVE_DASHBOARD_WIREFRAMES.md)

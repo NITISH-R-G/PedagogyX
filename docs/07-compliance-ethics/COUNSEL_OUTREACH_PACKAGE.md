@@ -2,7 +2,8 @@
 
 **Purpose:** Everything needed to **send to Indian privacy counsel in one email** — copy/paste ready.  
 **Status:** Prepared by engineering; **founder must click Send** (we cannot email on your behalf).  
-**Not legal advice.**
+**Not legal advice.**  
+**Full gate checklist:** [G2_READINESS_CHECKLIST.md](G2_READINESS_CHECKLIST.md)
 
 ---
 
