@@ -1,11 +1,11 @@
 # India Pilot Device Reference (D-DEV)
 
-**Status:** Research draft — **not** founder-confirmed SKUs  
-**Last updated:** 2026-05-19  
-**Source:** Public vendor pages, India education IFPD market summaries, GeM-oriented listings  
-**Purpose:** Set **minimum client spec tiers** until a pilot partner names exact models on site.
+**Status:** Example OEM list — **not** an allow-list  
+**Last updated:** 2026-05-19
 
-Founder answer: **“IDK — search the internet.”** Use this doc for architecture and RFC-0002; replace with **confirmed OEM + model** when the first pilot school is named.
+**Founder mandate:** PedagogyX must support **all low-end Android boards and Windows smartboards** that meet [PRODUCTION_CLIENT_SPEC.md](../05-architecture/PRODUCTION_CLIENT_SPEC.md) profiles — **any brand**.
+
+This doc lists **common India examples** for sales conversations and pilot checklists only. A school using an unlisted brand is **in scope** if hardware passes profile certification.
 
 ---
 

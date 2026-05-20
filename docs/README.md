@@ -61,4 +61,7 @@
 - [OSS_STACK_REFERENCE](../06-stack-evaluation/OSS_STACK_REFERENCE.md)
 - [GPU_BUDGET_RTX5070](../05-architecture/GPU_BUDGET_RTX5070.md)
 - [PRODUCTION_CLIENT_SPEC](../05-architecture/PRODUCTION_CLIENT_SPEC.md)
+- [GPU_PILOT_COST_MODEL](../05-architecture/GPU_PILOT_COST_MODEL.md)
+- [DOCKER_COMPOSE_PILOT_STACK](../06-stack-evaluation/DOCKER_COMPOSE_PILOT_STACK.md)
+- [ADMIN_LIVE_DASHBOARD_WIREFRAMES](../02-product/ADMIN_LIVE_DASHBOARD_WIREFRAMES.md)
 - [ADR-0007 production clients](../08-rfc-adr/ADR-0007-production-clients-low-end.md)
