@@ -53,21 +53,7 @@ sequenceDiagram
 
 ## Repo layout (proposed — create only after G2)
 
-```text
-services/
-  api/
-  worker-asr/
-  worker-cv/          # empty stub
-  web/
-packages/
-  capture-core/       # optional Rust FFI later
-infra/
-  compose.dev.yaml
-  compose.edge.yaml
-  compose.cloud.yaml
-```
-
-Document in RFC before first commit — **no code until G2**.
+See [RFC-0003](../08-rfc-adr/RFC-0003-monorepo-scaffold-post-g2.md). **No `services/` commits until G2.**
 
 ---
 
@@ -96,6 +82,7 @@ Document in RFC before first commit — **no code until G2**.
 ## References
 
 - [IMPLEMENTATION_ROADMAP.md](IMPLEMENTATION_ROADMAP.md)
+- [RFC-0003](../08-rfc-adr/RFC-0003-monorepo-scaffold-post-g2.md)
 - [DOCKER_COMPOSE_PILOT_STACK.md](../06-stack-evaluation/DOCKER_COMPOSE_PILOT_STACK.md)
 - [RFC-0002](../08-rfc-adr/RFC-0002-capture-agent-sync-protocol.md)
 - [ADMIN_LIVE_DASHBOARD_WIREFRAMES.md](../02-product/ADMIN_LIVE_DASHBOARD_WIREFRAMES.md)

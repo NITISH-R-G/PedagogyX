@@ -36,6 +36,6 @@ ollama pull qwen2.5:7b-instruct-q4_K_M
 
 ## After G2
 
-[Sprint 03 MVP prep](docs/09/agile/SPRINT_03_MVP_PREP.md) — first code vertical slice.
+[Sprint 03 MVP prep](docs/09-agile/SPRINT_03_MVP_PREP.md) — first code vertical slice ([RFC-0003](docs/08-rfc-adr/RFC-0003-monorepo-scaffold-post-g2.md)).
 
 Hub: [docs/README.md](docs/README.md)

@@ -25,7 +25,8 @@ PedagogyX is in **Phase 0** (Research & Architecture). Primary artifacts are Mar
 
 - **G0** complete (founder Tier-1)
 - **G2** blocks implementation — counsel brief: `docs/07-compliance-ethics/INDIA_DPDP_COUNSEL_ENGAGEMENT_BRIEF.md`
-- **Sprint plan:** `docs/09-agile/SPRINT_02_PLAN.md`
+- **Sprint plans:** `docs/09-agile/SPRINT_02_PLAN.md` (active) · `SPRINT_03_MVP_PREP.md` (post-G2, blocked)
+- **Docs CI:** `.github/workflows/dev-verify.yml` — same as `./scripts/dev-verify.sh --docs-only`
 
 ### Markdown lint notes
 
