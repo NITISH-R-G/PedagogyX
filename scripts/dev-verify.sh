@@ -1,17 +1,35 @@
 #!/usr/bin/env bash
-# Verify dev environment without RTX 5070. Exit 0 = OK for CPU dev today.
+# Verify dev environment. CPU benchmarks optional (no RTX 5070 required for --docs-only).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-echo "=== PedagogyX dev-verify (CPU OK) ==="
+DOCS_ONLY=false
+for arg in "$@"; do
+  case "$arg" in
+    --docs-only) DOCS_ONLY=true ;;
+    -h | --help)
+      echo "Usage: $0 [--docs-only]"
+      echo "  --docs-only   markdownlint + prettier (CI-friendly)"
+      echo "  (default)     docs + benchmarks cpu profile"
+      exit 0
+      ;;
+  esac
+done
+
+echo "=== PedagogyX dev-verify ==="
 
 echo "--- markdownlint ---"
 npx --yes markdownlint-cli 'docs/**/*.md'
 
 echo "--- prettier check ---"
 npx --yes prettier --check 'docs/**/*.md'
+
+if [[ "$DOCS_ONLY" == true ]]; then
+  echo "=== dev-verify PASSED (docs only) ==="
+  exit 0
+fi
 
 echo "--- benchmarks (cpu profile) ---"
 if ! command -v ollama >/dev/null 2>&1; then
