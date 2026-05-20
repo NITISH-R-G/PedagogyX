@@ -26,6 +26,7 @@ gantt
 - Legal engagement
 - Eval dataset strategy
 - **Exit:** G0–G2 gates passed
+- **Sprint 03 prep (doc only):** [SPRINT_03_MVP_PREP.md](SPRINT_03_MVP_PREP.md) · [RFC-0003](../08-rfc-adr/RFC-0003-monorepo-scaffold-post-g2.md)
 
 ## Phase 1 — Foundations + Audio MVP
 

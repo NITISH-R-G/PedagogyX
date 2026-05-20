@@ -39,3 +39,5 @@
 4. Admin dashboard static shell (wireframes)
 
 See [IMPLEMENTATION_ROADMAP.md](IMPLEMENTATION_ROADMAP.md).
+
+**Next sprint (after G2):** [SPRINT_03_MVP_PREP.md](SPRINT_03_MVP_PREP.md) · [RFC-0003](../08-rfc-adr/RFC-0003-monorepo-scaffold-post-g2.md).

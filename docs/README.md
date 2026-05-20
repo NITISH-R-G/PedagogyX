@@ -23,7 +23,10 @@
 
 ## Active sprint
 
-**Sprint 01** ✅ documentation complete. **Sprint 02:** [SPRINT_02_PLAN.md](09-agile/SPRINT_02_PLAN.md) — counsel engagement (G2) + RTX 5070 benchmark runs on founder dev machine.
+**Sprint 02** — counsel (G2) + GPU when RTX 5070 available: [SPRINT_02_PLAN.md](09-agile/SPRINT_02_PLAN.md)  
+**Next (post-G2 code):** [SPRINT_03_MVP_PREP.md](09-agile/SPRINT_03_MVP_PREP.md) · [RFC-0003](08-rfc-adr/RFC-0003-monorepo-scaffold-post-g2.md)
+
+**Dev:** [DEVELOPING.md](../DEVELOPING.md) · `./scripts/dev-verify.sh`
 
 ---
 

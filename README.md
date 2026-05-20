@@ -9,7 +9,7 @@ Production implementation is **not authorized** until phase gates in [docs/READM
 
 ## Documentation
 
-Start here: **[docs/README.md](docs/README.md)**
+Start here: **[docs/README.md](docs/README.md)** · **Developing:** [DEVELOPING.md](DEVELOPING.md)
 
 | Priority action                    | Document                                                                                                                                              |
 | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
