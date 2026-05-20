@@ -94,12 +94,14 @@ To get full real-time multi-cam, you need **more GPUs** or **cloud GPUs** (contr
 
 ---
 
-## Benchmark tasks (Sprint 01)
+## Benchmark tasks (S01-09)
 
-- [ ] `bench_whisper.py` — medium vs large-v3 INT8, RTF
-- [ ] `bench_yolo_trt.py` — 480p vs 720p, 1 vs 2 streams
-- [ ] `bench_ollama.py` — Qwen2.5-7B Q4 tokens/sec
-- [ ] `bench_full_pipeline.sh` — end-to-end VRAM peak via `nvidia-smi`
+- [x] `bench_whisper.py` — medium vs large-v3 INT8, RTF
+- [x] `bench_yolo_trt.py` — 480p vs 720p, 1 vs 2 streams
+- [x] `bench_ollama.py` — Qwen2.5-7B Q4 tokens/sec
+- [x] `bench_full_pipeline.sh` — end-to-end runner; VRAM via `nvidia-smi` on GPU host
+
+See [benchmarks/README.md](../../benchmarks/README.md).
 
 ---
 

@@ -1,7 +1,7 @@
 # PedagogyX — Research & Architecture Documentation Hub
 
 **Status:** Phase 0 — **Founder Tier-1 complete** (G2 legal blocks implementation)  
-**Last updated:** 2026-05-19  
+**Last updated:** 2026-05-20  
 **Product direction:** [India-first supervision, multi-cam real-time](../docs/01-phase0-founder-interrogation/FOUNDER_ANSWERS.md)
 
 ---
@@ -21,7 +21,11 @@
 
 ---
 
-## Founder Decision Record
+## Active sprint
+
+**Sprint 01** ✅ documentation complete. **Sprint 02:** [SPRINT_02_PLAN.md](09-agile/SPRINT_02_PLAN.md) — counsel engagement (G2) + RTX 5070 benchmark runs on founder dev machine.
+
+---
 
 **[FOUNDER_ANSWERS.md](01-phase0-founder-interrogation/FOUNDER_ANSWERS.md)** — canonical log  
 **[PRODUCT_DECISION_IMPLICATIONS.md](01-phase0-founder-interrogation/PRODUCT_DECISION_IMPLICATIONS.md)** — engineering impact  
@@ -36,13 +40,16 @@
 - [SYSTEM_ARCHITECTURE.md](05-architecture/SYSTEM_ARCHITECTURE.md) — hot/cold paths, multi-stream
 - [AI_ARCHITECTURE.md](05-architecture/AI_ARCHITECTURE.md) — pedagogy index, real-time GPU
 - [INDIA_DPDP_ARCHITECTURE.md](07-compliance-ethics/INDIA_DPDP_ARCHITECTURE.md)
+- [INDIA_DPDP_COUNSEL_ENGAGEMENT_BRIEF.md](07-compliance-ethics/INDIA_DPDP_COUNSEL_ENGAGEMENT_BRIEF.md) — **S01-02: send to counsel**
 - [ADR-0003](08-rfc-adr/ADR-0003-india-supervision-v1-scope.md) — v1 scope
 
 ---
 
 ## Still Required from Founder
 
-1. **D-DEV** — Log device make/model at first pilot (compatibility matrix; **any** low-end Android/Windows board in scope)
+1. **G2** — Send [INDIA_DPDP_COUNSEL_ENGAGEMENT_BRIEF.md](07-compliance-ethics/INDIA_DPDP_COUNSEL_ENGAGEMENT_BRIEF.md) to India privacy counsel
+2. **D-DEV** — Log device make/model at first pilot (compatibility matrix; **any** low-end Android/Windows board in scope)
+3. **S02-03** — Run `benchmarks/bench_full_pipeline.sh` on RTX 5070 workstation; PR results JSON
 
 **Recorded (2026-05-19):**
 

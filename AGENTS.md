@@ -2,12 +2,32 @@
 
 ## Repository overview
 
-PedagogyX is currently a **documentation-only** repository (Phase 0 — Research & Architecture). It contains RFCs, ADRs, competitive intelligence, research summaries, compliance drafts, and agile artifacts. There is no application source code, no services to run, and no automated test suite.
+PedagogyX is in **Phase 0** (Research & Architecture). Primary artifacts are Markdown docs (RFCs, ADRs, sprint plans). **MVP application code is blocked until G2** (India legal sign-off).
+
+**Allowed before G2:** documentation, `benchmarks/` dev scripts (ADR-0006 RTX 5070 validation only).
 
 ## Cursor Cloud specific instructions
 
-- **Lint command:** `markdownlint '**/*.md'` from workspace root. Configuration lives in `.markdownlint.json`.
-- **No build/run/test targets exist.** The repo has no `package.json`, `Makefile`, `Dockerfile`, or source code. The only development activity is editing Markdown documentation.
-- **Do not create application code** unless the founder explicitly authorizes moving past Phase 0 gates (see `docs/README.md` for gate status).
-- The documentation uses long lines (>80 chars) intentionally; `MD013` (line-length) is disabled in `.markdownlint.json`.
-- Bare URLs in reference sections are intentional; `MD034` (no-bare-urls) is disabled.
+### Documentation
+
+- **Lint:** `npx markdownlint-cli 'docs/**/*.md'` (config: `.markdownlint.json`)
+- **Format check:** `npx prettier --check 'docs/**/*.md'`
+- **CI:** `.github/workflows/docs-lint.yml` runs on PRs to `main`
+
+### Benchmarks (dev GPU host — not cloud VM)
+
+- **Location:** `benchmarks/`
+- **Run:** `cd benchmarks && ./bench_full_pipeline.sh` (needs `python3-venv`, NVIDIA GPU, optional Ollama)
+- **Smoke on CPU:** `python3 benchmarks/bench_whisper.py --model tiny --device cpu --duration-sec 5`
+- Cloud Agent VMs typically **lack GPU** — do not treat CPU results as production sizing; copy JSON from founder RTX 5070 machine into `benchmarks/results/` manually or via PR.
+
+### Gates
+
+- **G0** complete (founder Tier-1)
+- **G2** blocks implementation — counsel brief: `docs/07-compliance-ethics/INDIA_DPDP_COUNSEL_ENGAGEMENT_BRIEF.md`
+- **Sprint plan:** `docs/09-agile/SPRINT_02_PLAN.md`
+
+### Markdown lint notes
+
+- `MD013` (line-length) disabled — long prose intentional
+- `MD034` (bare URLs) disabled in reference sections

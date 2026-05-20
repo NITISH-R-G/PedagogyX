@@ -85,13 +85,13 @@ Counsel must sign off on:
 
 ---
 
-## LLM / Cloud AI (D-12 open)
+## LLM / Cloud AI (D-12 closed)
 
-**[ASSUMPTION until founder answers]** Student-adjacent transcripts and frames:
+**Founder decision:** **OSS only** — Ollama/vLLM on central GPU; no public cloud LLM APIs on student-adjacent content.
 
-- **No** public API (OpenAI consumer) on identifiable child data
-- Prefer **in-region** Azure OpenAI / self-hosted vLLM on private VPC
+- Transcripts + JSON metrics only in prompts
 - Log redaction before prompt construction
+- See [ADR-0005](../08-rfc-adr/ADR-0005-foss-first-stack.md)
 
 ---
 
