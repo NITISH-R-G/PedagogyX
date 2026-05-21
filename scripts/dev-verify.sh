@@ -21,10 +21,20 @@ done
 echo "=== PedagogyX dev-verify ==="
 
 echo "--- markdownlint ---"
-npx --yes markdownlint-cli 'docs/**/*.md'
+npx --yes markdownlint-cli '**/*.md' --ignore node_modules
 
 echo "--- prettier check ---"
-npx --yes prettier --check 'docs/**/*.md'
+npx --yes prettier --check '**/*.md' --ignore-path .gitignore
+
+echo "--- python linting (black, isort, flake8) ---"
+if command -v black >/dev/null 2>&1; then
+  black --check --line-length=100 benchmarks/*.py
+  isort --check-only --profile black --line-length=100 benchmarks/*.py
+  flake8 --max-line-length=100 benchmarks/*.py
+else
+  echo "WARN: Python linters (black, isort, flake8) not found. Skipping Python linting."
+  echo "To run python linting: pip install black isort flake8"
+fi
 
 if [[ "$DOCS_ONLY" == true ]]; then
   echo "=== dev-verify PASSED (docs only) ==="
