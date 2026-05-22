@@ -1,146 +1,101 @@
 # Competitor Analysis Report
 
-**Status:** Draft v0.1
+**Status:** Draft v0.2
 **Date:** 2026-05-20
 **Owner:** Architecture Team
 
 ## Overview
 
-This document evaluates all major global systems in the classroom analytics and educational video space to understand PedagogyX's competitive positioning, particularly within the India supervision market.
+This document evaluates all major global systems in the classroom analytics and educational video space to understand PedagogyX's competitive positioning, particularly within the India supervision market. For each competitor, we break down architecture assumptions, inferred pipelines, probable stack, strengths, weaknesses, business models, scalability constraints, infrastructure costs, UX observations, differentiators, missing features, and opportunities for disruption.
+
+---
 
 ## 1. Edthena
 
-**Strengths:**
-
-- Market leader in the US for union-friendly instructional coaching.
-- Strong video comment threading and reflection prompts.
-- Established UI/UX for peer collaboration.
-- AI Coach by Edthena handles basic self-reflection well.
-
-**Weaknesses:**
-
-- Expensive enterprise SaaS model.
-- Highly dependent on human coaching loops.
-- Limited multi-modal AI fusion (primarily ASR-based AI Coach).
-- Lacks real-time analytics or "supervision" features.
-
-**Architecture Assumptions:**
-
-- Monolithic web app, heavily utilizing AWS (S3 for video storage, Transcribe for ASR).
-- Asynchronous batch processing only.
-
-**Differentiators vs PedagogyX:**
-
-- PedagogyX will differentiate via multimodal fusion (CV + Audio), supervision-mode focus, and a much lower operating cost through OSS models and edge/hybrid infra.
+- **Architecture Assumptions:** Monolithic SaaS architecture heavily reliant on public cloud services.
+- **Inferred Pipelines:** Asynchronous batch processing of uploaded videos. Focus on text comments overlaid on timestamps.
+- **Probable Stack:** AWS, React frontend, Ruby on Rails/Node backend, AWS Transcribe for basic ASR.
+- **Strengths:** Market leader in US, union-friendly, strong peer collaboration UX.
+- **Weaknesses:** Expensive, slow batch processing, lacks multimodal fusion (mostly relies on ASR for its "AI Coach").
+- **Business Model:** B2B Enterprise SaaS per district/school.
+- **Scalability Constraints:** Cost of human coaching and AWS compute per video hour.
+- **Likely Infrastructure Costs:** High OPEX due to AWS media services.
+- **UX Observations:** Excellent for reflective journaling; lacks "admin dashboard" summary views.
+- **Differentiators vs PedagogyX:** Union-first vs our supervision-first approach.
+- **Missing Features:** Real-time analytics, CV for student engagement, offline edge buffering.
+- **Opportunities for Disruption:** Target districts that want automated supervision without human-coach bottlenecks.
 
 ## 2. Vosaic
 
-**Strengths:**
-
-- Extremely robust timeline marking and video clipping.
-- Handles medical/simulation domains well (adjacencies).
-- Fine-grained access control and sharing links.
-
-**Weaknesses:**
-
-- Minimal automated AI analytics (manual tagging focus).
-- No real-time inference.
-- Hardware agnostic but requires user-driven workflows.
-
-**Architecture Assumptions:**
-
-- Cloud-native video streaming (HLS/DASH) with heavily customized player overlays.
-
-**Differentiators vs PedagogyX:**
-
-- Vosaic is an annotation tool; PedagogyX is an _autonomous intelligence_ tool. We automate the tagging that Vosaic requires humans to do.
+- **Architecture Assumptions:** Cloud-native video streaming focus (HLS/DASH).
+- **Inferred Pipelines:** Ingest -> Transcode -> Deliver to custom player for human annotation.
+- **Probable Stack:** Node.js, AWS S3/CloudFront, FFmpeg.
+- **Strengths:** Robust timeline clipping, adjacency to medical simulation, strict access control.
+- **Weaknesses:** Purely manual annotation; requires extreme user effort.
+- **Business Model:** B2B SaaS.
+- **Scalability Constraints:** Storage costs for high-res video, but low compute costs.
+- **Likely Infrastructure Costs:** Medium (storage/egress heavy).
+- **UX Observations:** Highly granular but overwhelming for daily use without AI assistance.
+- **Differentiators vs PedagogyX:** Vosaic is a human tool; PedagogyX is an autonomous intelligence system.
+- **Missing Features:** AI transcription, AI pedagogy scoring, multimodal tracking.
+- **Opportunities for Disruption:** Automate the exact tasks Vosaic users perform manually.
 
 ## 3. IRIS Connect
 
-**Strengths:**
-
-- Excellent proprietary hardware integration (Discovery Kit cameras, beamforming mics).
-- "Go Live" in-ear coaching capability.
-- Strong presence in UK and EU.
-
-**Weaknesses:**
-
-- High hardware capital expenditure (CapEx) for schools.
-- Walled garden ecosystem.
-
-**Architecture Assumptions:**
-
-- Dedicated hardware appliances streaming RTMP/WebRTC to central cloud instances.
-- Proprietary low-latency relay servers for the live coaching audio.
-
-**Differentiators vs PedagogyX:**
-
-- PedagogyX relies on _zero_ specialized hardware (low-end Android/Windows only), significantly lowering the barrier to entry for the Indian market.
+- **Architecture Assumptions:** Tight hardware/software coupling. Hardware appliances acting as edge nodes.
+- **Inferred Pipelines:** Live RTMP streaming from custom cameras/mics to proprietary central servers for "Go Live" in-ear coaching.
+- **Probable Stack:** Custom Linux on edge, WebRTC/Janus for live audio relay.
+- **Strengths:** Unmatched audio/video quality due to custom hardware, live coaching ability.
+- **Weaknesses:** Massive CapEx for schools. Walled garden.
+- **Business Model:** Hardware sales + SaaS subscription.
+- **Scalability Constraints:** Hardware supply chain, physical installation requirements.
+- **Likely Infrastructure Costs:** High (requires massive bandwidth for live 360 video).
+- **UX Observations:** Hardware works well, but software can feel dated.
+- **Differentiators vs PedagogyX:** We rely on ₹0 customer hardware (low-end Android/Windows) versus their expensive kits.
+- **Missing Features:** Hardware agnosticism, OSS transparency.
+- **Opportunities for Disruption:** Offer 80% of the value for 0% of the hardware cost using BYOD.
 
 ## 4. AI Sokrates
 
-**Strengths:**
-
-- Pedagogical frameworks (TPACK indices) natively integrated.
-- Educational data mining focus.
-
-**Weaknesses:**
-
-- Academic/research-heavy; less polished enterprise UI.
-- Processing scale limitations.
-
-**Architecture Assumptions:**
-
-- Likely uses Python-heavy data science pipelines (Pandas, Scikit-learn, potentially older HuggingFace models) run in batch over uploaded videos.
-
-**Differentiators vs PedagogyX:**
-
-- PedagogyX will operationalize TPACK-style metrics into a reliable, enterprise-grade, auto-scaling inference pipeline using TensorRT and faster-whisper.
+- **Architecture Assumptions:** Academic-grade data science pipelines.
+- **Inferred Pipelines:** Batch video processing feeding into Python ML scripts generating TPACK scores.
+- **Probable Stack:** Python, Pandas, Scikit-learn, PyTorch, Jupyter Notebooks behind a basic web UI.
+- **Strengths:** Deeply rooted in pedagogical frameworks (TPACK), strong validity in research.
+- **Weaknesses:** Academic UI, likely poor scalability for real-time or massive concurrent use.
+- **Business Model:** Research grants / bespoke university deployments.
+- **Scalability Constraints:** Monolithic ML scripts that aren't containerized for distributed inference.
+- **Likely Infrastructure Costs:** Highly variable; often run on university supercomputers.
+- **UX Observations:** Clunky, focuses on data export rather than coaching workflows.
+- **Differentiators vs PedagogyX:** We operationalize academic metrics into enterprise SaaS.
+- **Missing Features:** Real-time hot path, enterprise RBAC, mobile apps.
+- **Opportunities for Disruption:** Commercializing and scaling similar deep pedagogical indices.
 
 ## 5. Chinese Smart Classroom Systems (e.g., Seewo, iFlytek)
 
-**Strengths:**
+- **Architecture Assumptions:** Heavy edge AI processing directly on smartboards.
+- **Inferred Pipelines:** Local NPU inference (CV/ASR) -> telemetry streaming to central state/district servers.
+- **Probable Stack:** Rockchip SOCs, custom Android/Linux, proprietary CV models, massive central data lakes.
+- **Strengths:** Incredible scale, normalizes real-time principal supervision dashboards, flawless hardware integration.
+- **Weaknesses:** Massive privacy violations by Western standards, closed ecosystem.
+- **Business Model:** Government procurement of massive hardware fleets.
+- **Scalability Constraints:** Network backbone to central servers for millions of classrooms.
+- **Likely Infrastructure Costs:** Low cloud compute (handled at edge), high hardware CapEx.
+- **UX Observations:** Highly gamified and surveillance-oriented admin dashboards.
+- **Differentiators vs PedagogyX:** We achieve supervision without custom NPUs using hybrid D-PROC and DPDP compliance.
+- **Missing Features:** Privacy guardrails, explainable AI, OSS auditability.
+- **Opportunities for Disruption:** Bringing the "smart classroom" analytics capability to India using existing low-end hardware.
 
-- Incredible scale and multimodal integration.
-- Hardware-software tight coupling (interactive flat panels with built-in arrays).
-- Normalizes "supervision" (督导) and real-time principal dashboards.
+## 6. Corporate Meeting Analytics (Zoom AI, Teams, Meet)
 
-**Weaknesses:**
-
-- Severe privacy and ethical concerns outside China.
-- Closed, proprietary ecosystems.
-
-**Architecture Assumptions:**
-
-- Edge AI integrated directly into the smartboards (NPU/Rockchip SOCs) running specialized CV/ASR models locally, streaming telemetry to central data centers.
-
-**Differentiators vs PedagogyX:**
-
-- PedagogyX targets a similar "supervision" outcome but uses a DPDP-compliant, OSS-first, hardware-agnostic hybrid architecture, avoiding vendor lock-in.
-
-## 6. Corporate / Meeting Analytics (Zoom AI, Teams, Google Meet, Gong)
-
-**Strengths:**
-
-- World-class ASR, speaker diarization, and LLM summarization.
-- Zero extra hardware required for online classes.
-
-**Weaknesses:**
-
-- Completely fail in physical, multi-cam, multi-speaker physical classrooms.
-- General-purpose LLMs lack pedagogical domain knowledge (they summarize content, not teaching effectiveness).
-
-**Architecture Assumptions:**
-
-- Massive hyperscaler infrastructure with proprietary large-scale ASR (e.g., MS Teams' speech models).
-
-**Differentiators vs PedagogyX:**
-
-- Meeting tools measure "who spoke". PedagogyX measures _how_ they spoke, classifying discourse moves (probing, revoicing) and analyzing physical classroom interactions via CV.
-
-## Strategic Opportunities for Disruption
-
-1. **Hardware Agnosticism:** By supporting arbitrary low-end Android and Windows devices, PedagogyX sidesteps the hardware CapEx of IRIS Connect.
-2. **Cost Structure:** Utilizing OSS models (faster-whisper, YOLO, Ollama) on a centralized hybrid-edge cluster (ADR-0008) allows a disruptive pricing model (starting with ₹0 founder-funded pilots).
-3. **Supervision Focus in Emerging Markets:** Edthena and Vosaic deliberately avoid "supervision" for union reasons. PedagogyX embraces this for the Indian market, building admin-first dashboards for quality control.
-4. **Multimodal Automation:** Replacing human annotation (Vosaic) with multimodal AI (Sokrates-like, but enterprise-grade).
+- **Architecture Assumptions:** Massive hyperscaler integration.
+- **Inferred Pipelines:** Audio stream tapping -> large scale proprietary ASR -> LLM summarization.
+- **Probable Stack:** C++/Rust media servers, proprietary massive-parameter LLMs.
+- **Strengths:** Perfect diarization and ASR for headset audio.
+- **Weaknesses:** Completely fail in physical, noisy, multi-speaker physical classrooms.
+- **Business Model:** Bundled with enterprise communication suites.
+- **Scalability Constraints:** Compute required for massive LLMs.
+- **Likely Infrastructure Costs:** Astronomical but subsidized by trillion-dollar market caps.
+- **UX Observations:** Sleek, but summaries are "content" focused, not "pedagogy" focused.
+- **Differentiators vs PedagogyX:** General AI vs domain-specific Educational AI.
+- **Missing Features:** Physical classroom CV tracking, pedagogical rubrics, whiteboard OCR.
+- **Opportunities for Disruption:** Dominating the physical classroom where Zoom AI cannot operate.
