@@ -3,6 +3,16 @@ benchmarks/.venv/
 benchmarks/yolo11n.pt
 benchmarks/*.pt
 benchmarks/results/_sample_silence.wav
+
+# Services / tools
+**/.venv/
+**/__pycache__/
+**/.pytest_cache/
+services/web/node_modules/
+services/web/.next/
+.env
+.env.local
+*.pyc
 node_modules/
 
 # Python

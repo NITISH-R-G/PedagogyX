@@ -2,9 +2,9 @@
 
 ## Repository overview
 
-PedagogyX is in **Phase 0** (Research & Architecture). Primary artifacts are Markdown docs (RFCs, ADRs, sprint plans). **MVP application code is blocked until G2** (India legal sign-off).
+PedagogyX has **Phase 0 documentation** plus an **MVP boilerplate** (`services/`, `infra/`, `tools/`). **Production school data** remains blocked until **G2** (India legal sign-off).
 
-**Allowed before G2:** documentation, `benchmarks/` dev scripts (ADR-0006 RTX 5070 validation only).
+**Allowed:** docs, `benchmarks/`, boilerplate dev stack, synthetic test sessions only.
 
 ## Cursor Cloud specific instructions
 
@@ -12,23 +12,33 @@ PedagogyX is in **Phase 0** (Research & Architecture). Primary artifacts are Mar
 
 - **Lint:** `npx markdownlint-cli 'docs/**/*.md'` (config: `.markdownlint.json`)
 - **Format check:** `npx prettier --check 'docs/**/*.md'`
-- **CI:** `.github/workflows/docs-lint.yml` runs on PRs to `main`
+- **CI:** `.github/workflows/dev-verify.yml` — `./scripts/dev-verify.sh --docs-only`
+
+### MVP stack (local / founder machine)
+
+```bash
+docker compose -f infra/compose.dev.yaml up --build
+./scripts/compose-smoke.sh
+python3 tools/mock-capture/mock_capture.py
+```
+
+Cloud Agent VMs often **lack Docker** — validate Python with `ruff check services tools` instead of compose-smoke.
+
+### Python
+
+- **Lint:** `ruff check services tools packages/capture-core/py` (see `pyproject.toml`)
+- API: `services/api` (FastAPI) · workers: `services/worker-asr` (stub)
 
 ### Benchmarks (dev GPU host — CPU OK until RTX 5070)
 
-- **Today (no GPU):** `./scripts/dev-verify.sh` or `cd benchmarks && ./bench_full_pipeline.sh cpu`
-- **Tomorrow (RTX 5070):** `cd benchmarks && ./bench_full_pipeline.sh gpu`
-- **Guide:** [benchmarks/DEV_WITHOUT_GPU.md](benchmarks/DEV_WITHOUT_GPU.md)
-- Cloud Agent VMs have **no NVIDIA GPU** — CPU profile is intentional for now.
+- `./scripts/dev-verify.sh` or `cd benchmarks && ./bench_full_pipeline.sh cpu`
+- [benchmarks/DEV_WITHOUT_GPU.md](benchmarks/DEV_WITHOUT_GPU.md)
 
 ### Gates
 
-- **G0** complete (founder Tier-1)
-- **G2** blocks implementation — counsel brief: `docs/07-compliance-ethics/INDIA_DPDP_COUNSEL_ENGAGEMENT_BRIEF.md`
-- **Sprint plans:** `docs/09-agile/SPRINT_02_PLAN.md` (active) · `SPRINT_03_MVP_PREP.md` (post-G2, blocked)
-- **Docs CI:** `.github/workflows/dev-verify.yml` — same as `./scripts/dev-verify.sh --docs-only`
+- **G0** complete · **G2** blocks real pilot PII — boilerplate OK with synthetic data
+- **Sprint:** [SPRINT_03_MVP_PREP.md](docs/09-agile/SPRINT_03_MVP_PREP.md)
 
 ### Markdown lint notes
 
-- `MD013` (line-length) disabled — long prose intentional
-- `MD034` (bare URLs) disabled in reference sections
+- `MD013` / `MD034` disabled in `.markdownlint.json` (intentional long lines / bare URLs)

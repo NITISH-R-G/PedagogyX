@@ -1,6 +1,23 @@
 # Developing PedagogyX (quick reference)
 
-**Phase 0** — documentation + dev tooling. **No MVP app code until G2 legal sign-off.**
+**MVP boilerplate** is in `services/` + `infra/` (founder-authorized scaffold). **Real school data** still requires **G2** counsel sign-off.
+
+---
+
+## Run the dev stack (Docker)
+
+```bash
+docker compose -f infra/compose.dev.yaml up --build
+# or: make dev-up
+```
+
+| URL                          | Service         |
+| ---------------------------- | --------------- |
+| http://localhost:8080/health | API             |
+| http://localhost:3000        | Admin web shell |
+| http://localhost:9001        | MinIO console   |
+
+Smoke test: `./scripts/compose-smoke.sh` · Mock session: `make mock-capture` (API must be up).
 
 ---
 
@@ -35,8 +52,8 @@ ollama pull qwen2.5:7b-instruct-q4_K_M
 
 ---
 
-## After G2
+## Sprint 03 next steps
 
-[Sprint 03 MVP prep](docs/09-agile/SPRINT_03_MVP_PREP.md) — first code vertical slice ([RFC-0003](docs/08-rfc-adr/RFC-0003-monorepo-scaffold-post-g2.md)).
+Boilerplate is live — see [SPRINT_03_MVP_PREP.md](docs/09-agile/SPRINT_03_MVP_PREP.md) for upload, ASR, talk ratio, admin UI.
 
 Hub: [docs/README.md](docs/README.md)
