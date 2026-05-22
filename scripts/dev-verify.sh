@@ -27,13 +27,18 @@ echo "--- prettier check ---"
 npx --yes prettier --check '**/*.md' --ignore-path .gitignore
 
 echo "--- python linting (black, isort, flake8) ---"
-if command -v black >/dev/null 2>&1; then
+VENV_BIN="benchmarks/.venv/bin"
+if [[ -x "$VENV_BIN/black" && -x "$VENV_BIN/isort" && -x "$VENV_BIN/flake8" ]]; then
+  "$VENV_BIN/black" --check --line-length=100 benchmarks/*.py
+  "$VENV_BIN/isort" --check-only --profile black --line-length=100 benchmarks/*.py
+  "$VENV_BIN/flake8" --max-line-length=100 benchmarks/*.py
+elif command -v black >/dev/null 2>&1; then
   black --check --line-length=100 benchmarks/*.py
   isort --check-only --profile black --line-length=100 benchmarks/*.py
   flake8 --max-line-length=100 benchmarks/*.py
 else
   echo "WARN: Python linters (black, isort, flake8) not found. Skipping Python linting."
-  echo "To run python linting: pip install black isort flake8"
+  echo "To run python linting locally, run: pip install -r benchmarks/requirements-bench.txt"
 fi
 
 if [[ "$DOCS_ONLY" == true ]]; then
