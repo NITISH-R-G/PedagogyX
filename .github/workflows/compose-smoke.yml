@@ -1,0 +1,17 @@
+name: compose-smoke
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "infra/**"
+      - "services/**"
+      - "scripts/compose-smoke.sh"
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compose smoke test
+        run: ./scripts/compose-smoke.sh

@@ -2,7 +2,7 @@
 
 | Field       | Value                                                                                                                                             |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Status**  | Draft — **no implementation until G2**                                                                                                            |
+| **Status**  | **Accepted (boilerplate)** — scaffold merged; **G2 still required for production school data**                                                    |
 | **Author**  | Platform (Phase 0)                                                                                                                                |
 | **Depends** | [SPRINT_03_MVP_PREP.md](../09-agile/SPRINT_03_MVP_PREP.md), [DOCKER_COMPOSE_PILOT_STACK.md](../06-stack-evaluation/DOCKER_COMPOSE_PILOT_STACK.md) |
 
@@ -10,7 +10,7 @@
 
 ## Summary
 
-Define the **first-commit** repository layout and CI expectations for the MVP vertical slice. This RFC authorizes structure only; creating directories under `services/` waits for **G2** (India DPDP counsel memo).
+Define the repository layout and CI expectations for the MVP vertical slice. **Boilerplate** under `services/` and `infra/` is authorized for local dev with **synthetic data only** until **G2** (India DPDP counsel memo).
 
 ---
 

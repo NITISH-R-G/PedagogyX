@@ -17,14 +17,14 @@
 | **G4** | ML eval plan                | 🟡 Revised for EN+HI, multi-cam                           |
 | **G5** | Infra cost model            | 🟡 **Internal** founder-funded pilot (D-10 = ₹0 customer) |
 | **G6** | DPIA + threat model         | 🟡 India DPIA draft                                       |
-| **G7** | First vertical slice spec   | 🔴 Blocked on G2 + capture agent PRD                      |
+| **G7** | First vertical slice spec   | 🟡 Boilerplate in `services/` — prod data blocked on G2   |
 
 ---
 
 ## Active sprint
 
-**Sprint 02** — counsel (G2) + GPU when RTX 5070 available: [SPRINT_02_PLAN.md](09-agile/SPRINT_02_PLAN.md)  
-**Next (post-G2 code):** [SPRINT_03_MVP_PREP.md](09-agile/SPRINT_03_MVP_PREP.md) · [RFC-0003](08-rfc-adr/RFC-0003-monorepo-scaffold-post-g2.md)
+**Sprint 03** — MVP boilerplate + vertical slice: [SPRINT_03_MVP_PREP.md](09-agile/SPRINT_03_MVP_PREP.md) · `make dev-up`  
+**Parallel:** G2 counsel [SPRINT_02_PLAN.md](09-agile/SPRINT_02_PLAN.md) · [RFC-0003](08-rfc-adr/RFC-0003-monorepo-scaffold-post-g2.md)
 
 **Dev:** [DEVELOPING.md](../DEVELOPING.md) · `./scripts/dev-verify.sh`
 

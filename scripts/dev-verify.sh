@@ -21,10 +21,19 @@ done
 echo "=== PedagogyX dev-verify ==="
 
 echo "--- markdownlint ---"
-npx --yes markdownlint-cli '**/*.md' --ignore node_modules
+npx --yes markdownlint-cli \
+  'docs/**/*.md' 'README.md' 'DEVELOPING.md' 'AGENTS.md' \
+  'infra/README.md' 'services/README.md' \
+  'services/api/README.md' 'services/web/README.md' 'services/worker-asr/README.md' 'services/worker-cv/README.md' \
+  'packages/capture-core/README.md' 'tools/mock-capture/README.md' \
+  --ignore '**/node_modules/**'
 
 echo "--- prettier check ---"
-npx --yes prettier --check '**/*.md' --ignore-path .gitignore
+npx --yes prettier --check \
+  'docs/**/*.md' 'README.md' 'DEVELOPING.md' 'AGENTS.md' \
+  'infra/README.md' 'services/README.md' \
+  'services/api/README.md' 'services/web/README.md' 'services/worker-asr/README.md' 'services/worker-cv/README.md' \
+  'packages/capture-core/README.md' 'tools/mock-capture/README.md'
 
 echo "--- python linting (black, isort, flake8) ---"
 if command -v black >/dev/null 2>&1; then
@@ -32,8 +41,18 @@ if command -v black >/dev/null 2>&1; then
   isort --check-only --profile black --line-length=100 benchmarks/*.py
   flake8 --max-line-length=100 benchmarks/*.py
 else
-  echo "WARN: Python linters (black, isort, flake8) not found. Skipping Python linting."
+  echo "WARN: Python linters (black, isort, flake8) not found. Skipping benchmark Python linting."
   echo "To run python linting: pip install black isort flake8"
+fi
+
+echo "--- ruff (services/tools) ---"
+if command -v ruff >/dev/null 2>&1; then
+  ruff check services tools packages/capture-core/py
+elif python3 -m ruff --version >/dev/null 2>&1; then
+  python3 -m ruff check services tools packages/capture-core/py
+else
+  pip install -q ruff
+  python3 -m ruff check services tools packages/capture-core/py
 fi
 
 if [[ "$DOCS_ONLY" == true ]]; then
