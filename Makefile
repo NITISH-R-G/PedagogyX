@@ -14,3 +14,6 @@ smoke:
 
 mock-capture:
 	python3 tools/mock-capture/mock_capture.py
+
+dat-session:
+	python3 tools/dat-session-sim/dat_session_cli.py run

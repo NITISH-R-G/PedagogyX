@@ -17,7 +17,7 @@ docker compose -f infra/compose.dev.yaml up --build
 | http://localhost:3000        | Admin web shell |
 | http://localhost:9001        | MinIO console   |
 
-Smoke test: `./scripts/compose-smoke.sh` · Mock session: `make mock-capture` (API must be up).
+Smoke test: `./scripts/compose-smoke.sh` · Mock session: `make mock-capture` · DAT + camera: `make dat-session`
 
 ---
 
