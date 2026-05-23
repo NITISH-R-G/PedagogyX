@@ -23,7 +23,16 @@ On `STREAMING`, server creates/links `sessions.id` for cold-path chunk upload (R
 
 See [tools/dat-session-sim/README.md](../../tools/dat-session-sim/README.md).
 
+## Android Mock Device Kit (no glasses)
+
+Module: [clients/android-capture-dat](../../clients/android-capture-dat/README.md)
+
+- `MockDeviceKitTestCase` — permissions + reset
+- `prepareForStreaming` / `getAssetUri` helpers
+- Instrumentation: `testCameraStreaming`, `testPhotoCapture`
+
 ## References
 
 - Meta DAT: DeviceSession, Stream — [wearables.developer.meta.com](https://wearables.developer.meta.com/)
+- [MDK Android testing guide](https://wearables.developer.meta.com/docs/develop/dat/testing-mdk-android/)
 - [RFC-0002](RFC-0002-capture-agent-sync-protocol.md)

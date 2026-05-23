@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PedagogyX Capture DAT</string>
+    <string name="stream_state_idle">Stream: idle</string>
+    <string name="stream_state_format">Stream: %1$s</string>
+</resources>
