@@ -1,8 +1,8 @@
 # RFC-0004 — DAT Session Bridge (Dev + Production)
 
-| Field      | Value |
-| ---------- | ----- |
-| **Status** | Draft |
+| Field      | Value      |
+| ---------- | ---------- |
+| **Status** | Draft      |
 | **Date**   | 2026-05-23 |
 
 ## Summary

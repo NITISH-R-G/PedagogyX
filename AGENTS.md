@@ -6,6 +6,8 @@ PedagogyX has **Phase 0 documentation** plus an **MVP boilerplate** (`services/`
 
 **Allowed:** docs, `benchmarks/`, boilerplate dev stack, synthetic test sessions only.
 
+**Primary v1 client:** Meta Ray-Ban via [clients/android-capture-dat](clients/android-capture-dat/README.md) (DAT). Plan change: [ADR-0009](docs/08-rfc-adr/ADR-0009-meta-rayban-primary-client.md).
+
 ## Cursor Cloud specific instructions
 
 ### Documentation
@@ -20,9 +22,12 @@ PedagogyX has **Phase 0 documentation** plus an **MVP boilerplate** (`services/`
 docker compose -f infra/compose.dev.yaml up --build
 ./scripts/compose-smoke.sh
 python3 tools/mock-capture/mock_capture.py
+make dat-session   # DAT lifecycle sim (no glasses)
 ```
 
 Cloud Agent VMs often **lack Docker** — validate Python with `ruff check services tools` instead of compose-smoke.
+
+**Meta DAT (Android):** `./scripts/install-dat-skills.sh cursor` · instrumented tests need `GITHUB_TOKEN` for Meta Maven (see client README).
 
 ### Python
 

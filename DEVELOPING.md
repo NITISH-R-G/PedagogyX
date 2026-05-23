@@ -19,6 +19,8 @@ docker compose -f infra/compose.dev.yaml up --build
 
 Smoke test: `./scripts/compose-smoke.sh` · Mock session: `make mock-capture` · DAT + camera: `make dat-session`
 
+**Meta glasses (Android MDK, no hardware):** [clients/android-capture-dat/README.md](clients/android-capture-dat/README.md) · `./scripts/install-dat-skills.sh cursor`
+
 ---
 
 ## Today (no RTX 5070)

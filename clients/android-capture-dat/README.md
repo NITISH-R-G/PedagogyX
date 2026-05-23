@@ -1,4 +1,6 @@
-# PedagogyX Android — Meta Wearables DAT + Mock Device Kit
+# PedagogyX Android — Primary client (Meta Ray-Ban DAT)
+
+**Production capture** runs on **Meta Ray-Ban smart glasses** via the Wearables Device Access Toolkit. This module is the **v1 host app** on the teacher’s phone (not the classroom smartboard).
 
 Instrumentation tests for **camera streaming** and **photo capture** without physical Meta glasses, following:
 
@@ -18,12 +20,12 @@ Server-side DAT lifecycle (PedagogyX API): [RFC-0004](../../docs/08-rfc-adr/RFC-
 
 ## Project layout
 
-| Path | Description |
-| ---- | ----------- |
-| `app/src/androidTest/.../MockDeviceKitTestCase.kt` | Base rule: permissions + `mockDeviceKit.reset()` |
-| `app/src/androidTest/.../MockDeviceKitTestHelpers.kt` | `prepareForStreaming`, `getAssetUri` |
-| `CameraStreamingInstrumentedTest` | `setCameraFeed(test_video.mp4)` |
-| `PhotoCaptureInstrumentedTest` | `setCapturedImage(test_image.png)` |
+| Path                                                  | Description                                      |
+| ----------------------------------------------------- | ------------------------------------------------ |
+| `app/src/androidTest/.../MockDeviceKitTestCase.kt`    | Base rule: permissions + `mockDeviceKit.reset()` |
+| `app/src/androidTest/.../MockDeviceKitTestHelpers.kt` | `prepareForStreaming`, `getAssetUri`             |
+| `CameraStreamingInstrumentedTest`                     | `setCameraFeed(test_video.mp4)`                  |
+| `PhotoCaptureInstrumentedTest`                        | `setCapturedImage(test_image.png)`               |
 
 ## Run tests
 

@@ -2,33 +2,34 @@
 
 **Recorded:** 2026-05-19  
 **Source:** Founder reply to Tier-1 interrogation  
-**Status:** **G0 complete** — **G2 legal still blocked** (implementation code)
+**Status:** **G0 complete** — **G2 legal still blocked** (implementation code)  
+**Plan change (2026-05-23):** Primary client is **Meta Ray-Ban smart glasses** (DAT) — see [PLAN_CHANGE_RAYBAN_PRIMARY.md](PLAN_CHANGE_RAYBAN_PRIMARY.md) · [ADR-0009](../08-rfc-adr/ADR-0009-meta-rayban-primary-client.md)
 
 ---
 
 ## Tier 1 Answers
 
-| ID             | Question                                 | **Founder answer**                                                                                 | Prior default   | Architecture impact                                                                    |
-| -------------- | ---------------------------------------- | -------------------------------------------------------------------------------------------------- | --------------- | -------------------------------------------------------------------------------------- |
-| **D-01**       | Primary customer                         | **K-12 district + university** (dual segment)                                                      | K-12 US only    | Dual RBAC, rubrics, sales motions                                                      |
-| **D-02**       | Year-1 geography                         | **India**                                                                                          | US only         | DPDP, data residency, Hindi/English ASR, ap-south-1                                    |
-| **D-03**       | Identifiable student video in v1         | **Yes**                                                                                            | No              | Full CV, identity tracking, DPIA mandatory                                             |
-| **D-04**       | Real-time coaching in v1                 | **Yes**                                                                                            | No              | WebRTC/live pipeline, edge GPU, <3s latency targets                                    |
-| **D-05**       | Economic buyer                           | **School + university** (principal / dean / campus IT)                                             | District office | Pilot signed at **institution** level; not state procurement for v1                    |
-| **D-06**       | Admins see individual AI pedagogy scores | **Yes**                                                                                            | Coaches only    | Admin dashboards, audit, union/parent risk                                             |
-| **D-07**       | China-style supervision acceptable       | **Yes** (some markets)                                                                             | No              | Supervision mode, Flanders/S-T-style rollups                                           |
-| **D-08**       | Capture model                            | **Screen recording + microphone** (not generic “phone video only”)                                 | BYOD upload     | Desktop agent / browser capture, A/V sync                                              |
-| **D-09**       | MVP modality                             | **Multi-camera**                                                                                   | Single cam      | Multi-stream sync, higher GPU cost                                                     |
-| **D-10**       | Budget per classroom/year                | **₹0 / $0 (customer)** — free pilot; **no monetary expectations** in test year                     | Unknown         | Size infra to **founder/dev cost**, not school OPEX; see note below                    |
-| **D-11**       | ASR languages                            | _Not answered_                                                                                     | English         | **Assume** English + Hindi for India unless corrected                                  |
-| **D-12**       | Cloud LLM on student-adjacent data       | **OSS only — Ollama/vLLM on-prem**                                                                 | Private/vPC     | **Closed** — Qwen2.5-7B-Q4 on RTX 5070                                                 |
-| **D-GPU**      | Max GPU hardware                         | **RTX 5070 12 GB**                                                                                 | Cloud GPU       | **Closed** — ADR-0006                                                                  |
-| **D-OSS**      | Stack preference                         | **Free & open source first**                                                                       | Mixed           | **Closed** — ADR-0005                                                                  |
-| **D-20**       | Year-1 success metric                    | **Primary M-A**; **Secondary M-B, M-C**                                                            | Unknown         | Coverage + time-to-insight + admin action on flags                                     |
-| **D-DEV**      | Device validation                        | **Any** panel meeting low-end profiles; OEM list is **examples only**                              | Named SKUs      | [INDIA_PILOT_DEVICE_REFERENCE.md](INDIA_PILOT_DEVICE_REFERENCE.md) for pilot checklist |
-| **D-CLIENT**   | Production devices                       | **All low-end Android boards + all low-end Windows smartboards** (profile-based, no OEM whitelist) | Phone-only      | ADR-0007; certify Android A/B + Windows SB profiles                                    |
-| **D-PEDAGOGY** | Primary product outcome                  | **Monitor & assess teacher teaching ability and pedagogy**                                         | Mixed analytics | Per-**teacher** scores and evidence; not per-student punitive ranking in v1            |
-| **D-PROC**     | Where ML runs in production              | **C — Hybrid** (LAN edge buffer + India cloud GPU analytics)                                       | Central TBD     | ADR-0008                                                                               |
+| ID             | Question                                 | **Founder answer**                                                                                   | Prior default   | Architecture impact                                                                    |
+| -------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------- | --------------- | -------------------------------------------------------------------------------------- |
+| **D-01**       | Primary customer                         | **K-12 district + university** (dual segment)                                                        | K-12 US only    | Dual RBAC, rubrics, sales motions                                                      |
+| **D-02**       | Year-1 geography                         | **India**                                                                                            | US only         | DPDP, data residency, Hindi/English ASR, ap-south-1                                    |
+| **D-03**       | Identifiable student video in v1         | **Yes**                                                                                              | No              | Full CV, identity tracking, DPIA mandatory                                             |
+| **D-04**       | Real-time coaching in v1                 | **Yes**                                                                                              | No              | WebRTC/live pipeline, edge GPU, <3s latency targets                                    |
+| **D-05**       | Economic buyer                           | **School + university** (principal / dean / campus IT)                                               | District office | Pilot signed at **institution** level; not state procurement for v1                    |
+| **D-06**       | Admins see individual AI pedagogy scores | **Yes**                                                                                              | Coaches only    | Admin dashboards, audit, union/parent risk                                             |
+| **D-07**       | China-style supervision acceptable       | **Yes** (some markets)                                                                               | No              | Supervision mode, Flanders/S-T-style rollups                                           |
+| **D-08**       | Capture model                            | **Screen recording + microphone** (not generic “phone video only”)                                   | BYOD upload     | Desktop agent / browser capture, A/V sync                                              |
+| **D-09**       | MVP modality                             | **Multi-camera**                                                                                     | Single cam      | Multi-stream sync, higher GPU cost                                                     |
+| **D-10**       | Budget per classroom/year                | **₹0 / $0 (customer)** — free pilot; **no monetary expectations** in test year                       | Unknown         | Size infra to **founder/dev cost**, not school OPEX; see note below                    |
+| **D-11**       | ASR languages                            | _Not answered_                                                                                       | English         | **Assume** English + Hindi for India unless corrected                                  |
+| **D-12**       | Cloud LLM on student-adjacent data       | **OSS only — Ollama/vLLM on-prem**                                                                   | Private/vPC     | **Closed** — Qwen2.5-7B-Q4 on RTX 5070                                                 |
+| **D-GPU**      | Max GPU hardware                         | **RTX 5070 12 GB**                                                                                   | Cloud GPU       | **Closed** — ADR-0006                                                                  |
+| **D-OSS**      | Stack preference                         | **Free & open source first**                                                                         | Mixed           | **Closed** — ADR-0005                                                                  |
+| **D-20**       | Year-1 success metric                    | **Primary M-A**; **Secondary M-B, M-C**                                                              | Unknown         | Coverage + time-to-insight + admin action on flags                                     |
+| **D-DEV**      | Device validation                        | **Any** panel meeting low-end profiles; OEM list is **examples only**                                | Named SKUs      | [INDIA_PILOT_DEVICE_REFERENCE.md](INDIA_PILOT_DEVICE_REFERENCE.md) for pilot checklist |
+| **D-CLIENT**   | Production devices                       | **~~Smartboards primary~~ → Meta Ray-Ban + Android DAT host** (2026-05-23); boards optional Phase 1b | Phone-only      | **ADR-0009** primary; ADR-0007 deferred for fixed-room                                 |
+| **D-PEDAGOGY** | Primary product outcome                  | **Monitor & assess teacher teaching ability and pedagogy**                                           | Mixed analytics | Per-**teacher** scores and evidence; not per-student punitive ranking in v1            |
+| **D-PROC**     | Where ML runs in production              | **C — Hybrid** (LAN edge buffer + India cloud GPU analytics)                                         | Central TBD     | ADR-0008                                                                               |
 
 ---
 
@@ -38,24 +39,25 @@
 
 PedagogyX v1 exists to **monitor and assess how teachers teach** — instructional quality, discourse patterns, pacing, and composite **pedagogy** signals — for **school and university admins**, not to rank individual students.
 
-| In scope (v1)                                                       | Out of scope / defer (v1)                               |
-| ------------------------------------------------------------------- | ------------------------------------------------------- |
-| Per-**teacher** lesson pedagogy index                               | Per-**student** report cards or punitive student scores |
-| Admin/coach review of **teacher** sessions                          | Student identity as a primary dashboard unit            |
-| Capture from **any** certified low-end Android / Windows smartboard | iOS-only or high-end workstation-only deployments       |
-| Evidence clips tied to **teaching** moments                         | Social/emotional profiling of students as product goal  |
+| In scope (v1)                                                     | Out of scope / defer (v1)                               |
+| ----------------------------------------------------------------- | ------------------------------------------------------- |
+| Per-**teacher** lesson pedagogy index                             | Per-**student** report cards or punitive student scores |
+| Admin/coach review of **teacher** sessions                        | Student identity as a primary dashboard unit            |
+| Capture from **Meta Ray-Ban** (teacher POV) via DAT companion app | Smartboard-only v1 (moved to Phase 1b — ADR-0007)       |
+| Evidence clips tied to **teaching** moments                       | Social/emotional profiling of students as product goal  |
 
 Student video/audio may still be processed where legally permitted (D-03) to infer **classroom-level** discourse metrics (e.g. student talk ratio) that inform **teacher** pedagogy scores.
 
-### Capture stack clarification needed
+### Capture stack (plan change 2026-05-23)
 
-“Screen recording + mic” implies:
+**Primary v1 (ADR-0009):** Meta Ray-Ban **POV video + mic** via DAT on a teacher’s **Android phone** host app ([clients/android-capture-dat](../../clients/android-capture-dat/README.md)).
 
-- Teacher laptop/tablet **display capture** (slides, LMS, videos)
-- **Microphone** for classroom audio
-- **Multi-cam** for room video (student/teacher/board)
+| Tier-1 ID | Original answer     | v1 interpretation                                                     |
+| --------- | ------------------- | --------------------------------------------------------------------- |
+| **D-08**  | Screen + mic        | **Glasses camera + mic**; optional phone screen capture later         |
+| **D-09**  | Multi-cam classroom | **Single POV stream**; room/board cams deferred (Phase 1b / ADR-0007) |
 
-**[ASSUMPTION]** Three synchronized streams minimum per active session.
+**[ASSUMPTION]** One master AV stream per session from glasses; sync protocol still applies phone → edge → cloud per RFC-0002.
 
 ### Product positioning shift
 
@@ -74,7 +76,7 @@ Founder choices align with **supervision + analytics** platforms (China smart cl
 
 ### Unresolved blockers (next founder reply)
 
-1. **D-DEV** — Log make/model at first pilot for compatibility matrix (any low-end board that passes profiles)
+1. **D-DEV** — Log **glasses firmware + phone model** at first pilot; smartboard IFP checklist is **Phase 1b** only (see [INDIA_PILOT_DEVICE_REFERENCE.md](INDIA_PILOT_DEVICE_REFERENCE.md))
 
 ---
 

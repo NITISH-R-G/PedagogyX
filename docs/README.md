@@ -1,23 +1,23 @@
 # PedagogyX — Research & Architecture Documentation Hub
 
 **Status:** Phase 0 — **Founder Tier-1 complete** (G2 legal blocks implementation)  
-**Last updated:** 2026-05-20  
-**Product direction:** [India-first supervision, multi-cam real-time](../docs/01-phase0-founder-interrogation/FOUNDER_ANSWERS.md)
+**Last updated:** 2026-05-23  
+**Product direction:** [India-first teacher pedagogy](../docs/01-phase0-founder-interrogation/FOUNDER_ANSWERS.md) · **Primary client:** [Meta Ray-Ban DAT](08-rfc-adr/ADR-0009-meta-rayban-primary-client.md) ([plan change](01-phase0-founder-interrogation/PLAN_CHANGE_RAYBAN_PRIMARY.md))
 
 ---
 
 ## Phase Gates
 
-| Gate   | Criteria                    | Status                                                    |
-| ------ | --------------------------- | --------------------------------------------------------- |
-| **G0** | Founder Tier-1 blockers     | 🟢 **Complete**                                           |
-| **G1** | Product scope locked        | 🟡 India supervision scope locked                         |
-| **G2** | India DPDP legal sign-off   | 🔴 **Blocked** — counsel required                         |
-| **G3** | Reference architecture v0.2 | 🟢 Draft complete                                         |
-| **G4** | ML eval plan                | 🟡 Revised for EN+HI, multi-cam                           |
-| **G5** | Infra cost model            | 🟡 **Internal** founder-funded pilot (D-10 = ₹0 customer) |
-| **G6** | DPIA + threat model         | 🟡 India DPIA draft                                       |
-| **G7** | First vertical slice spec   | 🟡 Boilerplate in `services/` — prod data blocked on G2   |
+| Gate   | Criteria                    | Status                                                             |
+| ------ | --------------------------- | ------------------------------------------------------------------ |
+| **G0** | Founder Tier-1 blockers     | 🟢 **Complete**                                                    |
+| **G1** | Product scope locked        | 🟡 India supervision scope locked                                  |
+| **G2** | India DPDP legal sign-off   | 🔴 **Blocked** — counsel required                                  |
+| **G3** | Reference architecture v0.2 | 🟢 Draft complete                                                  |
+| **G4** | ML eval plan                | 🟡 Revised for EN+HI; v1 **glasses POV** (room multi-cam Phase 1b) |
+| **G5** | Infra cost model            | 🟡 **Internal** founder-funded pilot (D-10 = ₹0 customer)          |
+| **G6** | DPIA + threat model         | 🟡 India DPIA draft                                                |
+| **G7** | First vertical slice spec   | 🟡 Boilerplate in `services/` — prod data blocked on G2            |
 
 ---
 
@@ -34,7 +34,7 @@
 **[PRODUCT_DECISION_IMPLICATIONS.md](01-phase0-founder-interrogation/PRODUCT_DECISION_IMPLICATIONS.md)** — engineering impact  
 **[SUCCESS_METRIC_OPTIONS.md](01-phase0-founder-interrogation/SUCCESS_METRIC_OPTIONS.md)** — pick primary metric  
 **[FOUNDER_SUCCESS_METRICS_GUIDE.md](01-phase0-founder-interrogation/FOUNDER_SUCCESS_METRICS_GUIDE.md)** — detailed M-A…M-F guide  
-**[INDIA_PILOT_DEVICE_REFERENCE.md](01-phase0-founder-interrogation/INDIA_PILOT_DEVICE_REFERENCE.md)** — smartboard/tablet OEM research (D-DEV)
+**[INDIA_PILOT_DEVICE_REFERENCE.md](01-phase0-founder-interrogation/INDIA_PILOT_DEVICE_REFERENCE.md)** — smartboard/tablet OEM research (**Phase 1b**; primary pilot logs glasses + phone per ADR-0009)
 
 ---
 

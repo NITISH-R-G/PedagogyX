@@ -141,3 +141,17 @@ See [ADR-0008](../08-rfc-adr/ADR-0008-d-proc-hybrid-central-ml.md).
 | **Risk R-07**       | Mitigated at small scale; returns if school expects 20 live rooms on 1 GPU |
 
 See [HARDWARE_CONSTRAINTS.md](HARDWARE_CONSTRAINTS.md).
+
+---
+
+## Update: Meta Ray-Ban primary client (2026-05-23)
+
+| Impact               | Detail                                                                                                                                                                               |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Capture**          | **Wearable POV** replaces smartboard-first v1; see [PLAN_CHANGE_RAYBAN_PRIMARY.md](PLAN_CHANGE_RAYBAN_PRIMARY.md) · [ADR-0009](../08-rfc-adr/ADR-0009-meta-rayban-primary-client.md) |
+| **Engineering**      | **Android DAT host** + Mock Device Kit; `/v1/dat-sessions` lifecycle; defer desktop/multi-RTSP agent as **primary**                                                                  |
+| **Complexity shift** | Less **IFP/Windows board** matrix work short-term; more **Bluetooth/DAT stream**, consent UX for **teacher-worn** camera                                                             |
+| **D-08 / D-09**      | Interpret as glasses AV + single stream for v1 (boards/screen/multi-cam = Phase 1b)                                                                                                  |
+| **Unchanged**        | India DPDP (G2), hybrid D-PROC, teacher pedagogy (D-PEDAGOGY), OSS + RTX 5070 cloud sizing                                                                                           |
+
+**[RISK]** Teacher-worn recording may face stronger union/parent pushback than fixed-room panels — privacy wireframes and notice copy are **blocking** for pilot, not optional polish.

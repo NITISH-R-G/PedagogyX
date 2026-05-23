@@ -1,11 +1,37 @@
-# Production Client Specification — Android & Windows Smartboards
+# Production Client Specification
 
-**Status:** Draft v0.2  
-**ADR:** [ADR-0007](../08-rfc-adr/ADR-0007-production-clients-low-end.md)
+**Status:** Draft v0.3 (plan change 2026-05-23)  
+**Primary client:** [ADR-0009](../08-rfc-adr/ADR-0009-meta-rayban-primary-client.md) — **Meta Ray-Ban + Android DAT**  
+**Secondary (deferred v1):** [ADR-0007](../08-rfc-adr/ADR-0007-production-clients-low-end.md) — smartboards
 
 ---
 
-## Compatibility mandate (founder 2026-05-19)
+## Primary — Meta Ray-Ban smart glasses (v1)
+
+| Principle    | Detail                                                                                                          |
+| ------------ | --------------------------------------------------------------------------------------------------------------- |
+| **Hardware** | Meta Ray-Ban Meta (AI glasses)                                                                                  |
+| **SDK**      | Wearables **DAT** 0.7+ (`mwdat-core`, `mwdat-camera`, `mwdat-mockdevice`)                                       |
+| **Host app** | Android phone — [clients/android-capture-dat](../../clients/android-capture-dat/README.md)                      |
+| **Capture**  | POV **video + microphone** from glasses; stream via DAT `Stream` / upload cold path                             |
+| **Testing**  | Mock Device Kit (no physical glasses)                                                                           |
+| **Backend**  | PedagogyX API + hybrid cloud (ADR-0008); DAT lifecycle [RFC-0004](../08-rfc-adr/RFC-0004-dat-session-bridge.md) |
+
+```mermaid
+flowchart LR
+    GL[Ray-Ban glasses]
+    APP[PedagogyX Android DAT]
+    CLOUD[India cloud ML]
+
+    GL <--> APP
+    APP --> CLOUD
+```
+
+---
+
+## Secondary — Android & Windows smartboards (Phase 1b)
+
+Previously the **primary** mandate (founder 2026-05-19). Retained for fixed classrooms; **not** the current v1 engineering focus.
 
 | Principle        | Detail                                                                                                                                        |
 | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
