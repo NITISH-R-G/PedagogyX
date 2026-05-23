@@ -36,9 +36,20 @@ cd clients/android-capture-dat
 
 Add assets first (see `app/src/androidTest/assets/README.md`).
 
+## Cursor — full DAT API reference (@Docs)
+
+Add Meta’s indexed API docs once per machine (IDE setting, not in git):
+
+1. **Settings → Features → Docs → Add new doc**
+2. URL: `https://wearables.developer.meta.com/llms.txt?full=true`
+3. Name: **Wearables DAT SDK**
+4. In Chat: **@Docs** → select **Wearables DAT SDK**
+
+Details: [CURSOR_WEARABLES_DAT_DOCS.md](../../docs/05-architecture/CURSOR_WEARABLES_DAT_DOCS.md)
+
 ## Cursor / Meta AI skills (optional)
 
-Install Meta DAT agent skills into Cursor from the upstream repo:
+Install Meta DAT agent **skills** (integration patterns; complements @Docs above):
 
 ```bash
 curl -sL https://raw.githubusercontent.com/facebook/meta-wearables-dat-android/main/install-skills.sh | bash -s -- cursor

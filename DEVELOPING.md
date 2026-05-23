@@ -21,6 +21,8 @@ Smoke test: `./scripts/compose-smoke.sh` · Mock session: `make mock-capture` ·
 
 **Meta glasses (Android MDK, no hardware):** [clients/android-capture-dat/README.md](clients/android-capture-dat/README.md) · `./scripts/install-dat-skills.sh cursor`
 
+**Cursor DAT API (@Docs):** Settings → Features → Docs → add `https://wearables.developer.meta.com/llms.txt?full=true` as **Wearables DAT SDK** — [setup guide](docs/05-architecture/CURSOR_WEARABLES_DAT_DOCS.md)
+
 ---
 
 ## Today (no RTX 5070)

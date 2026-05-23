@@ -76,4 +76,5 @@ flowchart LR
 
 - [Meta Wearables DAT](https://wearables.developer.meta.com/docs/develop/)
 - [MDK Android testing (Mock Device Kit)](https://wearables.developer.meta.com/docs/develop/dat/testing-mdk-android/)
+- [Cursor @Docs setup — Wearables DAT SDK](../05-architecture/CURSOR_WEARABLES_DAT_DOCS.md) (`llms.txt?full=true`)
 - [ADR-0008](ADR-0008-d-proc-hybrid-central-ml.md)

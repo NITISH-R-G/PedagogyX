@@ -29,6 +29,8 @@ Cloud Agent VMs often **lack Docker** — validate Python with `ruff check servi
 
 **Meta DAT (Android):** `./scripts/install-dat-skills.sh cursor` · instrumented tests need `GITHUB_TOKEN` for Meta Maven (see client README).
 
+**Cursor @Docs (founder/desktop IDE only):** Add doc source **Wearables DAT SDK** — URL `https://wearables.developer.meta.com/llms.txt?full=true` — then reference via @Docs in Chat. Steps: [CURSOR_WEARABLES_DAT_DOCS.md](docs/05-architecture/CURSOR_WEARABLES_DAT_DOCS.md). Cloud Agents cannot configure IDE Docs; use repo files + skills instead.
+
 ### Python
 
 - **Lint:** `ruff check services tools packages/capture-core/py` (see `pyproject.toml`)
