@@ -1,77 +1,80 @@
-# DevOps & Platform Infrastructure Report
+# DevOps & Platform Infrastructure Architecture Report
 
-**Version:** 1.0
+**Version:** 2.0
 **Author:** Autonomous Senior DevOps Engineer & Platform Infrastructure Architect
-**Focus:** High-Reliability, Automated, Scalable Multimodal AI Processing Infrastructure
+**Focus:** Hyperscale, High-Reliability, Automated Multimodal AI Processing Infrastructure
+**Project:** PedagogyX
 
 ## Infrastructure Overview
 
-- **Current architecture:** Hybrid Edge-Cloud (D-PROC=C) architecture. Lightweight edge nodes capture AV streams on low-end client hardware in classrooms, buffering and syncing prior to ingestion by a central cloud backend handling inference.
-- **Environment topology:** Local containerized dev environments (`infra/compose.dev.yaml`), multi-cloud capable staging pipelines mapping Edge nodes to the cloud ingestion layer, with production environments targeted towards ap-south-1 (Mumbai) ensuring strictly governed data residency.
-- **Deployment model:** Pure infrastructure-as-code deployments driving git-backed, reproducible infrastructure targeting containerized OSS services. Zero manual operations permitted. Containerized ingest and ML worker nodes scaled conditionally based on telemetry triggers.
-- **Operational goals:** Ensure maximum reliability across potentially unstable network environments typical to the K-12 segments. Sustain strict zero-hardware customer budget requirements by centralizing intensive ML compute, isolating single points of failure, scaling aggressively to zero for non-peak times, and continuously enforcing strict SLA latency bounds on authoritative cold-path ML processing pipelines.
+- **Current architecture:** Hybrid Edge-Cloud (D-PROC=C) architecture designed for resilience in low-connectivity K-12 environments. The system relies on lightweight, client-side capture on zero-cost hardware (Android/Windows smartboards) coupled with a massive, centralized inference engine.
+- **Environment topology:** Local development utilizes `infra/compose.dev.yaml` for parity. Upstream environments progress through isolated CI, ephemeral staging namespaces, and a fully robust production footprint anchored in `ap-south-1` (Mumbai) to strictly enforce DPDP residency compliance.
+- **Deployment model:** 100% Declarative Infrastructure as Code (IaC) via Terraform and Kubernetes manifests. Zero-touch, fully automated GitOps deployments (ArgoCD/Flux). No manual ssh access to production nodes is permitted.
+- **Operational goals:** Achieve 99.99% availability for API components, ensure completely automated failure recovery, enforce immutable and reproducible infrastructure state, and scale down aggressively to zero during non-school hours to meet stringent ₹0 client hardware budget constraints.
 
 ## CI/CD Architecture
 
-- **Pipeline structure:** Declarative CI pipelines (GitHub Actions) gating branch merges via enforced linting, unit test execution, and container immutability validation. Release pipelines trigger strictly from git tags generating uniquely identified deployment artifacts.
-- **Automation strategy:** Continuous integration covering test cycles (`./scripts/dev-verify.sh`), synthetic payload smoke-testing (`./scripts/compose-smoke.sh`), and security vulnerability scans for base OS dependencies.
-- **Deployment flow:** Automated gitops CD syncing registry image tags with target environments. Edge devices leverage pull-based automated fleet upgrades on predetermined schedules.
-- **Rollback mechanisms:** Automated, instant rollback to `n-1` container image tags triggered programmatically by post-deployment health check failures, ensuring zero sustained downtime. Edge agents hold dual-bank upgrade capability to prevent soft-brick conditions.
+- **Pipeline structure:** Trunk-based development gating with GitHub Actions. Pipelines validate formatting, linting (e.g., `prettier`, `black`, `isort`, `flake8` enforced via `./scripts/dev-verify.sh`), test coverage, container immutability, and security scans prior to merge.
+- **Automation strategy:** Continuous integration executes deterministic test environments. Artifacts are built once, signed, and promoted through environments. Local setups leverage `./scripts/compose-smoke.sh` for integration tests.
+- **Deployment flow:** GitOps-driven continuous deployment via ArgoCD. Image updates automatically trigger rollouts via Helm charts across the cluster fleet, applying Blue/Green and Canary deployment models to minimize deployment blast radius.
+- **Rollback mechanisms:** Automated, telemetry-driven rollbacks using progressive delivery mechanisms (Flagger). If an error rate or latency SLI breaches a threshold during a canary rollout, the system instantly reverts to the `n-1` known-good state without manual intervention.
 
 ## Cloud Infrastructure
 
-- **Cloud services:** Self-hosted and cloud-agnostic capable OSS components emphasizing complete operational independence from proprietary managed services. Leveraging raw compute via generic VPS providers and dedicated GPU capacity tailored around RTX 5070 equivalent node pools.
-- **Networking:** Multi-tier isolated subnets splitting ingest proxy endpoints from the strictly private compute backplane. Cross-environment communication strictly encrypted.
-- **Infrastructure layout:** Highly decoupled layers: WebRTC/RTMP Edge-Proxies ingest raw classroom telemetry. This passes via distributed queues (Redis/Kafka) into scalable Python ML workers handling isolated ASR/CV inference. Object state flows to MinIO and metadata into PostgreSQL.
-- **Scaling architecture:** Autoscaling policies configured on dynamic queue depth rather than raw compute utilization to absorb instantaneous load spikes and prevent ML worker task exhaustion while maintaining queue consumption SLA boundaries.
+- **Cloud services:** Self-hosted, cloud-agnostic OSS ecosystem ensuring complete independence from vendor lock-in. Compute relies on high-availability node pools spanning multi-AZ VPCs, strictly partitioned between general-purpose instances and specialized RTX 5070 GPU nodes for model inference (faster-whisper, YOLO, Ollama).
+- **Networking:** Hub-and-spoke VPC topology with deep network isolation. Public ingress is routed exclusively through API Gateways/WAFs into public subnets, proxying to strictly private application and database subnets. Zero trust communication with mutual TLS (mTLS) enforced.
+- **Infrastructure layout:** WebRTC/RTMP proxies terminate edge traffic, queuing AV streams into distributed message brokers (Kafka/Redis). Stateless Python-based FastAPI services handle orchestration while containerized ML workers process queue batches. Long-term object storage relies on S3-compatible endpoints (MinIO), and metadata resides in highly-available PostgreSQL.
+- **Scaling architecture:** Event-driven horizontal autoscaling decoupled from CPU limits, instead relying on queue depths (KEDA) to proportionally spin up ML workers. Ensures optimal queue processing while limiting GPU idle time.
 
 ## Kubernetes Architecture
 
-- **Cluster topology:** Multi-zone highly available control plane with distinct node groups for variable workloads (stateless ingress vs. stateful storage vs. heavy GPU compute).
-- **Deployment strategy:** Helm templated orchestration logic. Workloads defined securely via immutable deployment manifests managed via an external GitOps source of truth (ArgoCD/Flux).
-- **Autoscaling:** HPA scaled ingest components tracking incoming stream connections, and KEDA (Kubernetes Event-Driven Autoscaler) driving ML worker pods explicitly linked to underlying message broker depths.
-- **Ingress architecture:** Horizontally scaled ingress controllers handling strict TLS termination, load balancing gRPC and RESTful workloads across the microservices mesh.
+- **Cluster topology:** Highly Available Multi-AZ Kubernetes control plane. Segmented node groups: dedicated ingress/egress nodes, high-memory datastore nodes, and GPU-enabled inference nodes via device plugins.
+- **Deployment strategy:** Helm-based parameterized deployments managed by GitOps controllers. Workloads deploy with Anti-Affinity rules to ensure Pod distribution across distinct availability zones to survive node or zone failures.
+- **Autoscaling:** Cluster Autoscaler manages the underlying compute nodes, dynamically provisioning GPU instances when KEDA scales ML worker deployments past current cluster capacity, and tearing them down when queues are depleted.
+- **Ingress architecture:** Ingress-Nginx or Traefik horizontally scaled ingress controllers handling strict TLS 1.3 termination, rate-limiting, and distributed WAF inspection before routing traffic inside the cluster.
 
 ## Observability Stack
 
-- **Metrics:** High resolution time-series aggregation (Prometheus) scraping host hardware, container orchestration metrics, and application-level business telemetry (e.g. inference latency, queue age).
-- **Logging:** Centralized log aggregation parsing stdout/stderr application streams into searchable indexes (Loki/Elasticsearch) with aggressive retention policy application and PII anonymization.
-- **Tracing:** Distributed request tracing (OpenTelemetry) tagging discrete session events from Edge client initialization through to the authoritative backend inference resolution.
-- **Alerting:** Granular, non-fatiguing alerts configured against high-level SLIs. PagerDuty/Slack routing defined dynamically per subsystem ensuring immediate root-cause mitigation paths are actionable.
+- **Metrics:** Prometheus operating in a highly available clustered mode scraping node-exporter, kube-state-metrics, cAdvisor, and custom application metrics (e.g., VRAM utilization, inference queue latency, ingestion throughput).
+- **Logging:** Centralized log aggregation via the LGTM stack (Loki, Grafana, Promtail) or Fluent-Bit to Elasticsearch. All logs enforce strict PII scrubbing before indexing. Retentions are aggressively lifecycle-managed to optimize storage costs.
+- **Tracing:** End-to-end OpenTelemetry distributed tracing correlating edge capture timestamps, API ingestion, queue wait times, and inference processing times, enabling instant root-cause analysis for any latency degradation.
+- **Alerting:** Alertmanager integrated with PagerDuty and Slack. Alerts are strictly curated to prevent fatigue—triggering only on actionable SLI/SLO breaches (e.g., 5xx error rate spikes, queue age exceeding SLA, node failure rates).
 
 ## Security Architecture
 
-- **IAM:** Strict least-privilege RBAC. Minimalist scoped identities defining explicitly permitted interactions across intra-system services. Segregation of Admin, Coach, and Teacher viewing credentials within the front-end plane.
-- **Secret management:** Externalized cryptographic secret stores. Vault-backed credential management dynamically injecting time-bound access keys into active runtime environments. No secrets committed to source.
-- **Network security:** TLS 1.3 mandated on all transit routes. Namespace isolation policies defined internally within clusters to prevent unauthorized intra-pod communications.
-- **Vulnerability management:** Continuous registry scanning flagging unpatched zero-days. Dependabot/Renovate automated PRs ensuring dependency lockfiles remain fully updated.
+- **IAM:** Principle of Least Privilege (PoLP) strictly enforced across Cloud IAM and Kubernetes RBAC. Kubernetes Service Accounts are tied directly to scoped Cloud IAM roles via OIDC, preventing broad access tokens.
+- **Secret management:** HashiCorp Vault or AWS Secrets Manager / External Secrets Operator natively syncing into Kubernetes namespaces as ephemeral secrets. Zero static credentials in repositories; all secrets are rotated automatically.
+- **Network security:** Strict Kubernetes NetworkPolicies default to deny-all, explicitly allow-listing namespace/pod communications. Cloud environments utilize Security Groups/Firewalls restricting egress traffic. All intra-cluster traffic relies on mTLS (e.g., via Istio or Linkerd).
+- **Vulnerability management:** Trivy or Clair integrated into CI pipelines scanning container registries. Automatic blocking of image promotions containing critical or high CVEs. Infrastructure compliance scanned via Checkov or tfsec.
 
 ## Reliability Strategy
 
-- **Redundancy:** Replicated storage arrays. Postgres High-Availability configurations with synchronous commits ensuring zero data loss upon master failure. Erasure coded MinIO architectures.
-- **Failover:** Automated leader election across master services. Stateless ingest controllers inherently resilient to single-instance termination.
-- **Disaster recovery:** Aggressive multi-region backups capturing strictly encrypted volumes, adhering strictly to recovery point and time objectives (RPO/RTO) ensuring verifiable platform restoration.
-- **Self healing mechanisms:** Comprehensive application liveness and readiness probes driving automated orchestration recovery. Local edge buffering strategies to prevent data loss upon intermittent network disconnection events.
+- **Redundancy:** N+2 redundancy on all critical paths. Database clusters utilize active-passive synchronous replication (e.g., Patroni for PostgreSQL) to prevent split-brain and ensure zero data loss.
+- **Failover:** Automated leader elections across distributed systems. Stateless proxy/ingest nodes dynamically load-balance away from unresponsive peers instantly.
+- **Disaster recovery:** Automated cross-region backups for relational databases and object storage. Infrastructure codified in Terraform ensures complete, automated secondary-region restoration (RTO < 4 hours, RPO < 5 minutes) in a catastrophic failure event.
+- **Self healing mechanisms:** Comprehensive Kubernetes liveness/readiness probes. Pods that deadlock or leak memory are automatically aggressively restarted. Edge clients feature offline buffering to mitigate transient network drops before uploading to the cloud.
 
 ## Cost Optimization
 
-- **Infrastructure savings:** Full dependency on OSS minimizing licensing drag. Ruthless prioritization of generic CPU workers over expensive GPU clusters for non-inference tasks.
-- **Resource optimization:** Fine-tuning container resource limits and requests preventing node overallocation. Aggressive termination of idle cloud instances.
-- **Scaling efficiency:** Deep queue batching strategies maximizing VRAM saturation on 12GB RTX 5070 cards. Intelligent worker multiplexing alternating tasks dynamically to maximize throughput per hardware dollar.
+- **Infrastructure savings:** Full open-source stack (OSS) eliminates enterprise licensing costs. Utilizing spot instances / preemptible VMs for fault-tolerant, stateless worker queues, while maintaining on-demand nodes exclusively for critical databases.
+- **Resource optimization:** Rigorous namespace resource quotas and pod requests/limits tuning via Vertical Pod Autoscaler (VPA) recommendations. Over-provisioning is aggressively minimized to reduce cloud spend.
+- **Scaling efficiency:** Custom batching logic at the ML queue level ensures maximum GPU VRAM utilization on RTX 5070 constraints. Nodes scale down to zero on weekends and nights, dramatically lowering operational burn rates.
 
 ## Risks & Bottlenecks
 
-- **Operational risks:** Managing and securing physical school Edge ingestion points across unreliable district networks. Preventing hardware drift across potentially heterogeneous deployment environments.
-- **Scaling limitations:** Synchronous blocking points emerging within the database connection pooling under massive concurrent K-12 ingestion.
-- **Security risks:** Enforcing zero-trust network boundaries within legacy school infrastructures. Ensuring strict compliance and anonymization boundaries (DPDP) are met prior to raw stream storage.
-- **Deployment risks:** Inadvertently introducing pipeline regressions leading to authoritative scoring inaccuracies. Addressed via stringent automated evaluation metrics across diverse multimodal test cases.
+- **Operational risks:** Network volatility across Indian K-12 environments causing large, unpredictable bursts of ingestion traffic. This is mitigated through resilient, distributed rate-limiting and asynchronous queueing.
+- **Scaling limitations:** Database connection exhaustion and locking contention during high concurrency. Addressed through connection poolers (PgBouncer) and read-replicas.
+- **Security risks:** Regulatory non-compliance (DPDP) and potential leakage of unanonymized minors' PII. Addressed by enforcing strict encryption at rest and in transit, and restricting physical infrastructure access strictly to the India region.
+- **Deployment risks:** A misconfiguration in GitOps could propagate cluster-wide instantly. Mitigated by strict progressive delivery (canary rollouts), comprehensive smoke tests (`compose-smoke.sh`), and mandatory peer approvals.
 
 ## Agile Sprint Plan
 
 - **Implementation phases:**
-  - _Sprint 03:_ Finalize declarative CI pipelines securing baseline infrastructure provisioning capability.
-  - _Sprint 04:_ Operationalize centralized metrics gathering across the developer mock environment, establishing SLI baselines.
-  - _Sprint 05:_ Integrate comprehensive GitOps orchestration workflows enabling automated, reviewable infrastructure state mutation.
-- **Priorities:** Automate build verification, integrate logging and metrics, strictly isolate test and staging environments.
-- **Milestones:** E2E cluster provisioning automation verified via CI. Zero manual configuration drift demonstrable.
-- **Expected operational improvements:** Rapidly accelerated mean time to recovery (MTTR), definitive observability coverage ensuring system transparency, and mathematically verifiable cost tracking matching the strict zero-budget customer constraint.
+  - _Sprint 01:_ Establish foundational Terraform for base network (VPC) and cluster provisioning in ap-south-1.
+  - _Sprint 02:_ Implement core GitOps continuous deployment loop (ArgoCD/Flux) with baseline OSS ingest/worker deployments.
+  - _Sprint 03:_ Deploy fully configured observability suite (Prometheus, Loki, OpenTelemetry) and validate custom ML queuing metrics.
+  - _Sprint 04:_ Configure robust KEDA-based autoscaling rules for GPU workloads and test dynamic scale-to-zero capabilities.
+  - _Sprint 05:_ Conduct complete chaos engineering and disaster recovery simulation (simulated AZ loss, DB failover).
+- **Priorities:** Immediate prioritization of fully automated infrastructure provisioning, airtight security boundaries, and deep observability.
+- **Milestones:** Zero-touch cluster provisioning; fully automated canary deployments; validated autoscaling on synthetic classroom loads.
+- **Expected operational improvements:** Complete elimination of configuration drift, profound reduction in deployment-related incidents, highly optimized cloud spend aligned with zero-cost models, and rapid MTTR for arbitrary infrastructure failures.
