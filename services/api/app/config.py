@@ -12,6 +12,9 @@ class Settings(BaseSettings):
     minio_bucket: str = "pedagogyx-uploads"
     minio_secure: bool = False
     job_queue_asr: str = "jobs:asr"
+    job_queue_metrics: str = "jobs:talk_ratio"
+    overview_rooms_target: int = 20
+    max_upload_bytes: int = 52_428_800  # 50 MiB
 
 
 settings = Settings()
