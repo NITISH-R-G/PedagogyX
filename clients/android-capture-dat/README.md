@@ -61,7 +61,25 @@ Or from repo root:
 ./scripts/install-dat-skills.sh cursor
 ```
 
+## Capture flow (implemented)
+
+`CaptureActivity` + `CaptureSessionController`:
+
+1. PedagogyX API: `POST /v1/dat-sessions` → `start` → `stream/start` (links upload session)
+2. DAT: `Wearables.createSession` → `session.start()` → `addStream` → `videoStream` → chunked upload
+3. Stop: flush chunks → `POST …/stop` → `POST /v1/sessions/{id}/complete`
+
+**API base URL:** default `http://10.0.2.2:8080` (emulator). Override in `local.properties`:
+
+```properties
+pedagogyx.api.base.url=http://192.168.1.10:8080
+```
+
+Run backend: `make dev-up` from repo root.
+
+**API-only button** exercises the server lifecycle without pairing glasses (useful on emulator without Meta AI).
+
 ## Next steps
 
-- Wire `Wearables.startStreamSession` + `videoStream` in `CaptureActivity`
-- Forward lifecycle to PedagogyX `POST /v1/dat-sessions/*` (see backend running via `make dev-up`)
+- End-to-end instrumented test with Mock Device Kit + API on host network
+- Photo capture → chunk or sidecar upload

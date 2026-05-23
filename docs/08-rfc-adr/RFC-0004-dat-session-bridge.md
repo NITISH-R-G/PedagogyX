@@ -23,13 +23,13 @@ On `STREAMING`, server creates/links `sessions.id` for cold-path chunk upload (R
 
 See [tools/dat-session-sim/README.md](../../tools/dat-session-sim/README.md).
 
-## Android Mock Device Kit (no glasses)
+## Android capture host (Ray-Ban primary)
 
 Module: [clients/android-capture-dat](../../clients/android-capture-dat/README.md)
 
-- `MockDeviceKitTestCase` — permissions + reset
-- `prepareForStreaming` / `getAssetUri` helpers
-- Instrumentation: `testCameraStreaming`, `testPhotoCapture`
+- `CaptureSessionController` — DAT `DeviceSession` + `Stream.videoStream` → PedagogyX chunks
+- `PedagogyXApiClient` — `/v1/dat-sessions/*` lifecycle + multipart chunk upload
+- `MockDeviceKitTestCase` — permissions + reset (no physical glasses in CI)
 
 ## References
 
