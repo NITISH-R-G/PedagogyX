@@ -64,9 +64,9 @@ See [RFC-0003](../08-rfc-adr/RFC-0003-monorepo-scaffold-post-g2.md). **No `servi
 | S03-01 | G2 memo filed; gate updated in docs/README   | Founder  | 🔴                          |
 | S03-02 | GPU benchmark JSON merged                    | ML       | 🟡                          |
 | S03-03 | Monorepo scaffold + CI (lint, test, compose) | Platform | 🟢 `infra/compose.dev.yaml` |
-| S03-04 | API + Postgres + MinIO upload path           | Backend  | 🟡 API skeleton             |
-| S03-05 | worker-asr container (EN first)              | ML       | 🟡 stub worker              |
-| S03-06 | Admin UI: school overview (M-A widget)       | Frontend | 🟡 shell only               |
+| S03-04 | API + Postgres + MinIO upload path           | Backend  | 🟢 chunk upload API         |
+| S03-05 | worker-asr container (EN first)              | ML       | 🟢 stub + optional whisper  |
+| S03-06 | Admin UI: school overview (M-A widget)       | Frontend | 🟢 live overview API        |
 | S03-07 | Windows capture agent spike (RFC-0002)       | Client   | 🔴                          |
 
 ---

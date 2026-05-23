@@ -3,7 +3,8 @@
 | Service        | Path          | Role                          |
 | -------------- | ------------- | ----------------------------- |
 | **api**        | `api/`        | Sessions, health, job enqueue |
-| **worker-asr** | `worker-asr/` | ASR queue (stub → whisper)    |
+| **worker-asr** | `worker-asr/` | ASR queue (stub / whisper)    |
+| **worker-metrics** | `worker-metrics/` | Preview talk ratio (S03-06) |
 | **worker-cv**  | `worker-cv/`  | Phase 2 stub                  |
 | **web**        | `web/`        | Admin UI shell                |
 
