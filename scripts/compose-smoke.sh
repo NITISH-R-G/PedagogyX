@@ -16,11 +16,11 @@ echo "=== compose-smoke: up ==="
 docker compose -f "$COMPOSE_FILE" up -d --build --wait
 
 echo "=== compose-smoke: API health ==="
-curl -sf http://localhost:8080/health | tee /tmp/pedagogyx-health.json
+curl -sf --retry 5 --retry-all-errors --retry-delay 2 --max-time 10 http://localhost:8080/health | tee /tmp/pedagogyx-health.json
 echo
 
 echo "=== compose-smoke: create session ==="
-SESSION_JSON=$(curl -sf -X POST http://localhost:8080/v1/sessions \
+SESSION_JSON=$(curl -sf --retry 5 --retry-all-errors --retry-delay 2 --max-time 10 -X POST http://localhost:8080/v1/sessions \
   -H 'Content-Type: application/json' \
   -d '{"school_id":"smoke-test","room_id":"1","teacher_id":"t1"}')
 echo "$SESSION_JSON"
@@ -29,16 +29,16 @@ SESSION_ID=$(echo "$SESSION_JSON" | python3 -c "import sys,json; print(json.load
 echo "=== compose-smoke: upload chunk ==="
 CHUNK_FILE=$(mktemp)
 dd if=/dev/zero of="$CHUNK_FILE" bs=1024 count=1 2>/dev/null
-curl -sf -X POST "http://localhost:8080/v1/sessions/${SESSION_ID}/chunks/0" \
+curl -sf --retry 5 --retry-all-errors --retry-delay 2 --max-time 10 -X POST "http://localhost:8080/v1/sessions/${SESSION_ID}/chunks/0" \
   -F "file=@${CHUNK_FILE};filename=chunk0.bin"
 rm -f "$CHUNK_FILE"
 
-curl -sf -X POST "http://localhost:8080/v1/sessions/${SESSION_ID}/complete" >/dev/null
+curl -sf --retry 5 --retry-all-errors --retry-delay 2 --max-time 10 -X POST "http://localhost:8080/v1/sessions/${SESSION_ID}/complete" >/dev/null
 echo "Session completed: $SESSION_ID"
 
 echo "=== compose-smoke: wait for preview ==="
 for i in $(seq 1 45); do
-  PREVIEW=$(curl -sf "http://localhost:8080/v1/sessions/${SESSION_ID}/preview" || true)
+  PREVIEW=$(curl -sf --retry 5 --retry-all-errors --retry-delay 2 --max-time 10 "http://localhost:8080/v1/sessions/${SESSION_ID}/preview" || true)
   if echo "$PREVIEW" | grep -q '"preview_ready": true'; then
     echo "$PREVIEW"
     break
@@ -46,11 +46,11 @@ for i in $(seq 1 45); do
   sleep 1
 done
 
-curl -sf "http://localhost:8080/v1/schools/smoke-test/overview" | head -c 500
+curl -sf --retry 5 --retry-all-errors --retry-delay 2 --max-time 10 "http://localhost:8080/v1/schools/smoke-test/overview" | head -c 500
 echo
 
 echo "=== compose-smoke: web (optional) ==="
-if curl -sf http://localhost:3000/ >/dev/null; then
+if curl -sf --retry 5 --retry-all-errors --retry-delay 2 --max-time 10 http://localhost:3000/ >/dev/null; then
   echo "Web OK"
 else
   echo "WARN: web not ready (may still be building)"
