@@ -36,13 +36,29 @@ npx --yes prettier --check \
   'packages/capture-core/README.md' 'tools/mock-capture/README.md'
 
 echo "--- python linting (black, isort, flake8) ---"
-if command -v black >/dev/null 2>&1; then
-  black --check --line-length=100 benchmarks/*.py
-  isort --check-only --profile black --line-length=100 benchmarks/*.py
-  flake8 --max-line-length=100 benchmarks/*.py
+
+get_linter_cmd() {
+  local cmd=$1
+  if [ -x "benchmarks/.venv/bin/$cmd" ]; then
+    echo "benchmarks/.venv/bin/$cmd"
+  elif command -v "$cmd" >/dev/null 2>&1; then
+    echo "$cmd"
+  else
+    echo ""
+  fi
+}
+
+BLACK_CMD=$(get_linter_cmd "black")
+ISORT_CMD=$(get_linter_cmd "isort")
+FLAKE8_CMD=$(get_linter_cmd "flake8")
+
+if [ -n "$BLACK_CMD" ] && [ -n "$ISORT_CMD" ] && [ -n "$FLAKE8_CMD" ]; then
+  $BLACK_CMD --check --line-length=100 benchmarks/*.py
+  $ISORT_CMD --check-only --profile black --line-length=100 benchmarks/*.py
+  $FLAKE8_CMD --max-line-length=100 benchmarks/*.py
 else
-  echo "WARN: Python linters (black, isort, flake8) not found. Skipping benchmark Python linting."
-  echo "To run python linting: pip install black isort flake8"
+  echo "WARN: Python linters (black, isort, flake8) not fully found. Skipping benchmark Python linting."
+  echo "To run python linting: cd benchmarks && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements-bench.txt"
 fi
 
 echo "--- ruff (services/tools) ---"
