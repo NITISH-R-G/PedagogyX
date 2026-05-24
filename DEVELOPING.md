@@ -17,7 +17,11 @@ docker compose -f infra/compose.dev.yaml up --build
 | http://localhost:3000        | Admin web shell |
 | http://localhost:9001        | MinIO console   |
 
-Smoke test: `./scripts/compose-smoke.sh` · Mock session: `make mock-capture` (API must be up).
+Smoke test: `./scripts/compose-smoke.sh` · Mock session: `make mock-capture` · DAT + camera: `make dat-session`
+
+**Meta glasses (Android MDK, no hardware):** [clients/android-capture-dat/README.md](clients/android-capture-dat/README.md) · `./scripts/install-dat-skills.sh cursor`
+
+**Cursor DAT API (@Docs):** Settings → Features → Docs → add `https://wearables.developer.meta.com/llms.txt?full=true` as **Wearables DAT SDK** — [setup guide](docs/05-architecture/CURSOR_WEARABLES_DAT_DOCS.md)
 
 ---
 

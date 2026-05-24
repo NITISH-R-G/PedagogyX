@@ -19,11 +19,11 @@
 
 ## Vertical slice v0 (Sprint 03–04 target)
 
-**User story:** Teacher starts lesson on smartboard → screen+mic upload → admin sees **preliminary talk ratio** within M-B target.
+**User story:** Teacher starts lesson on **Meta Ray-Ban (DAT)** via Android host app → POV video+mic upload → admin sees **preliminary talk ratio** within M-B target. _(Smartboard path: Phase 1b — ADR-0007.)_
 
 ```mermaid
 sequenceDiagram
-    participant C as Capture agent Win/Android
+    participant C as Android DAT host + glasses
     participant E as Edge buffer
     participant API as Cloud API
     participant W as worker-asr

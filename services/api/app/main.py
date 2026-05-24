@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 
 from app import db, minio_client, queue, storage
 from app.config import settings
+from app.dat_routes import router as dat_router
 
 
 class SessionCreateBody(BaseModel):
@@ -25,9 +26,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="PedagogyX API",
-    version="0.2.0-vertical-slice",
+    version="0.2.1-dat",
     lifespan=lifespan,
 )
+app.include_router(dat_router)
 
 
 @app.get("/health")
@@ -35,7 +37,7 @@ def health():
     return {
         "status": "ok",
         "service": "api",
-        "version": "0.2.0",
+        "version": "0.2.1-dat",
         "g2_prod_data": False,
     }
 

@@ -13,6 +13,12 @@ services/web/.next/
 .env
 .env.local
 *.pyc
+
+# Android DAT client
+clients/android-capture-dat/.gradle/
+clients/android-capture-dat/**/build/
+clients/android-capture-dat/local.properties
+clients/android-capture-dat/.idea/
 node_modules/
 
 # Python

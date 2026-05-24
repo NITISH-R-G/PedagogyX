@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PedagogyX Capture DAT</string>
+    <string name="status_idle">Ready</string>
+    <string name="stream_state_idle">Stream: idle</string>
+    <string name="stream_state_format">Stream: %1$s</string>
+    <string name="session_state_idle">Session: —</string>
+    <string name="session_state_format">Session: %1$s</string>
+    <string name="frame_count_zero">Frames: 0</string>
+    <string name="frame_count_format">Frames: %1$d</string>
+    <string name="chunks_uploaded_zero">Chunks uploaded: 0</string>
+    <string name="chunks_uploaded_format">Chunks uploaded: %1$d</string>
+    <string name="start_lesson">Start lesson (glasses + API)</string>
+    <string name="stop_lesson">Stop lesson</string>
+    <string name="api_only_lesson">API-only (no DAT device)</string>
+</resources>

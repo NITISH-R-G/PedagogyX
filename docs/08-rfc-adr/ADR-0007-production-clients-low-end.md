@@ -1,9 +1,9 @@
 # ADR-0007: Production on Android & Low-End Windows Smartboards
 
-| Field      | Value                       |
-| ---------- | --------------------------- |
-| **Status** | Accepted (founder-directed) |
-| **Date**   | 2026-05-19                  |
+| Field      | Value                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------- |
+| **Status** | Accepted — **secondary** for v1 (superseded as primary by [ADR-0009](ADR-0009-meta-rayban-primary-client.md)) |
+| **Date**   | 2026-05-19                                                                                                    |
 
 ## Context
 
