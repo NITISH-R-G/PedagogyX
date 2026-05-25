@@ -26,5 +26,6 @@ jobs:
             echo "Waiting for API... $i/30"
             sleep 2
           done
+          pip install -r tools/dat-session-sim/requirements.txt
           python3 tools/dat-session-sim/dat_session_cli.py run --api-url http://localhost:8080
           docker compose -f "$COMPOSE_FILE" down
