@@ -26,14 +26,14 @@ python tools/dat-session-sim/dat_session_cli.py run --no-camera --frames 5
 
 ## API (manual)
 
-| Step | Endpoint |
-| ---- | -------- |
-| Create | `POST /v1/dat-sessions` |
-| Start session | `POST /v1/dat-sessions/{id}/start` |
-| Start stream | `POST /v1/dat-sessions/{id}/stream/start` |
-| Custom event | `POST /v1/dat-sessions/{id}/lifecycle` |
-| Stop (cascade) | `POST /v1/dat-sessions/{id}/stop` |
-| Audit log | `GET /v1/dat-sessions/{id}` |
+| Step           | Endpoint                                  |
+| -------------- | ----------------------------------------- |
+| Create         | `POST /v1/dat-sessions`                   |
+| Start session  | `POST /v1/dat-sessions/{id}/start`        |
+| Start stream   | `POST /v1/dat-sessions/{id}/stream/start` |
+| Custom event   | `POST /v1/dat-sessions/{id}/lifecycle`    |
+| Stop (cascade) | `POST /v1/dat-sessions/{id}/stop`         |
+| Audit log      | `GET /v1/dat-sessions/{id}`               |
 
 When stream reaches **STREAMING**, API links a `pedagogy_session_id` for chunk upload.
 

@@ -17,6 +17,7 @@ If you discover a security vulnerability, please do **NOT** open a public issue.
 Please send an email to `security@pedagogyx.org` (placeholder until official email is set) with the details of the vulnerability. We will try to acknowledge your report within 48 hours and provide an estimated timeline for resolution.
 
 Please include the following information in your report:
+
 - Type of issue (e.g., buffer overflow, SQL injection, cross-site scripting, etc.)
 - Full paths of source file(s) related to the manifestation of the issue
 - The location of the affected source code (tag/branch/commit or direct URL)
