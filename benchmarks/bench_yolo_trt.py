@@ -50,9 +50,15 @@ def main() -> int:
     # Warmup
     model.predict(frame, device=device, verbose=False)
 
+    # Batching speeds up inference significantly, especially on GPUs, and avoids
+    # loop overhead in Python. We stream the generator to force computation
+    # without retaining all results in memory.
+    frames = [frame] * args.frames
+
     t0 = time.perf_counter()
-    for _ in range(args.frames):
-        model.predict(frame, device=device, verbose=False)
+    # stream=True processes in memory-efficient chunks while fully utilizing parallelism
+    for _ in model.predict(frames, device=device, verbose=False, stream=True):
+        pass
     elapsed = time.perf_counter() - t0
 
     fps = args.frames / elapsed if elapsed > 0 else 0.0
