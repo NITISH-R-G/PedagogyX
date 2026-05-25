@@ -1,9 +1,9 @@
 # Instrumentation test assets
 
-| File | Purpose |
-| ---- | ------- |
+| File             | Purpose                                                     |
+| ---------------- | ----------------------------------------------------------- |
 | `test_video.mp4` | Mock streaming feed — **H.265/HEVC** recommended on Android |
-| `test_image.png` | Mock still capture |
+| `test_image.png` | Mock still capture                                          |
 
 Tests skip gracefully if files are missing (`Assume.assumeTrue`).
 
