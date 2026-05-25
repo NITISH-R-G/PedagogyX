@@ -50,9 +50,12 @@ def main() -> int:
     # Warmup
     model.predict(frame, device=device, verbose=False)
 
+    frames = [frame] * args.frames
+
     t0 = time.perf_counter()
-    for _ in range(args.frames):
-        model.predict(frame, device=device, verbose=False)
+    # stream=True is required for batching without memory explosion in some environments
+    for _ in model.predict(frames, device=device, verbose=False, stream=True):
+        pass
     elapsed = time.perf_counter() - t0
 
     fps = args.frames / elapsed if elapsed > 0 else 0.0
