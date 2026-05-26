@@ -9,6 +9,8 @@
 | PB-003 | Research     | Literature library 50 papers      | Should   | 3    | 0–1   |
 | PB-004 | Legal        | FERPA/GDPR counsel memo           | **Must** | 5    | 0     |
 | PB-005 | Architecture | Freeze reference architecture     | **Must** | 4    | 0     |
+| PB-016 | Research     | Phase 0 Exhaustive Interrogation  | **Must** | 5    | 0     |
+| PB-017 | Architecture | Tech Stack Exhaustive Comparison  | **Must** | 4    | 0     |
 | PB-006 | ML           | Golden dataset acquisition plan   | **Must** | 5    | 1     |
 | PB-007 | ML           | ASR benchmark harness             | **Must** | 3    | 1     |
 | PB-008 | Infra        | IaC dev environment skeleton      | Should   | 2    | 1     |
