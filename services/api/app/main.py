@@ -79,7 +79,7 @@ def get_session(session_id: UUID):
 
 
 @app.post("/v1/sessions/{session_id}/chunks/{chunk_index}")
-async def upload_chunk(
+def upload_chunk(
     session_id: UUID,
     chunk_index: int,
     file: UploadFile = File(...),
@@ -92,7 +92,7 @@ async def upload_chunk(
     if row["status"] not in ("active", "created"):
         raise HTTPException(status_code=409, detail="session not accepting uploads")
 
-    body = await file.read()
+    body = file.file.read()
     if len(body) > settings.max_upload_bytes:
         raise HTTPException(status_code=413, detail="chunk exceeds max size")
 
