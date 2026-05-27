@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     job_queue_metrics: str = "jobs:talk_ratio"
     overview_rooms_target: int = 20
     max_upload_bytes: int = 52_428_800  # 50 MiB
+    api_key: str = "dev_api_key_placeholder"
 
 
 settings = Settings()

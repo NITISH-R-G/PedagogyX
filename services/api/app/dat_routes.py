@@ -1,12 +1,17 @@
 from uuid import UUID
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel, Field
 
 from app import dat_db, db
 from app.dat_db import append_event
+from app.auth import verify_api_key
 
-router = APIRouter(prefix="/v1/dat-sessions", tags=["dat"])
+router = APIRouter(
+    prefix="/v1/dat-sessions",
+    tags=["dat"],
+    dependencies=[Depends(verify_api_key)]
+)
 
 
 class DatSessionCreate(BaseModel):
