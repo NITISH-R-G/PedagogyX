@@ -67,7 +67,7 @@ def post_lifecycle(dat_session_id: UUID, body: LifecycleEvent):
                 dat_session_id, body.to_state, body.event_type, body.detail
             )
     except ValueError as exc:
-        raise HTTPException(status_code=409, detail=str(exc)) from exc
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
     # On STREAMING: ensure linked PedagogyX upload session exists
     if body.target == "stream" and body.to_state == "STREAMING":
@@ -83,7 +83,7 @@ def start_dat_session(dat_session_id: UUID):
         dat_db.transition_session_state(dat_session_id, "STARTING", "session.start", {})
         row = dat_db.transition_session_state(dat_session_id, "STARTED", "session.started", {})
     except ValueError as exc:
-        raise HTTPException(status_code=409, detail=str(exc)) from exc
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
     return _serialize(row)
 
 
@@ -99,7 +99,7 @@ def start_stream(dat_session_id: UUID):
         dat_db.transition_stream_state(dat_session_id, "STARTING", "stream.add", {})
         row = dat_db.transition_stream_state(dat_session_id, "STREAMING", "stream.streaming", {})
     except ValueError as exc:
-        raise HTTPException(status_code=409, detail=str(exc)) from exc
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
     row = _ensure_pedagogy_session(row)
     return _serialize(row)
 
@@ -118,7 +118,7 @@ def stop_dat_session(dat_session_id: UUID):
             dat_db.transition_session_state(dat_session_id, "STOPPING", "session.stop", {})
             row = dat_db.transition_session_state(dat_session_id, "STOPPED", "session.stopped", {})
     except ValueError as exc:
-        raise HTTPException(status_code=409, detail=str(exc)) from exc
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
     return _serialize(row)
 
 
