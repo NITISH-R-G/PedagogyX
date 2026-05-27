@@ -15,7 +15,7 @@ def get_conn() -> Generator[Any, None, None]:
     try:
         yield conn
         conn.commit()
-    except Exception:
+    except psycopg2.Error:
         conn.rollback()
         raise
     finally:
