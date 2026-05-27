@@ -3,6 +3,7 @@ import os
 import sys
 import tempfile
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 
 import boto3
@@ -68,18 +69,34 @@ def _fetch_session(session_id: str) -> tuple[str, datetime | None]:
             return row[0], row[1]
 
 
+def _download_chunk(client, key: str) -> bytes:
+    try:
+        obj = client.get_object(Bucket=MINIO_BUCKET, Key=key)
+        return obj["Body"].read()
+    except ClientError as exc:
+        raise RuntimeError(f"minio get {key}: {exc}") from exc
+
+
 def _download_chunks(session_id: str, chunks: list[tuple[int, str]]) -> str:
     client = _s3()
     tmp = tempfile.NamedTemporaryFile(suffix=".bin", delete=False)
     path = tmp.name
     tmp.close()
+
+    results = {}
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        future_to_idx = {
+            executor.submit(_download_chunk, client, key): idx
+            for idx, key in chunks
+        }
+        for future in as_completed(future_to_idx):
+            idx = future_to_idx[future]
+            results[idx] = future.result()
+
     with open(path, "wb") as out:
-        for _idx, key in chunks:
-            try:
-                obj = client.get_object(Bucket=MINIO_BUCKET, Key=key)
-                out.write(obj["Body"].read())
-            except ClientError as exc:
-                raise RuntimeError(f"minio get {key}: {exc}") from exc
+        for idx in sorted(results.keys()):
+            out.write(results[idx])
+
     return path
 
 
