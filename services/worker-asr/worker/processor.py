@@ -12,16 +12,14 @@ from botocore.client import Config
 from botocore.exceptions import ClientError
 from psycopg2.extras import Json
 
-REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
-DATABASE_URL = os.environ.get(
-    "DATABASE_URL", "postgresql://pedagogyx:pedagogyx_dev@localhost:5432/pedagogyx"
-)
+REDIS_URL = os.environ.get("REDIS_URL")
+DATABASE_URL = os.environ.get("DATABASE_URL")
 JOB_QUEUE_METRICS = os.environ.get("JOB_QUEUE_METRICS", "jobs:talk_ratio")
 WORKER_MODE = os.environ.get("WORKER_MODE", "stub")
 WHISPER_MODEL = os.environ.get("WHISPER_MODEL", "tiny")
 MINIO_ENDPOINT = os.environ.get("MINIO_ENDPOINT", "localhost:9000")
-MINIO_ACCESS_KEY = os.environ.get("MINIO_ACCESS_KEY", "pedagogyx")
-MINIO_SECRET_KEY = os.environ.get("MINIO_SECRET_KEY", "pedagogyx_dev_minio")
+MINIO_ACCESS_KEY = os.environ.get("MINIO_ACCESS_KEY")
+MINIO_SECRET_KEY = os.environ.get("MINIO_SECRET_KEY")
 MINIO_BUCKET = os.environ.get("MINIO_BUCKET", "pedagogyx-uploads")
 MINIO_SECURE = os.environ.get("MINIO_SECURE", "false").lower() == "true"
 
