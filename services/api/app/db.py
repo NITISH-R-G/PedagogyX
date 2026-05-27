@@ -171,49 +171,59 @@ def get_metrics(session_id: UUID) -> dict | None:
             return dict(row) if row else None
 
 
+def _get_school_counts(cur, school_id: str) -> dict:
+    cur.execute(
+        """
+        SELECT COUNT(DISTINCT room_id) FILTER (WHERE room_id IS NOT NULL) AS rooms_observed,
+               COUNT(*) AS sessions_total,
+               COUNT(*) FILTER (WHERE status = 'completed') AS sessions_completed,
+               COUNT(*) FILTER (
+                   WHERE status = 'completed' AND completed_at > now() - interval '7 days'
+               ) AS sessions_week
+        FROM sessions WHERE school_id = %s
+        """,
+        (school_id,),
+    )
+    return dict(cur.fetchone())
+
+
+def _get_recent_sessions(cur, school_id: str) -> list[dict]:
+    cur.execute(
+        """
+        SELECT s.id, s.room_id, s.teacher_id, s.status, s.created_at, s.completed_at,
+               m.teacher_talk_ratio, m.student_talk_ratio, m.preview_ready_at,
+               m.insight_latency_sec, m.metric_confidence
+        FROM sessions s
+        LEFT JOIN session_metrics m ON m.session_id = s.id
+        WHERE s.school_id = %s
+        ORDER BY s.created_at DESC
+        LIMIT 20
+        """,
+        (school_id,),
+    )
+    return [_serialize_overview_row(dict(r)) for r in cur.fetchall()]
+
+
+def _get_median_latency(cur, school_id: str) -> float | None:
+    cur.execute(
+        """
+        SELECT PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY insight_latency_sec)
+        FROM session_metrics m
+        JOIN sessions s ON s.id = m.session_id
+        WHERE s.school_id = %s AND m.insight_latency_sec IS NOT NULL
+        """,
+        (school_id,),
+    )
+    median_row = cur.fetchone()
+    return float(median_row["percentile_cont"]) if median_row["percentile_cont"] else None
+
+
 def school_overview(school_id: str) -> dict:
     with get_conn() as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
-            cur.execute(
-                """
-                SELECT COUNT(DISTINCT room_id) FILTER (WHERE room_id IS NOT NULL) AS rooms_observed,
-                       COUNT(*) AS sessions_total,
-                       COUNT(*) FILTER (WHERE status = 'completed') AS sessions_completed,
-                       COUNT(*) FILTER (
-                           WHERE status = 'completed' AND completed_at > now() - interval '7 days'
-                       ) AS sessions_week
-                FROM sessions WHERE school_id = %s
-                """,
-                (school_id,),
-            )
-            counts = dict(cur.fetchone())
-
-            cur.execute(
-                """
-                SELECT s.id, s.room_id, s.teacher_id, s.status, s.created_at, s.completed_at,
-                       m.teacher_talk_ratio, m.student_talk_ratio, m.preview_ready_at,
-                       m.insight_latency_sec, m.metric_confidence
-                FROM sessions s
-                LEFT JOIN session_metrics m ON m.session_id = s.id
-                WHERE s.school_id = %s
-                ORDER BY s.created_at DESC
-                LIMIT 20
-                """,
-                (school_id,),
-            )
-            recent = [_serialize_overview_row(dict(r)) for r in cur.fetchall()]
-
-            cur.execute(
-                """
-                SELECT PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY insight_latency_sec)
-                FROM session_metrics m
-                JOIN sessions s ON s.id = m.session_id
-                WHERE s.school_id = %s AND m.insight_latency_sec IS NOT NULL
-                """,
-                (school_id,),
-            )
-            median_row = cur.fetchone()
-            median_latency = float(median_row["percentile_cont"]) if median_row["percentile_cont"] else None
+            counts = _get_school_counts(cur, school_id)
+            recent = _get_recent_sessions(cur, school_id)
+            median_latency = _get_median_latency(cur, school_id)
 
     rooms_target = int(settings.overview_rooms_target)
     rooms_observed = int(counts["rooms_observed"] or 0)
