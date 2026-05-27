@@ -1,25 +1,10 @@
-import contextlib
 from datetime import datetime, timezone
-from typing import Any, Generator
 from uuid import UUID
 
-import psycopg2
 from psycopg2.extras import RealDictCursor, Json
 
 from app.config import settings
-
-
-@contextlib.contextmanager
-def get_conn() -> Generator[Any, None, None]:
-    conn = psycopg2.connect(settings.database_url)
-    try:
-        yield conn
-        conn.commit()
-    except Exception:
-        conn.rollback()
-        raise
-    finally:
-        conn.close()
+from app.db_utils import get_conn
 
 
 def insert_session(school_id: str, room_id: str | None, teacher_id: str | None) -> dict:

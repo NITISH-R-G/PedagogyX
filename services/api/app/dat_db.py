@@ -1,13 +1,10 @@
 """DAT session persistence (Meta Wearables DAT lifecycle mirror)."""
 
-import contextlib
-from typing import Any, Generator
 from uuid import UUID
 
-import psycopg2
 from psycopg2.extras import Json, RealDictCursor
 
-from app.config import settings
+from app.db_utils import get_conn
 
 # Allowed transitions (server-enforced subset)
 DAT_SESSION_TRANSITIONS: dict[str, set[str]] = {
@@ -27,19 +24,6 @@ STREAM_TRANSITIONS: dict[str, set[str]] = {
     "STREAMING": {"STOPPING", "STOPPED"},
     "STOPPING": {"STOPPED"},
 }
-
-
-@contextlib.contextmanager
-def get_conn() -> Generator[Any, None, None]:
-    conn = psycopg2.connect(settings.database_url)
-    try:
-        yield conn
-        conn.commit()
-    except Exception:
-        conn.rollback()
-        raise
-    finally:
-        conn.close()
 
 
 def create_dat_session(
