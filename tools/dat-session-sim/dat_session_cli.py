@@ -68,7 +68,11 @@ def capture_jpeg() -> bytes | None:
 
 def run_session(args: argparse.Namespace) -> int:
     base = args.api_url.rstrip("/")
-    with httpx.Client(base_url=base, timeout=60.0) as client:
+    headers = {}
+    if args.api_key:
+        headers["Authorization"] = f"Bearer {args.api_key}"
+
+    with httpx.Client(base_url=base, headers=headers, timeout=60.0) as client:
         created = post(
             client,
             "/v1/dat-sessions",
@@ -147,6 +151,7 @@ def main() -> int:
     run_p.add_argument("--frames", type=int, default=10)
     run_p.add_argument("--frame-interval", type=float, default=0.5)
     run_p.add_argument("--no-camera", action="store_true")
+    run_p.add_argument("--api-key", default="dev_api_key_placeholder", help="API key for authentication")
     run_p.set_defaults(func=run_session)
 
     args = parser.parse_args()
