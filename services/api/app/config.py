@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6379/0"
     minio_endpoint: str = "localhost:9000"
     minio_access_key: str = "pedagogyx"
-    minio_secret_key: str = "pedagogyx_dev_minio"
+    minio_secret_key: str
     minio_bucket: str = "pedagogyx-uploads"
     minio_secure: bool = False
     job_queue_asr: str = "jobs:asr"
