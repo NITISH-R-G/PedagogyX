@@ -1,10 +1,11 @@
 import pytest
 from unittest.mock import MagicMock, patch
 
-from app.dat_db import create_dat_session, get_conn
+from app.dat_db import create_dat_session
+from app.db_utils import get_conn
 
 
-@patch("app.dat_db.psycopg2.connect")
+@patch("app.db_utils.psycopg2.connect")
 def test_get_conn_rollback_on_error(mock_connect):
     """
     Directly test the get_conn context manager to ensure that an exception
@@ -23,7 +24,7 @@ def test_get_conn_rollback_on_error(mock_connect):
     mock_conn.commit.assert_not_called()
 
 
-@patch("app.dat_db.psycopg2.connect")
+@patch("app.db_utils.psycopg2.connect")
 def test_create_dat_session_rollback_on_error(mock_connect):
     """
     Test that if an exception occurs during db operations inside get_conn,
@@ -51,7 +52,7 @@ def test_create_dat_session_rollback_on_error(mock_connect):
     mock_conn.commit.assert_not_called()
 
 
-@patch("app.dat_db.psycopg2.connect")
+@patch("app.db_utils.psycopg2.connect")
 def test_create_dat_session_success(mock_connect):
     """
     Test the happy path of create_dat_session to ensure it executes the query
