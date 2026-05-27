@@ -40,7 +40,7 @@
 
 **Opportunities to Outperform:**
 
-- By explicitly validating `worker-metrics` in our unified pipeline, we create a strict rule that *no microservice enters production without a passing automated test pipeline*.
+- By explicitly validating `worker-metrics` in our unified pipeline, we create a strict rule that _no microservice enters production without a passing automated test pipeline_.
 
 ## Priority Improvements
 
