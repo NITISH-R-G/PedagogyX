@@ -159,8 +159,10 @@ def process_job(payload: dict) -> None:
         finally:
             try:
                 os.unlink(audio_path)
-            except OSError:
+            except FileNotFoundError:
                 pass
+            except OSError as exc:
+                print(f"[worker-asr] warning: failed to unlink {audio_path}: {exc}", file=sys.stderr, flush=True)
 
     _save_transcript(session_id, text, segments, rtf)
     _enqueue_metrics(session_id, school_id)
