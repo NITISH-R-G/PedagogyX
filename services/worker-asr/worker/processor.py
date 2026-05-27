@@ -1,6 +1,5 @@
 import json
 import os
-import sys
 import tempfile
 import time
 from datetime import datetime, timezone
