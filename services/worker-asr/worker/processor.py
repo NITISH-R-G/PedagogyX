@@ -145,22 +145,22 @@ def process_job(payload: dict) -> None:
     if not school_id:
         school_id, _ = _fetch_session(session_id)
 
+    # 1) Get chunks
     chunks = _fetch_chunks(session_id)
     if not chunks:
-        print(f"[worker-asr] no chunks for {session_id}", file=sys.stderr, flush=True)
-        text, segments, rtf = _transcribe_stub(session_id)
-    else:
-        audio_path = _download_chunks(session_id, chunks)
+        return
+
+    audio_path = _download_chunks(session_id, chunks)
+    try:
+        if WORKER_MODE == "whisper":
+            text, segments, rtf = _transcribe_whisper(audio_path)
+        else:
+            text, segments, rtf = _transcribe_stub(session_id)
+    finally:
         try:
-            if WORKER_MODE == "whisper":
-                text, segments, rtf = _transcribe_whisper(audio_path)
-            else:
-                text, segments, rtf = _transcribe_stub(session_id)
-        finally:
-            try:
-                os.unlink(audio_path)
-            except OSError:
-                pass
+            os.unlink(audio_path)
+        except OSError:
+            pass
 
     _save_transcript(session_id, text, segments, rtf)
     _enqueue_metrics(session_id, school_id)
