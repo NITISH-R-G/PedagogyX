@@ -31,6 +31,18 @@ jobs:
           source .venv/bin/activate
           pytest
 
+      - name: Install Worker-Metrics Dependencies
+        run: |
+          cd services/worker-metrics
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Run Worker-Metrics Tests
+        run: |
+          source services/worker-metrics/.venv/bin/activate
+          PYTHONPATH=services/worker-metrics pytest services/worker-metrics/tests/
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
