@@ -91,8 +91,8 @@ def main() -> int:
             import torch
 
             result["vram_allocated_gb"] = round(torch.cuda.max_memory_allocated() / 1e9, 3)
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"Warning: Could not read VRAM allocated: {e}", file=sys.stderr)
 
     out = RESULTS_DIR / f"whisper_{args.model}_{device}.json"
     out.write_text(json.dumps(result, indent=2) + "\n")
