@@ -20,8 +20,8 @@ JOB_QUEUE_METRICS = os.environ.get("JOB_QUEUE_METRICS", "jobs:talk_ratio")
 WORKER_MODE = os.environ.get("WORKER_MODE", "stub")
 WHISPER_MODEL = os.environ.get("WHISPER_MODEL", "tiny")
 MINIO_ENDPOINT = os.environ.get("MINIO_ENDPOINT", "localhost:9000")
-MINIO_ACCESS_KEY = os.environ.get("MINIO_ACCESS_KEY", "pedagogyx")
-MINIO_SECRET_KEY = os.environ.get("MINIO_SECRET_KEY", "pedagogyx_dev_minio")
+MINIO_ACCESS_KEY = os.environ.get("MINIO_ACCESS_KEY", None)
+MINIO_SECRET_KEY = os.environ.get("MINIO_SECRET_KEY", None)
 MINIO_BUCKET = os.environ.get("MINIO_BUCKET", "pedagogyx-uploads")
 MINIO_SECURE = os.environ.get("MINIO_SECURE", "false").lower() == "true"
 
