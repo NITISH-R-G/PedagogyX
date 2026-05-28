@@ -8,6 +8,13 @@ from app.main import app
 client = TestClient(app)
 
 
+
+
+
+client.headers.update({"Authorization": "Bearer dev_api_key_placeholder"})
+
+
+
 def test_stop_dat_session_error_path():
     dat_session_id = uuid.uuid4()
 

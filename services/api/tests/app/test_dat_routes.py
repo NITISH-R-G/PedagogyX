@@ -5,6 +5,13 @@ from app.main import app
 
 client = TestClient(app)
 
+
+
+
+
+client.headers.update({"Authorization": "Bearer dev_api_key_placeholder"})
+
+
 @patch("app.dat_routes.dat_db.get_dat_session")
 def test_stop_dat_session_not_found(mock_get_dat_session):
     # Mock dat_db.get_dat_session to return None

@@ -1,7 +1,8 @@
 import pytest
 from unittest.mock import MagicMock, patch
 
-from app.dat_db import create_dat_session, get_conn
+from app.dat_db import create_dat_session
+from app.db_utils import get_conn
 
 
 @patch("app.db_utils.psycopg2.connect")
