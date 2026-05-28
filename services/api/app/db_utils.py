@@ -1,4 +1,5 @@
 import contextlib
+import sys
 from typing import Any, Generator
 
 import psycopg2
@@ -12,7 +13,12 @@ def get_conn() -> Generator[Any, None, None]:
     try:
         yield conn
         conn.commit()
-    except Exception:
+    except psycopg2.Error as e:
+        print(f"Database error in get_conn: {e}", file=sys.stderr)
+        conn.rollback()
+        raise
+    except Exception as e:
+        print(f"Unexpected error in get_conn: {e}", file=sys.stderr)
         conn.rollback()
         raise
     finally:
