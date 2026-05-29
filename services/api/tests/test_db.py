@@ -14,9 +14,6 @@ from app.db import (
     save_metrics,
     get_metrics,
     school_overview,
-    _get_school_counts,
-    _get_recent_sessions,
-    _get_median_latency,
 )
 
 def test_get_transcript_found():
@@ -285,7 +282,6 @@ def test_school_overview(mock_settings):
         mock_cur = MagicMock()
         mock_conn.cursor.return_value.__enter__.return_value = mock_cur
 
-        # We need to mock _get_school_counts, _get_recent_sessions, and _get_median_latency indirectly via cur calls
         # Since school_overview calls them sequentially on the same cursor
         mock_cur.fetchone.side_effect = [mock_counts, mock_median]
         mock_cur.fetchall.side_effect = [mock_recent]
