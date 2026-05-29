@@ -56,6 +56,7 @@ services:
       MINIO_SECRET_KEY: pedagogyx_dev_minio
       MINIO_BUCKET: pedagogyx-uploads
       MINIO_SECURE: "false"
+      API_KEY: "dev_api_key_placeholder"
     depends_on:
       postgres:
         condition: service_healthy
