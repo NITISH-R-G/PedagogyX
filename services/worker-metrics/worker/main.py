@@ -6,10 +6,8 @@ from datetime import datetime, timezone
 import psycopg2
 import redis
 
-REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
-DATABASE_URL = os.environ.get(
-    "DATABASE_URL", "postgresql://pedagogyx:pedagogyx_dev@localhost:5432/pedagogyx"
-)
+REDIS_URL = os.environ.get("REDIS_URL", None)
+DATABASE_URL = os.environ.get("DATABASE_URL", None)
 JOB_QUEUE = os.environ.get("JOB_QUEUE", "jobs:talk_ratio")
 POLL_TIMEOUT = int(os.environ.get("POLL_TIMEOUT", "5"))
 PREVIEW_TEACHER_RATIO = float(os.environ.get("PREVIEW_TEACHER_RATIO", "0.68"))
