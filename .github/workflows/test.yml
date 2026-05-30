@@ -26,6 +26,11 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Backend Tests
+        env:
+          DATABASE_URL: "dev"
+          REDIS_URL: "dev"
+          API_KEY: "dev_api_key_placeholder"
+          MINIO_ACCESS_KEY: "dev"
         run: |
           cd services/api
           source .venv/bin/activate

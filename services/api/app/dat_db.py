@@ -66,6 +66,23 @@ def link_pedagogy_session(dat_id: UUID, pedagogy_session_id: UUID) -> None:
             )
 
 
+def _append_event_with_cursor(
+    cur,
+    dat_id: UUID,
+    event_type: str,
+    from_state: str | None,
+    to_state: str | None,
+    detail: dict | None = None,
+) -> None:
+    cur.execute(
+        """
+        INSERT INTO dat_session_events (dat_session_id, event_type, from_state, to_state, detail)
+        VALUES (%s, %s, %s, %s, %s)
+        """,
+        (str(dat_id), event_type, from_state, to_state, Json(detail or {})),
+    )
+
+
 def append_event(
     dat_id: UUID,
     event_type: str,
@@ -75,25 +92,21 @@ def append_event(
 ) -> None:
     with get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute(
-                """
-                INSERT INTO dat_session_events (dat_session_id, event_type, from_state, to_state, detail)
-                VALUES (%s, %s, %s, %s, %s)
-                """,
-                (str(dat_id), event_type, from_state, to_state, Json(detail or {})),
-            )
+            _append_event_with_cursor(cur, dat_id, event_type, from_state, to_state, detail)
 
 
 def transition_session_state(dat_id: UUID, new_state: str, event_type: str, detail: dict | None) -> dict:
-    row = get_dat_session(dat_id)
-    if not row:
-        raise ValueError("dat session not found")
-    current = row["state"]
-    allowed = DAT_SESSION_TRANSITIONS.get(current, set())
-    if new_state not in allowed and new_state != current:
-        raise ValueError(f"invalid session transition {current} -> {new_state}")
     with get_conn() as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute("SELECT * FROM dat_sessions WHERE id = %s", (str(dat_id),))
+            row = cur.fetchone()
+            if not row:
+                raise ValueError("dat session not found")
+            current = row["state"]
+            allowed = DAT_SESSION_TRANSITIONS.get(current, set())
+            if new_state not in allowed and new_state != current:
+                raise ValueError(f"invalid session transition {current} -> {new_state}")
+
             cur.execute(
                 """
                 UPDATE dat_sessions SET state = %s, updated_at = now()
@@ -102,27 +115,30 @@ def transition_session_state(dat_id: UUID, new_state: str, event_type: str, deta
                 (new_state, str(dat_id)),
             )
             updated = dict(cur.fetchone())
-    append_event(dat_id, event_type, current, new_state, detail)
-    return updated
+            _append_event_with_cursor(cur, dat_id, event_type, current, new_state, detail)
+            return updated
 
 
 def transition_stream_state(dat_id: UUID, new_state: str, event_type: str, detail: dict | None) -> dict:
-    row = get_dat_session(dat_id)
-    if not row:
-        raise ValueError("dat session not found")
-    if row["state"] not in ("STARTED", "STREAMING", "PAUSED") and new_state not in ("STOPPED",):
-        raise ValueError("stream requires session STARTED (or STREAMING/PAUSED)")
-    current = row["stream_state"]
-    allowed = STREAM_TRANSITIONS.get(current, set())
-    if new_state not in allowed and new_state != current:
-        raise ValueError(f"invalid stream transition {current} -> {new_state}")
-    session_state = row["state"]
-    if new_state == "STREAMING" and session_state == "STARTED":
-        session_state = "STREAMING"
-    elif new_state == "STOPPED" and session_state == "STREAMING":
-        session_state = "STARTED"
     with get_conn() as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute("SELECT * FROM dat_sessions WHERE id = %s", (str(dat_id),))
+            row = cur.fetchone()
+            if not row:
+                raise ValueError("dat session not found")
+
+            if row["state"] not in ("STARTED", "STREAMING", "PAUSED") and new_state not in ("STOPPED",):
+                raise ValueError("stream requires session STARTED (or STREAMING/PAUSED)")
+            current = row["stream_state"]
+            allowed = STREAM_TRANSITIONS.get(current, set())
+            if new_state not in allowed and new_state != current:
+                raise ValueError(f"invalid stream transition {current} -> {new_state}")
+            session_state = row["state"]
+            if new_state == "STREAMING" and session_state == "STARTED":
+                session_state = "STREAMING"
+            elif new_state == "STOPPED" and session_state == "STREAMING":
+                session_state = "STARTED"
+
             cur.execute(
                 """
                 UPDATE dat_sessions
@@ -132,8 +148,8 @@ def transition_stream_state(dat_id: UUID, new_state: str, event_type: str, detai
                 (new_state, session_state, str(dat_id)),
             )
             updated = dict(cur.fetchone())
-    append_event(dat_id, event_type, current, new_state, detail)
-    return updated
+            _append_event_with_cursor(cur, dat_id, event_type, current, new_state, detail)
+            return updated
 
 
 def list_events(dat_id: UUID, limit: int = 50) -> list[dict]:
