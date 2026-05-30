@@ -51,95 +51,104 @@ export default async function HomePage() {
   const mB = overview.m_b_median_insight_sec;
 
   return (
-    <main>
-      <h1>PedagogyX Admin</h1>
-      <p style={{ color: "#555" }}>
-        School: <strong>{DEFAULT_SCHOOL}</strong> · API{" "}
-        <span style={{ color: apiOk ? "green" : "crimson" }}>{apiOk ? "connected" : "offline"}</span>
-      </p>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <header className="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between shadow-sm">
+        <h1 className="text-xl font-bold text-gray-900">PedagogyX Admin</h1>
+        <nav className="flex space-x-6 text-sm font-medium text-gray-600">
+          <a href="#" className="text-blue-600 font-semibold border-b-2 border-blue-600 pb-1">Dashboard</a>
+          <a href="#" className="hover:text-gray-900 transition-colors">Teachers</a>
+          <a href="#" className="hover:text-gray-900 transition-colors">Recordings</a>
+          <a href="#" className="hover:text-gray-900 transition-colors">Analytics</a>
+          <a href="#" className="hover:text-gray-900 transition-colors">Settings</a>
+        </nav>
+      </header>
 
-      <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginTop: "1.5rem" }}>
-        <section style={cardStyle}>
-          <h2 style={h2}>M-A · Observation coverage</h2>
-          {mA ? (
-            <>
-              <p style={big}>
-                {mA.rooms_observed} / {mA.rooms_target} rooms
+      <main className="p-8 max-w-7xl mx-auto w-full flex-grow">
+        <div className="mb-8">
+          <p className="text-gray-600 text-sm">
+            School: <strong className="text-gray-900">{DEFAULT_SCHOOL}</strong> <span className="mx-2 text-gray-300">|</span> API{" "}
+            <span className={`font-medium ${apiOk ? "text-emerald-600" : "text-rose-600"}`}>
+              {apiOk ? "connected" : "offline"}
+            </span>
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-6 mt-6">
+          <section className="flex-1 min-w-[220px] p-6 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">M-A · Observation coverage</h2>
+            {mA ? (
+              <>
+                <p className="text-3xl font-bold text-gray-900 my-2">
+                  {mA.rooms_observed} / {mA.rooms_target} <span className="text-lg text-gray-500 font-medium">rooms</span>
+                </p>
+                <p className="text-sm text-gray-600">{mA.coverage_pct}% this week (target)</p>
+                <div className="h-2 bg-gray-100 rounded-full mt-4 overflow-hidden">
+                  <div className="h-full bg-blue-600 transition-all duration-500 ease-out" style={{ width: `${Math.min(100, mA.coverage_pct)}%` }} />
+                </div>
+              </>
+            ) : (
+              <p className="text-gray-500 mt-4">{overview.error ?? "No data"}</p>
+            )}
+          </section>
+
+          <section className="flex-1 min-w-[220px] p-6 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">M-B · Time to insight</h2>
+            <p className="text-3xl font-bold text-gray-900 my-2">{mB != null ? `${Math.round(mB)} sec` : "—"}</p>
+            <p className="text-sm text-gray-500 mt-4">Median preview latency (target &lt; 30 min)</p>
+          </section>
+
+          <section className="flex-1 min-w-[220px] p-6 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Sessions (7d)</h2>
+            <p className="text-3xl font-bold text-gray-900 my-2">{overview.sessions_week ?? 0}</p>
+          </section>
+        </div>
+
+        <section className="mt-10 p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
+          <h2 className="text-lg font-semibold text-gray-900 mb-6">Recent sessions</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left border-collapse">
+              <thead>
+                <tr className="border-b border-gray-200 bg-gray-50/50">
+                  <th className="px-4 py-3 font-medium text-gray-600 rounded-tl-lg">Room</th>
+                  <th className="px-4 py-3 font-medium text-gray-600">Teacher</th>
+                  <th className="px-4 py-3 font-medium text-gray-600">Status</th>
+                  <th className="px-4 py-3 font-medium text-gray-600">Talk ratio (T)</th>
+                  <th className="px-4 py-3 font-medium text-gray-600 rounded-tr-lg">Insight (s)</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {(overview.recent_sessions ?? []).map((s) => (
+                  <tr key={String(s.id)} className="hover:bg-gray-50/80 transition-colors">
+                    <td className="px-4 py-4 text-gray-900 font-medium">{s.room_id ?? "—"}</td>
+                    <td className="px-4 py-4 text-gray-600">{s.teacher_id ?? "—"}</td>
+                    <td className="px-4 py-4">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize
+                        ${s.status === 'completed' ? 'bg-emerald-100 text-emerald-800' :
+                          s.status === 'processing' ? 'bg-amber-100 text-amber-800' :
+                          s.status === 'failed' ? 'bg-rose-100 text-rose-800' :
+                          'bg-gray-100 text-gray-800'}`}>
+                        {s.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-4 text-gray-900 font-medium">{pct(s.teacher_talk_ratio)}</td>
+                    <td className="px-4 py-4 text-gray-600">
+                      {s.insight_latency_sec != null ? Math.round(s.insight_latency_sec) : "—"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {!overview.recent_sessions?.length && (
+            <div className="mt-8 text-center p-8 bg-gray-50 rounded-lg border border-dashed border-gray-200">
+              <p className="text-gray-500 mb-2">No recent sessions found.</p>
+              <p className="text-sm text-gray-400">
+                Run <code className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-600 font-mono text-xs">make mock-capture</code> after <code className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-600 font-mono text-xs">make dev-up</code> to seed data.
               </p>
-              <p>{mA.coverage_pct}% this week (target)</p>
-              <div style={barTrack}>
-                <div style={{ ...barFill, width: `${Math.min(100, mA.coverage_pct)}%` }} />
-              </div>
-            </>
-          ) : (
-            <p>{overview.error ?? "No data"}</p>
+            </div>
           )}
         </section>
-
-        <section style={cardStyle}>
-          <h2 style={h2}>M-B · Time to insight</h2>
-          <p style={big}>{mB != null ? `${Math.round(mB)} sec` : "—"}</p>
-          <p style={{ fontSize: "0.85rem", color: "#666" }}>Median preview latency (target &lt; 30 min)</p>
-        </section>
-
-        <section style={cardStyle}>
-          <h2 style={h2}>Sessions (7d)</h2>
-          <p style={big}>{overview.sessions_week ?? 0}</p>
-        </section>
-      </div>
-
-      <section style={{ ...cardStyle, marginTop: "1.5rem", maxWidth: 900 }}>
-        <h2 style={h2}>Recent sessions</h2>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.9rem" }}>
-          <thead>
-            <tr style={{ textAlign: "left", borderBottom: "1px solid #ddd" }}>
-              <th style={th}>Room</th>
-              <th style={th}>Teacher</th>
-              <th style={th}>Status</th>
-              <th style={th}>Talk ratio (T)</th>
-              <th style={th}>Insight (s)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {(overview.recent_sessions ?? []).map((s) => (
-              <tr key={String(s.id)} style={{ borderBottom: "1px solid #eee" }}>
-                <td style={td}>{s.room_id ?? "—"}</td>
-                <td style={td}>{s.teacher_id ?? "—"}</td>
-                <td style={td}>{s.status}</td>
-                <td style={td}>{pct(s.teacher_talk_ratio)}</td>
-                <td style={td}>
-                  {s.insight_latency_sec != null ? Math.round(s.insight_latency_sec) : "—"}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {!overview.recent_sessions?.length && (
-          <p style={{ marginTop: "1rem", color: "#666" }}>
-            Run <code>make mock-capture</code> after <code>make dev-up</code> to seed data.
-          </p>
-        )}
-      </section>
-    </main>
+      </main>
+    </div>
   );
 }
-
-const cardStyle: React.CSSProperties = {
-  flex: "1 1 220px",
-  padding: "1rem",
-  border: "1px solid #ccc",
-  borderRadius: 8,
-  minWidth: 220,
-};
-const h2: React.CSSProperties = { marginTop: 0, fontSize: "1rem" };
-const big: React.CSSProperties = { fontSize: "1.75rem", margin: "0.25rem 0", fontWeight: 600 };
-const barTrack: React.CSSProperties = {
-  height: 8,
-  background: "#eee",
-  borderRadius: 4,
-  marginTop: 8,
-  overflow: "hidden",
-};
-const barFill: React.CSSProperties = { height: "100%", background: "#2563eb" };
-const th: React.CSSProperties = { padding: "0.5rem 0.25rem" };
-const td: React.CSSProperties = { padding: "0.5rem 0.25rem" };
