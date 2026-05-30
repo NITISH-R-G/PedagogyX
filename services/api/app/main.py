@@ -1,3 +1,4 @@
+import sys
 from contextlib import asynccontextmanager
 from uuid import UUID
 
@@ -20,7 +21,7 @@ async def lifespan(app: FastAPI):
     try:
         minio_client.ensure_bucket()
     except Exception as exc:
-        print(f"WARN: MinIO bucket init skipped: {exc}")
+        print(f"WARN: MinIO bucket init skipped: {exc}", file=sys.stderr)
     yield
 
 
