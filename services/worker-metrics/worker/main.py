@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+import traceback
 from datetime import datetime, timezone
 
 import psycopg2
@@ -122,6 +123,8 @@ def main() -> None:
             process_job(payload)
         except Exception as exc:
             print(f"[worker-metrics] job failed: {exc}", file=sys.stderr, flush=True)
+            traceback.print_exc(file=sys.stderr)
+            client.rpush(f"{JOB_QUEUE}:dlq", raw)
 
 
 if __name__ == "__main__":
