@@ -5,10 +5,12 @@ export const metadata: Metadata = {
   description: "Teacher pedagogy monitoring (boilerplate)",
 };
 
+import "./globals.css";
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body style={{ fontFamily: "system-ui, sans-serif", margin: "2rem", lineHeight: 1.5 }}>
+      <body className="font-sans antialiased bg-gray-50 text-gray-900">
         {children}
       </body>
     </html>
