@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+import traceback
 
 import redis
 
@@ -29,6 +30,11 @@ def main() -> None:
             process_job(payload)
         except Exception as exc:
             print(f"[worker-asr] job failed: {exc}", file=sys.stderr, flush=True)
+            traceback.print_exc(file=sys.stderr)
+            try:
+                client.rpush(f"{JOB_QUEUE}:dlq", raw)
+            except Exception as dlq_exc:
+                print(f"[worker-asr] failed to push to DLQ: {dlq_exc}", file=sys.stderr, flush=True)
 
 
 if __name__ == "__main__":
