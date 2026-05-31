@@ -17,7 +17,7 @@ def get_conn() -> Generator[Any, None, None]:
         print(f"Database error in get_conn: {e}", file=sys.stderr)
         conn.rollback()
         raise
-    except Exception as e:
+    except BaseException as e:
         print(f"Unexpected error in get_conn: {e}", file=sys.stderr)
         conn.rollback()
         raise
