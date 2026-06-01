@@ -15,14 +15,12 @@ POLL_TIMEOUT = int(os.environ.get("POLL_TIMEOUT", "5"))
 PREVIEW_TEACHER_RATIO = float(os.environ.get("PREVIEW_TEACHER_RATIO", "0.68"))
 
 
-def _compute_talk_ratio(session_id: str) -> tuple[float, float, str]:
-    with psycopg2.connect(DATABASE_URL) as conn:
-        with conn.cursor() as cur:
-            cur.execute(
-                "SELECT segments_json::text FROM session_transcripts WHERE session_id = %s",
-                (session_id,),
-            )
-            row = cur.fetchone()
+def _compute_talk_ratio(cur, session_id: str) -> tuple[float, float, str]:
+    cur.execute(
+        "SELECT segments_json::text FROM session_transcripts WHERE session_id = %s",
+        (session_id,),
+    )
+    row = cur.fetchone()
     if not row:
         teacher = PREVIEW_TEACHER_RATIO
         return teacher, round(1.0 - teacher, 4), "preview_stub"
@@ -47,19 +45,17 @@ def _compute_talk_ratio(session_id: str) -> tuple[float, float, str]:
     return teacher, round(1.0 - teacher, 4), "preview_heuristic"
 
 
-def _insight_latency_sec(session_id: str) -> float | None:
-    with psycopg2.connect(DATABASE_URL) as conn:
-        with conn.cursor() as cur:
-            cur.execute(
-                """
-                SELECT EXTRACT(EPOCH FROM (m.preview_ready_at - s.completed_at))
-                FROM sessions s
-                LEFT JOIN session_metrics m ON m.session_id = s.id
-                WHERE s.id = %s AND s.completed_at IS NOT NULL
-                """,
-                (session_id,),
-            )
-            row = cur.fetchone()
+def _insight_latency_sec(cur, session_id: str) -> float | None:
+    cur.execute(
+        """
+        SELECT EXTRACT(EPOCH FROM (m.preview_ready_at - s.completed_at))
+        FROM sessions s
+        LEFT JOIN session_metrics m ON m.session_id = s.id
+        WHERE s.id = %s AND s.completed_at IS NOT NULL
+        """,
+        (session_id,),
+    )
+    row = cur.fetchone()
     if row and row[0] is not None:
         return float(row[0])
     return None
@@ -67,11 +63,11 @@ def _insight_latency_sec(session_id: str) -> float | None:
 
 def process_job(payload: dict) -> None:
     session_id = payload["session_id"]
-    teacher, student, confidence = _compute_talk_ratio(session_id)
     now = datetime.now(timezone.utc)
 
     with psycopg2.connect(DATABASE_URL) as conn:
         with conn.cursor() as cur:
+            teacher, student, confidence = _compute_talk_ratio(cur, session_id)
             cur.execute(
                 "SELECT completed_at FROM sessions WHERE id = %s",
                 (session_id,),
