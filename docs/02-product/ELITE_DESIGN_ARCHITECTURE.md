@@ -6,115 +6,81 @@
 
 ---
 
-## 1. User & Experience Analysis
+## User & Experience Analysis
 
-### User Personas
+- **User Personas:**
+  - **School Administrators (Principals, Superintendents):** Need immediate, high-level pedagogical insights, fast overview of district KPIs (M-A and M-B), and time-efficient navigation.
+  - **Teachers:** Need supportive, coaching-focused interfaces rather than punitive surveillance metrics, emphasizing personal pedagogical performance like Talk Ratio.
+- **Workflows:**
+  - Teachers starting lesson recordings via Meta Ray-Ban (DAT) glasses.
+  - Admins logging into the Next.js dashboard to review school-wide metrics and drill down into specific session analytics.
+- **Pain Points:** High cognitive load, anxiety over observation, limited time, low tolerance for complex interfaces.
+- **Accessibility Considerations:** High-stress environments requiring immediate cognitive anchors, scalable typography, high contrast for fast scanning.
+- **Emotional Considerations:** The system must project calm and authority for admins while reducing anxiety and fostering trust and empathy for teachers.
 
-1. **School Administrators (Principals, Superintendents):**
-   - **Goals:** Understand pedagogical quality across the school, allocate coaching resources efficiently, and track district KPIs (like M-A and M-B).
-   - **Constraints:** Highly constrained by time. Low tolerance for complex interfaces. Require immediate, scan-friendly insights.
-2. **Teachers (Secondary Focus for MVP Dashboard):**
-   - **Goals:** Review personal pedagogical performance (e.g., Talk Ratio), reflect on lesson structure, and improve student engagement.
-   - **Constraints:** High cognitive load, anxiety over "surveillance". Need empathetic, coaching-focused interfaces rather than punitive metrics.
+## UX Strategy
 
-### Contextual Environment
+- **Navigation:** Clear global structure (Dashboard, Teachers, Recordings, Analytics, Settings) to establish immediate wayfinding and cognitive simplicity.
+- **Interaction Flow:** Progressive disclosure. Start with high-level aggregates (School-wide coverage) and enable deep-dives into specific session details only when prompted.
+- **Onboarding:** Zero-friction onboarding for the MVP vertical slice. Dashboard provides immediate context on API connections and data processing latency.
+- **Usability Improvements:** Transition from text-heavy raw data displays to structured, widget-based visual groupings that present actionable feedback directly.
 
-- The environment is fast-paced and high-stakes. The design must project calm, authority, and extreme clarity. The emotional baseline of the user is often stressed; the UI must act as a cognitive anchor.
+## UI Strategy
 
----
+- **Layout Systems:** Widget-based dashboard utilizing a `max-w-7xl` container with generous padding (`p-8`). Flexbox (`flex-wrap`, `gap-6`) ensures graceful degradation and balanced spatial distribution.
+- **Typography:** System sans-serif stack optimized for maximum legibility and OS-native familiarity. Distinct weight contrast (`font-bold` vs `font-medium`) establishes strict visual hierarchy.
+- **Hierarchy:** Primary metrics sit at the top row (Observation Coverage, Session Volume). Secondary, chronological feed of recent sessions sits in the lower section.
+- **Spacing:** Generous and rhythmic spacing system utilizing Tailwind tokens to reduce visual clutter and lower cognitive load.
+- **Responsiveness:** Fluid grid and flexible overflow strategies (e.g., `overflow-x-auto` on tables) prevent layout breakage on constrained administrative displays.
 
-## 2. UX Strategy
+## Interaction Design
 
-### Principles
+- **Microinteractions:** Subtle shadows (`hover:shadow-md`) and background color shifts (`hover:bg-gray-50/80`) on actionable components to provide immediate, non-distracting tactile feedback.
+- **Transitions:** Smooth CSS transitions (`transition-all duration-500 ease-out`) applied to dynamic data elements like progress bars to make loading states feel deliberate.
+- **Motion Systems:** Motion is strictly functional. Loading states and transitions reinforce hierarchy and guide attention without overwhelming the user.
+- **Feedback Mechanisms:** Semantic status pills (`emerald-100/800` for success, `amber-100/800` for processing) offer immediate, accessible status recognition during data pipeline workflows.
 
-- **Cognitive Simplicity:** The dashboard must present complex ML-driven data (like observation coverage and insight latency) without overwhelming the user.
-- **Action-Oriented Feedback:** Metrics are useless without context. The UI must guide administrators toward actionable next steps (e.g., highlighting sessions with unusually high or low talk ratios).
-- **Progressive Disclosure:** Start with high-level aggregates (School-wide coverage) and allow drilling down into specific sessions and granular data.
+## Information Architecture
 
-### Enhancements Made
+- **Navigation Structure:** Persistent global header establishes context, while a secondary context bar displays the active scope (e.g., `School: pilot-school-dev`) and system health.
+- **Hierarchy:**
+  - L1: Dashboard overview and KPIs.
+  - L2: Drill-down chronological feeds.
+  - L3: Individual session playback and granular timeline insights.
+- **Discoverability:** Actionable items are grouped predictably. M-A and M-B metrics are placed in primary visual focal points.
+- **Workflow Organization:** Minimizes navigation depth. Users can move from global insights to actionable session details in two clicks.
 
-- Transitioned from a raw, text-heavy layout to a structured, widget-based dashboard that visually groups related metrics.
-- Added a clear global navigation structure (Dashboard, Teachers, Recordings, Analytics, Settings) to set expectations for future ecosystem expansion.
+## Accessibility Strategy
 
----
+- **WCAG Considerations:** All text elements and data visualizations meet or exceed WCAG AA contrast standards.
+- **Keyboard Navigation:** Semantic HTML5 (`<header>`, `<nav>`, `<main>`) ensures logical tab order and complete operability without a mouse.
+- **Screen Reader Support:** Replaced generic containers with semantic landmarks. State changes and critical system health alerts are announced via ARIA live regions.
+- **Cognitive Accessibility:** Dual-coded information systems. Status indicators use both color and explicit text labels (e.g., "processing", "completed") to eliminate color-alone reliance.
 
-## 3. UI Strategy
+## Design System Strategy
 
-### Visual Language
+- **Reusable Components:** Core primitives (Metric Cards, Status Pills, Data Tables) identified and structured for formal extraction into `services/web/components`.
+- **Tokens:** Tailwind CSS utility classes establish a strict, scalable token system for spacing, color (e.g., `bg-gray-50`, `blue-600`), and typography.
+- **Consistency Rules:** Unified interaction patterns across all data tables and metric widgets to ensure interface predictability.
+- **Scalability Strategy:** While utility classes enable rapid MVP iteration, the explicit componentization path guarantees long-term maintainability as the ecosystem expands.
 
-- **Typography:** Leveraging the system sans-serif font stack for maximum legibility and OS-native familiarity. Weight contrast (e.g., `font-bold` for primary metrics, `font-medium` for table headers) establishes clear hierarchy.
-- **Color System:**
-  - Backgrounds: `bg-gray-50` for the application shell to make white content cards (`bg-white`) pop, reducing eye strain.
-  - Primary Accents: `blue-600` for active states and critical data visualizations (progress bars).
-  - Semantic Status: `emerald-100/800` (success), `amber-100/800` (processing), `rose-100/800` (error) for immediate, accessible status recognition in the sessions table.
-- **Layout & Spacing:** Implemented a `max-w-7xl` container with generous padding (`p-8`) to maintain readability on large desktop monitors typical of administrative offices. Used Flexbox (`flex-wrap`, `gap-6`) to ensure graceful degradation on smaller screens.
+## UX Research Plan
 
----
+- **Usability Testing:** Observe 3-5 Principals interacting with the live dashboard post-G2 clearance to ensure M-A and M-B metrics are intuitively understood in real workflows.
+- **Feedback Loops:** Implement internal feedback mechanisms within the dashboard for early pilot users to flag confusing insights.
+- **Validation Strategy:** Heuristic evaluation of the dashboard against Nielsen's 10 Usability Heuristics prior to the Phase 1 release.
+- **Behavioral Analysis:** Track session drill-down rates to determine if top-level metrics effectively guide administrators to relevant actionable data.
 
-## 4. Interaction Design
+## Risks & Tradeoffs
 
-### Microinteractions
+- **Usability Risks:** High data density in the "Recent Sessions" table could overwhelm users on lower-resolution monitors. Mitigated via horizontal scrolling and strategic truncation.
+- **Accessibility Concerns:** Rapidly updating ML pipelines might create jarring screen reader experiences if live regions are not properly debounced.
+- **Scalability Limitations:** Relying on inline Tailwind utility classes in markup speeds up MVP dev but may introduce verbosity. Extracted components are planned to mitigate this.
+- **Interaction Tradeoffs:** Suppressing complex animations in favor of static, fast-loading interfaces sacrifices some "delight" for critical performance and cognitive calm.
 
-- **Hover States:** Added subtle shadows (`hover:shadow-md`) to metric cards and background color shifts (`hover:bg-gray-50/80`) to table rows to provide immediate tactile feedback without being distracting.
-- **Transitions:** Applied smooth CSS transitions (`transition-all duration-500 ease-out`) to progress bars (M-A Observation Coverage) to make data loading feel dynamic and deliberate.
-- **Navigation:** The active navigation item ("Dashboard") features a distinct bottom border, providing strong wayfinding cues.
+## Agile Sprint Plan
 
----
-
-## 5. Information Architecture
-
-### Structure
-
-- **Global Header:** Persistent navigation establishing the user's location within the broader PedagogyX suite.
-- **Context Bar:** Clearly displays the active scope (`School: pilot-school-dev`) and critical system health (`API connected/offline`).
-- **Primary Dashboard View (L1):**
-  - Top Row: Key Performance Indicators (Observation Coverage, Time to Insight, Session Volume).
-  - Bottom Section: Chronological feed of recent sessions for immediate drill-down.
-
----
-
-## 6. Accessibility Strategy
-
-### Inclusivity First
-
-- **Contrast Ratios:** Ensured all text elements meet WCAG AA standards. For instance, using `text-gray-600` on `bg-white` for secondary text and `text-gray-900` for primary headings.
-- **Semantic Structure:** Replaced generic `<div>` tags with semantic HTML5 elements (`<header>`, `<nav>`, `<main>`, `<section>`) to improve screen reader navigation.
-- **Visual Independence:** Status indicators in the table use both color and explicit text labels (e.g., "completed", "processing") so information is not conveyed by color alone.
-
----
-
-## 7. Design System Strategy
-
-### Scalable Primitives
-
-- **Tailwind CSS Implementation:** Migrated the entire application from brittle inline styles to Tailwind CSS utility classes. This establishes a robust, highly constrained token system for spacing, typography, and color.
-- **Componentization Path:** The current structure (e.g., the Metric Card `section`, the Status Pill `span`) is primed for extraction into reusable React components in subsequent sprints.
-
----
-
-## 8. UX Research Plan
-
-### Validation Phase
-
-1. **Heuristic Evaluation:** Conduct an internal review of the new dashboard against Nielsen's 10 Usability Heuristics.
-2. **Administrator Walkthroughs:** Once G2 clearance is achieved and real data flows, observe 3-5 Principals interacting with the dashboard to ensure the M-A and M-B metrics are instinctively understood.
-3. **Contrast & Screen Reader Audit:** Run automated accessibility audits (e.g., axe-core) on the new DOM structure.
-
----
-
-## 9. Risks & Tradeoffs
-
-- **Risk:** High data density in the "Recent Sessions" table could overwhelm users on smaller displays.
-  - **Mitigation:** Implemented `overflow-x-auto` to allow horizontal scrolling on small screens without breaking the layout.
-- **Tradeoff:** By opting for Tailwind CSS utility classes directly in the markup, the component code is slightly more verbose.
-  - **Justification:** This trade-off drastically improves iteration speed and guarantees design system consistency without the overhead of maintaining separate CSS modules during the MVP phase.
-
----
-
-## 10. Agile Sprint Plan
-
-### Next Steps (Design Track)
-
-- **Sprint 03 (Current):** Implement base design system via Tailwind, establish Information Architecture, and refine the MVP Admin Dashboard UI.
-- **Sprint 04:** Extract UI patterns (Metric Cards, Status Pills, Data Tables) into a formal, reusable UI Component library (`services/web/components`).
-- **Sprint 05:** Design and implement the "Session Drill-Down View" focusing on synchronized video playback and timeline interaction design.
+- **Milestones:** Complete MVP vertical slice from Meta Ray-Ban capture to Admin Web interface visualization.
+- **Design Priorities:** Finalize base design system tokens and refine Information Architecture for the main dashboard view.
+- **Usability Goals:** Achieve intuitive comprehension of the Talk Ratio metric and secure user trust through transparent processing statuses.
+- **Expected UX Outcomes:** A calm, authoritative, and frictionless environment that empowers administrators while respecting teacher emotional contexts.
