@@ -60,7 +60,7 @@ class TestComputeTalkRatio(unittest.TestCase):
         mock_cursor.fetchone.return_value = None
 
         from worker.main import _compute_talk_ratio
-        teacher, student, confidence = _compute_talk_ratio("session123")
+        teacher, student, confidence = _compute_talk_ratio(mock_cursor, "session123")
 
         self.assertEqual(teacher, 0.68)
         self.assertEqual(student, 0.32)
@@ -76,7 +76,7 @@ class TestComputeTalkRatio(unittest.TestCase):
         mock_cursor.fetchone.return_value = ["[]"]
 
         from worker.main import _compute_talk_ratio
-        teacher, student, confidence = _compute_talk_ratio("session123")
+        teacher, student, confidence = _compute_talk_ratio(mock_cursor, "session123")
 
         self.assertEqual(teacher, 0.68)
         self.assertEqual(student, 0.32)
@@ -98,7 +98,7 @@ class TestComputeTalkRatio(unittest.TestCase):
         mock_cursor.fetchone.return_value = [json.dumps(segments)]
 
         from worker.main import _compute_talk_ratio
-        teacher, student, confidence = _compute_talk_ratio("session123")
+        teacher, student, confidence = _compute_talk_ratio(mock_cursor, "session123")
 
         # total_dur = 10 + 10 + 15 = 35
         # teacher_dur = 10 + 15 = 25
@@ -121,7 +121,7 @@ class TestComputeTalkRatio(unittest.TestCase):
         mock_cursor.fetchone.return_value = [json.dumps(segments)]
 
         from worker.main import _compute_talk_ratio
-        teacher, student, confidence = _compute_talk_ratio("session123")
+        teacher, student, confidence = _compute_talk_ratio(mock_cursor, "session123")
 
         self.assertEqual(teacher, 0.68)
         self.assertEqual(student, 0.32)
