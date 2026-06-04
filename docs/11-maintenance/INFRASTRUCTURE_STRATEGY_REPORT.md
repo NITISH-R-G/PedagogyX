@@ -16,7 +16,7 @@
 
 ## CI/CD Architecture
 
-- **Pipeline Structure:** GitHub Actions handles CI automation (e.g., `.github/workflows/test.yml`, `dev-verify.yml`). It runs Python backend testing (`pytest`) and Next.js frontend testing (`vitest`), as well as markdown linting (`markdownlint` and `prettier`).
+- **Pipeline Structure:** GitHub Actions handles CI automation (e.g., `.github/workflows/test.yml`, `.github/workflows/dev-verify.yml`). It runs Python backend testing (`pytest`) and Next.js frontend testing (`vitest`), as well as markdown linting (`markdownlint` and `prettier`).
 - **Automation Strategy:** Enforce declarative, immutable infrastructure. All merges to `main` undergo automated test suites, linting (Ruff for Python, Prettier for markdown), and build validations.
 - **Deployment Flow:** Moving towards GitOps (e.g., ArgoCD) for syncing cloud states with the repository configuration. E2E tests mock production traffic using synthetic sessions (`tools/mock-capture/mock_capture.py`).
 - **Rollback Mechanisms:** Container tagging and versioned Helm charts will ensure single-click rollback capabilities. Database migrations are strictly versioned to prevent state drift during rollbacks.
@@ -75,11 +75,11 @@
 ## Agile Sprint Plan
 
 - **Implementation Phases:**
-  - _Phase 1 (Sprint 03/04):_ Finalize foundational DevOps infra (Terraform for Cloud, Kubernetes baseline). Setup robust CI validation. Validate RTX 5070 cost models and E2E E2E pipeline for Android DAT.
+  - _Phase 1 (Sprint 03/04):_ Finalize foundational DevOps infra (Terraform for Cloud, Kubernetes baseline). Setup robust CI validation. Validate RTX 5070 cost models and E2E pipeline for Android DAT.
   - _Phase 2 (Sprint 05):_ Deploy Observability stack (Prometheus/Grafana). Instrument FastAPI/Workers with OpenTelemetry.
   - _Phase 3 (Sprint 06):_ Implement production GitOps workflow. Harden security policies, NetworkPolicies, and Vault integration.
 - **Priorities:** 1. Reproducible Infrastructure (IaC), 2. Observability Basics, 3. Autoscaling configuration for GPU/workers.
 - **Milestones:**
-  - Milestone A: E2E capture from DAT uploaded to a fully automated cloud backend with functional ASR/worker stubs.
-  - Milestone B: Production-ready Kubernetes cluster provisioned entirely via code.
+  - _Milestone A:_ E2E capture from DAT uploaded to a fully automated cloud backend with functional ASR/worker stubs.
+  - _Milestone B:_ Production-ready Kubernetes cluster provisioned entirely via code.
 - **Expected Operational Improvements:** Transitioning from manual `docker compose` to a fully automated, scalable, reliable cloud-native footprint, significantly reducing developer friction and accelerating Phase 1 readiness.
