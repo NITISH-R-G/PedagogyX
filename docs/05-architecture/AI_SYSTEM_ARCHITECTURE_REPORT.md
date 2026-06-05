@@ -1,105 +1,85 @@
-# AI System Architecture & Applied Intelligence Report
-
-**Version:** 2.0
-**Author:** Autonomous Senior AI Engineer & Applied Intelligence Systems Architect
-**Focus:** Multimodal Classroom Intelligence Pipeline for PedagogyX
+# Autonomous Senior AI Engineer & Applied Intelligence Systems Architect Report
 
 ## AI Problem Analysis
 
-The core mission of PedagogyX is to democratize elite teacher coaching by extracting highly nuanced, multimodal pedagogical signals from wild classroom environments. The operational constraints dictate a ₹0 customer hardware budget, mandating the use of ultra-lightweight edge capture (Meta Ray-Ban smart glasses via an Android host app) streaming to a centralized, OSS-first inference stack. The fundamental AI engineering challenge lies in reconciling the extreme variability of Indian classroom environments (heavy code-switching between Hindi and English, severe acoustic noise, poor lighting, occlusion) with the severe compute limitations of our target infrastructure (12GB VRAM RTX 5070 central GPU pools).
-
-We must synthesize raw, temporally asynchronous streams—point-of-view video from the teacher, lapel or glasses microphone audio, and background activity—into a unified, deterministic "Pedagogy Index" without hallucination. Furthermore, strict adherence to India's DPDP privacy regulations prohibits the transmission of PII to third-party cloud APIs, necessitating a fully self-hosted, air-gapped capable AI pipeline. The failure scenarios are catastrophic: hallucinating a negative interaction could destroy a teacher's career, while drifting into latency bottlenecks would render the live supervision dashboards useless.
+- **Use Case:** PedagogyX is an AI-powered classroom intelligence and teacher optimization platform targeting K-12 and university segments in India. The system captures live teaching sessions using Meta Ray-Ban smart glasses (POV video + audio) via an Android DAT host, processing streams to evaluate teacher pedagogy, instructional quality, and discourse patterns.
+- **Requirements:** Must operate entirely on OSS-first infrastructure (no proprietary SaaS APIs like OpenAI/Deepgram), ensuring data residency in India. Must handle high-throughput edge LAN ingestion with offline resilience. Must provide a dual-path pipeline: a hot path for near real-time lightweight activity detection, and a cold path for authoritative batch processing of ML fusion, ASR, CV, and LLM-based pedagogical scoring.
+- **Constraints:** Compute budget is strictly constrained to RTX 5070 (12GB VRAM) for cloud workers. The system requires real-time capabilities without exorbitant hardware scaling, mandating heavy quantization and efficient batching for heavy models. Legal compliance (DPDP) and strict role-based access control (RBAC) are required for teacher supervision modes.
+- **User Workflows:** Teachers record sessions seamlessly using smart glasses. Streams are buffered at the school edge and uploaded to the PedagogyX cloud. School administrators and deans receive authoritative pedagogical score reports and evidence-backed insights derived from the cold path.
+- **Failure Scenarios:** Unpredictable network environments causing packet loss and A/V drift; edge buffering failure; GPU OOM errors on RTX 5070 workers during concurrent transcode/inference; hallucinated pedagogical feedback damaging teacher trust; privacy leaks via unauthorized stream access.
 
 ## AI System Architecture
 
-To achieve massive scale on consumer-grade hardware, the AI architecture is explicitly bifurcated into a lightweight Hot Path for real-time telemetry and a deterministic Cold Path for authoritative evaluation.
-
-**1. Hot Path (Real-Time Ingestion & Heuristics)**
-The Android DAT client streams chunked A/V payloads via a local edge buffer to the central MediaMTX ingest node. For live supervision, we bypass deep learning where possible. A highly quantized `faster-whisper` (tiny or small model) transcribes audio, feeding basic Python-based heuristics to estimate talk ratios (Teacher vs. Student) within a 5-second rolling window. YOLO11n (TensorRT optimized, 480p) processes video frames at a maximum of 5 FPS to establish gross spatial tracking. These metrics power the live admin dashboard via WebSockets.
-
-**2. Cold Path (Authoritative Multimodal Fusion)**
-The authoritative batch pipeline operates overnight or asynchronously.
-
-- **Audio Processing:** A medium/large-v3 `faster-whisper` model, accelerated by CTranslate2, processes the high-fidelity audio chunk to produce highly accurate bilingual transcripts. Pyannote handles speaker diarization, classifying distinct teacher and student segments.
-- **Visual & Contextual Processing:** YOLO11n extracts detailed student attention proxies and teacher movement vectors.
-- **Alignment Engine:** A deterministic temporal alignment service unifies the transcript timestamps with the visual bounding box event stream into a dense JSON payload.
-- **Reasoning Engine:** The aligned JSON is injected into an Ollama-served `Qwen2.5-7B-Instruct` model (quantized to Q4_K_M). This model functions exclusively as a pedagogical reasoning engine, outputting structured scoring rubrics and interaction summaries.
+- **Models:**
+  - **ASR:** Distil-Whisper or Whisper v3 (quantized) for English + Hindi code-switching.
+  - **CV:** Lightweight YOLOv8 for hot-path activity detection; MobileVLM or LLaVA (4-bit quantization) for batch multi-modal pedagogical understanding.
+  - **LLM/Reasoning:** Qwen2.5-7B-Q4 (running on vLLM/Ollama) for generating pedagogy scores, instructional quality metrics, and structured reports.
+- **Orchestration:** Multi-stage asynchronous pipeline orchestrated via Celery or Temporal. Jobs are enqueued from the API gateway, distributed to specialized GPU workers (ASR vs CV vs LLM), with explicit Dead Letter Queues (DLQs) for failed processing.
+- **Retrieval Systems:** A hybrid architecture where session metadata and pedagogical templates are retrieved via pgvector (PostgreSQL) combined with standard relational queries, ensuring responses are grounded in institution-specific rubrics.
+- **Memory Systems:** Short-term context managed via Redis for the hot path and rolling stream state. Long-term session artifacts, diarization maps, and embeddings stored in MinIO and Postgres.
+- **Infrastructure Topology:** Android DAT Host -> Edge LAN Buffer/Ingest -> MediaMTX (WebRTC/Stream) -> API Gateway -> Postgres/MinIO & Queue -> RTX 5070 GPU Workers (India Cloud).
 
 ## Prompt & Reasoning Strategy
 
-The LLM is highly constrained. We employ a "Chain of Verification" and structured output enforcement to completely eliminate narrative hallucinations. The system prompt forces `Qwen2.5-7B-Instruct` into a strict data-transformation role rather than a creative one.
-
-**Prompt Structure:**
-
-1. **System Directive:** "You are an expert pedagogical evaluator. You must strictly base all evaluations on the provided JSON event log. Do not infer events that are not explicitly documented."
-2. **Context Window:** The temporally aligned transcript and visual metadata JSON.
-3. **Task Definition:** Specific classification requests (e.g., "Identify instances of 'Wait Time' exceeding 3 seconds following a teacher question.").
-4. **Output Format:** Forced JSON schema generation, requiring the LLM to cite specific `{timestamp}` and `{event_id}` attributes for every pedagogical claim.
-
-**Grounding & Hallucination Mitigation:**
-By divorcing the reasoning layer from the raw pixel/audio domain, we constrain the LLM to logic over deterministic metadata. The UI is architected to parse the generated JSON and render hyperlinks directly to the corresponding video timestamps. If the LLM hallucinates an event, the missing or invalid timestamp acts as an immediate failure flag, allowing the system to suppress the output.
+- **Prompt Structure:** Multi-shot, deterministic prompts defining clear personas (e.g., "Expert Pedagogy Evaluator"). Prompts strictly separate session transcripts (ASR context) from the task instructions (pedagogical rubric evaluation) to prevent prompt injection or drift.
+- **Grounding Strategy:** All LLM conclusions must be explicitly linked to specific timestamped evidence from the transcript and diarization pipeline. Output is restricted to JSON schemas via constrained decoding (e.g., Guidance/Outlines or vLLM guided decoding).
+- **Hallucination Mitigation:** Implement strict temperature=0 decoding for scoring tasks. Use self-consistency checks for complex inferences. Any claim without a direct reference to the ASR transcript is flagged and discarded.
+- **Context Management:** Implement hierarchical chunking for long lectures (e.g., 45-minute sessions). Summarize smaller segments recursively, passing segment summaries and key transcript chunks to the final evaluation prompt to fit within the 8k-32k context limits of the 7B model.
 
 ## RAG & Retrieval Design
 
-The pedagogical evaluation cannot exist in a vacuum; it must be grounded in the school district's specific curriculum and approved teaching frameworks.
-
-**Ingestion Pipeline:**
-District standards, lesson plans, and historical teacher performance rubrics are ingested, chunked hierarchically by topic and grade level, and embedded using a lightweight, multilingual model (`BGE-m3`) capable of handling Hindi/English contexts. The vectors are stored in a centralized `pgvector` instance, co-located with the session data to simplify tenant isolation.
-
-**Retrieval Workflow:**
-During the Cold Path reasoning phase, the system executes a semantic search using the extracted keywords from the session transcript. The top-k relevant curriculum standards are injected into the LLM's context window. This RAG strategy allows the model to evaluate not just _how_ the teacher taught, but _if_ they taught the required material, ensuring the feedback is contextually tethered to the specific lesson objectives.
+- **Ingestion Pipeline:** Chunked ASR transcripts are enriched with speaker diarization tags and CV bounding-box context. These chunks are normalized and processed into dense embeddings.
+- **Embeddings:** Domain-adapted sentence transformers optimized for code-switched instructional dialogue (English/Hindi).
+- **Vector Database:** pgvector extension in the primary PostgreSQL database to reduce infrastructure complexity while supporting hybrid semantic/keyword search.
+- **Reranking:** Lightweight cross-encoder applied to top-K retrieved chunks to ensure highest relevance when extracting evidence for the final pedagogical report.
+- **Retrieval Workflows:** When generating feedback on a specific rubric dimension (e.g., "Student Talk Ratio"), query the vector store for relevant pedagogical segments, retrieve exact transcript chunks, and pass to the LLM.
 
 ## AI Infrastructure
 
-The infrastructure topology is ruthlessly optimized for the ₹0 edge hardware budget, shifting all compute to a centralized, high-density GPU pool.
-
-- **Inference Systems:** The central OSS backend utilizes containerized worker daemons. We deploy `vLLM` or `Ollama` for high-throughput, PagedAttention-backed LLM serving. Computer vision workloads utilize `TensorRT` to extract maximum performance from the NVIDIA architecture.
-- **Hardware Topology:** A scalable pool of RTX 5070 (12GB VRAM) machines.
-- **Scaling Strategy:** The system employs asymmetric autoscaling. Hot Path ingest nodes (CPU-bound) scale linearly with concurrent classroom sessions. The Cold Path GPU workers operate off a distributed message queue (Redis/Celery), buffering the overnight batch processing load to maximize GPU utilization (targeting >90% sustained utilization) and smooth out diurnal traffic spikes.
-- **VRAM Management:** Given the 12GB limitation, dynamic VRAM swapping is employed. Batch jobs are orchestrated so that a single GPU sequentially loads the CV model, then the ASR model, and finally the LLM, preventing Out-Of-Memory (OOM) crashes while maximizing throughput per node.
+- **Inference Systems:** vLLM deployed on bare-metal or K3s nodes to maximize throughput for the Qwen2.5-7B model using continuous batching and PagedAttention.
+- **GPU Infrastructure:** Highly optimized, homogenous pool of RTX 5070 12GB GPUs. Memory boundaries strictly enforced: ASR, CV, and LLM workloads must either run on separate dedicated workers or utilize aggressive context offloading to avoid OOM.
+- **Scaling Strategy:** Queue-based horizontal autoscaling. Scale GPU worker pods based on queue length (Cold Path backlog). Hot path utilizes lightweight non-GPU or CPU-optimized models where possible.
+- **Deployment Systems:** Docker Compose for Edge nodes; Kubernetes (K3s) for the central India Cloud cluster. CI/CD pipelines automate model fetching, quantization validation, and container registry publishing.
 
 ## Evaluation Strategy
 
-AI quality cannot be managed purely via intuition; rigorous, automated evaluation pipelines are mandatory.
-
-- **Automated Benchmarks:** We maintain a golden dataset of heavily accented, multi-speaker Indian classroom recordings with manually annotated ground-truth transcripts and bounding boxes. Every commit to the ML pipeline triggers a regression suite measuring Word Error Rate (WER) and Diarization Error Rate (DER).
-- **Hallucination Tracking:** The LLM's JSON outputs are continuously parsed to ensure every cited timestamp exists within the source JSON. A failure rate > 0.1% triggers an immediate alert.
-- **LLM-as-a-Judge:** During development, we utilize larger models to evaluate the qualitative feedback generated by the 7B model, scoring it for tone, pedagogical accuracy, and alignment with the provided rubric.
+- **Benchmarks:** Evaluate model performance on domain-specific test sets for English-Hindi code-switched ASR Word Error Rate (WER), Diarization Error Rate (DER), and pedagogical scoring correlation with human expert baselines.
+- **Automated Evals:** LLM-as-a-judge pipelines validating structured JSON schema adherence, citation accuracy, and hallucination rates on nightly builds.
+- **Hallucination Tracking:** Compare LLM generated evidence strings against exact substring matches in the source transcript. Track failure rates in observability dashboards.
+- **Quality Metrics:** Maintain precision/recall metrics for activity detection. Monitor the distribution of pedagogical scores to detect model drift or bias over time.
 
 ## Security & Safety
 
-Security is paramount given the presence of minors in the dataset and the strict requirements of DPDP.
-
-- **Sandboxing & Isolation:** AI workers operate in ephemeral, network-isolated Docker containers with no outbound internet access. They can only communicate with the Redis queue and the MinIO object store.
-- **Data Privacy & Anonymization:** Student faces captured via the Ray-Ban glasses are subjected to a lightweight, deterministic blurring pass before long-term storage in the Cold Archive. No raw video is ever passed to the LLM.
-- **Prompt Injection Prevention:** The system sanitizes the ingested transcript, stripping control characters and known exploit strings before injecting it into the LLM context, preventing malicious audio segments from hijacking the evaluation logic.
+- **Prompt Injection Prevention:** Sanitize ASR transcripts to neutralize malicious user speech attempting to hijack the evaluator prompt (e.g., treating transcripts strictly as data payloads, not executable instructions).
+- **Permission Controls:** Implement strict RBAC via the API Gateway. Teachers can access their own data; Deans/Admins access aggregate scores. Models never access cross-tenant data.
+- **Sandboxing:** Run all data parsing and multi-modal pre-processing in isolated, low-privilege containers.
+- **Output Validation:** Pydantic models validate all LLM outputs before they are saved to the pedagogical score store.
 
 ## Observability
 
-Comprehensive telemetry is required to manage the operational complexity of a distributed inference pipeline.
-
-- **Tracing & Monitoring:** We utilize OpenTelemetry to trace requests across the ingest, ASR, CV, and LLM boundaries. Prometheus scrapes node-level metrics (GPU utilization, VRAM allocation, temperature) and application-level metrics (inference latency, token generation speed, queue depth).
-- **Analytics Dashboards:** Grafana visualizes the p50 and p95 latencies for both the Hot and Cold paths, enabling rapid identification of bottlenecks.
-- **Diagnostics:** Every failure (e.g., ASR confidence dropping below a critical threshold, Ollama timeout) is logged with the full context payload to facilitate offline debugging and targeted fine-tuning.
+- **Tracing:** Implement OpenTelemetry across the capture agent, ingest edge, API, and GPU workers to trace end-to-end latency from chunk capture to final score generation.
+- **Monitoring:** Grafana dashboards tracking GPU utilization (VRAM, compute), Celery queue lengths, DLQ failure rates, and endpoint p95 latencies.
+- **Analytics:** Product analytics on time-to-insight, capturing the delay between session end and availability of the authoritative batch report.
+- **Diagnostics:** Full tracebacks logged to `sys.stderr` and captured in centralized logging for DLQ events, enabling rapid debugging of failed pipeline stages.
 
 ## Performance Optimization
 
-Operating advanced models on 12GB GPUs requires aggressive, continuous optimization.
-
-- **Quantization:** `Qwen2.5-7B` is quantized to `Q4_K_M` (4-bit), drastically reducing the memory footprint while maintaining reasoning fidelity. ASR models utilize INT8 precision.
-- **Batching & Throughput:** `faster-whisper` and the YOLO models process audio and video in large batches, amortizing the cost of memory transfers over multiple frames/seconds of audio.
-- **Caching:** RAG embeddings and intermediate feature extraction results are cached in Redis. If a teacher re-processes a lesson or requests a different rubric evaluation, the pipeline skips the expensive perception layer and immediately re-runs the reasoning layer.
+- **Latency Optimization:** The hot path avoids LLM calls entirely, relying on heuristics and lightweight CV models. The cold path processes audio and video concurrently before the fusion step.
+- **Token Optimization:** Filter out silence and non-instructional audio prior to ASR. Use prompt caching techniques in vLLM for the static portions of the pedagogical evaluation prompt.
+- **Inference Efficiency:** Utilize 4-bit AWQ/GPTQ quantization for the 7B LLM to fit comfortably in 12GB VRAM while leaving room for KV cache and context. Use batched processing in vLLM to maximize throughput over latency for the cold path.
+- **Caching Strategy:** Cache intermediate ML representations (e.g., ASR transcripts) in MinIO. Use Redis for fast lookup of session states and deduplication of repeated inference requests.
 
 ## Risks & Tradeoffs
 
-- **Risk:** Relying on a 7B model for complex pedagogical reasoning introduces a risk of shallow or generic feedback compared to frontier models.
-  - **Mitigation:** We restrict the LLM to analyzing highly structured, quantitative metadata (talk ratio, pacing) rather than asking it to derive deep emotional or psychological insights from raw text.
-- **Tradeoff:** To meet the budget constraints, we process the authoritative "Pedagogy Index" asynchronously. Real-time dashboards rely on highly degraded proxy metrics.
-  - **Mitigation:** The UI clearly demarcates "Live Estimates" from "Authoritative Analytics," managing administrator expectations and ensuring contractual SLAs are bound only to the Cold Path processing.
+- **Hallucination Risks:** Evaluating teaching quality is highly subjective; the 7B model may confidently output incorrect assessments or misinterpret sarcasm/cultural nuances in Indian classrooms. Requires heavy reliance on deterministic rules alongside LLM outputs.
+- **Scalability Concerns:** The RTX 5070 12GB constraint creates a hard ceiling on concurrent LLM context size. Long 45-minute sessions must be aggressively chunked, risking loss of global context.
+- **Infrastructure Tradeoffs:** Self-hosting OSS models saves operational expenditure but drastically increases DevOps complexity and deployment friction compared to managed APIs.
+- **Operational Limitations:** Handling network instability from edge to central cloud means the system must gracefully handle out-of-order chunks and incomplete sessions, complicating the A/V sync logic.
 
 ## Agile Sprint Plan
 
-- **Sprint 1 (Current Phase):** Finalize the central OSS backend integration with `faster-whisper` and Ollama. Establish baseline throughput metrics on the RTX 5070 dev machine. Validate the end-to-end flow from the Android DAT client mock capture to the batch processor.
-- **Sprint 2:** Implement the temporal alignment engine. Fuse transcript outputs with simulated YOLO metadata. Construct the prompt engineering harness for Qwen2.5-7B and run the first deterministic JSON generation test.
-- **Sprint 3:** Build out the RAG vector ingestion pipeline for district curriculums. Integrate semantic retrieval into the reasoning phase.
-- **Sprint 4:** Deploy the automated evaluation suite. Run the golden dataset through the pipeline and optimize hyper-parameters to drive down the error rates and ensure 0% hallucination on timestamp citations.
+- **Sprint 1 (Infrastructure & MVP ASR):** Setup RTX 5070 worker nodes. Deploy vLLM and Whisper. Implement the chunked ASR pipeline and basic audio processing queue.
+- **Sprint 2 (Data Ingestion & Hot Path):** Develop the Android DAT host integration. Build the edge LAN buffer. Implement lightweight hot-path activity detection heuristics.
+- **Sprint 3 (Cold Path & LLM Reasoning):** Implement the full batch ML fusion pipeline. Develop and evaluate the Qwen2.5-7B prompts for pedagogical scoring. Integrate pgvector for template retrieval.
+- **Sprint 4 (Observability & Hardening):** Implement OpenTelemetry and Grafana dashboards. Establish the automated evaluation pipeline for hallucination tracking and schema validation. Conduct end-to-end latency and VRAM stress testing.
+- **Sprint 5 (Pilot & Refinement):** Deploy to pilot schools. Monitor model drift. Iterate on prompt grounding based on real-world classroom acoustics and edge cases.
