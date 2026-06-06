@@ -61,6 +61,38 @@ def _insight_latency_sec(cur, session_id: str) -> float | None:
     return None
 
 
+def _update_session_metrics(
+    cur, session_id: str, teacher: float, student: float, confidence: str, now: datetime
+) -> float | None:
+    cur.execute(
+        "SELECT completed_at FROM sessions WHERE id = %s",
+        (session_id,),
+    )
+    completed = cur.fetchone()
+    latency = None
+    if completed and completed[0]:
+        latency = (now - completed[0].replace(tzinfo=timezone.utc)).total_seconds()
+
+    cur.execute(
+        """
+        INSERT INTO session_metrics (
+            session_id, teacher_talk_ratio, student_talk_ratio,
+            metric_confidence, preview_ready_at, insight_latency_sec, updated_at
+        )
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        ON CONFLICT (session_id) DO UPDATE
+        SET teacher_talk_ratio = EXCLUDED.teacher_talk_ratio,
+            student_talk_ratio = EXCLUDED.student_talk_ratio,
+            metric_confidence = EXCLUDED.metric_confidence,
+            preview_ready_at = EXCLUDED.preview_ready_at,
+            insight_latency_sec = EXCLUDED.insight_latency_sec,
+            updated_at = EXCLUDED.updated_at
+        """,
+        (session_id, teacher, student, confidence, now, latency, now),
+    )
+    return latency
+
+
 def process_job(payload: dict) -> None:
     session_id = payload["session_id"]
     now = datetime.now(timezone.utc)
@@ -68,31 +100,8 @@ def process_job(payload: dict) -> None:
     with psycopg2.connect(DATABASE_URL) as conn:
         with conn.cursor() as cur:
             teacher, student, confidence = _compute_talk_ratio(cur, session_id)
-            cur.execute(
-                "SELECT completed_at FROM sessions WHERE id = %s",
-                (session_id,),
-            )
-            completed = cur.fetchone()
-            latency = None
-            if completed and completed[0]:
-                latency = (now - completed[0].replace(tzinfo=timezone.utc)).total_seconds()
-
-            cur.execute(
-                """
-                INSERT INTO session_metrics (
-                    session_id, teacher_talk_ratio, student_talk_ratio,
-                    metric_confidence, preview_ready_at, insight_latency_sec, updated_at
-                )
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
-                ON CONFLICT (session_id) DO UPDATE
-                SET teacher_talk_ratio = EXCLUDED.teacher_talk_ratio,
-                    student_talk_ratio = EXCLUDED.student_talk_ratio,
-                    metric_confidence = EXCLUDED.metric_confidence,
-                    preview_ready_at = EXCLUDED.preview_ready_at,
-                    insight_latency_sec = EXCLUDED.insight_latency_sec,
-                    updated_at = EXCLUDED.updated_at
-                """,
-                (session_id, teacher, student, confidence, now, latency, now),
+            latency = _update_session_metrics(
+                cur, session_id, teacher, student, confidence, now
             )
         conn.commit()
 

@@ -149,3 +149,38 @@ class TestProcessJob(unittest.TestCase):
 
         mock_conn.commit.assert_called_once()
         self.assertEqual(mock_cursor.execute.call_count, 2)
+
+class TestUpdateSessionMetrics(unittest.TestCase):
+    def test_update_session_metrics_with_completed_at(self):
+        mock_cursor = MagicMock()
+        from datetime import datetime, timezone
+
+        # Now is 10 seconds after completion
+        now = datetime(2023, 1, 1, 12, 0, 10, tzinfo=timezone.utc)
+        completed_at = datetime(2023, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
+
+        mock_cursor.fetchone.return_value = [completed_at]
+
+        from worker.main import _update_session_metrics
+        latency = _update_session_metrics(
+            mock_cursor, "session123", 0.7, 0.3, "high", now
+        )
+
+        self.assertEqual(latency, 10.0)
+        self.assertEqual(mock_cursor.execute.call_count, 2)
+
+    def test_update_session_metrics_without_completed_at(self):
+        mock_cursor = MagicMock()
+        from datetime import datetime, timezone
+
+        now = datetime(2023, 1, 1, 12, 0, 10, tzinfo=timezone.utc)
+
+        mock_cursor.fetchone.return_value = None
+
+        from worker.main import _update_session_metrics
+        latency = _update_session_metrics(
+            mock_cursor, "session123", 0.7, 0.3, "high", now
+        )
+
+        self.assertIsNone(latency)
+        self.assertEqual(mock_cursor.execute.call_count, 2)
