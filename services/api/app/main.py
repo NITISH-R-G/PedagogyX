@@ -102,12 +102,18 @@ def upload_chunk(
     if row["status"] not in ("active", "created"):
         raise HTTPException(status_code=409, detail="session not accepting uploads")
 
-    body = file.file.read()
-    if len(body) > settings.max_upload_bytes:
+    if file.size is None:
+        file.file.seek(0, 2)
+        size = file.file.tell()
+        file.file.seek(0)
+    else:
+        size = file.size
+
+    if size > settings.max_upload_bytes:
         raise HTTPException(status_code=413, detail="chunk exceeds max size")
 
-    key = storage.put_chunk(session_id, chunk_index, body, file.content_type)
-    chunk = db.insert_chunk(session_id, chunk_index, key, len(body), file.content_type)
+    key = storage.put_chunk(session_id, chunk_index, file.file, file.content_type)
+    chunk = db.insert_chunk(session_id, chunk_index, key, size, file.content_type)
     return {
         "session_id": str(session_id),
         "chunk_index": chunk["chunk_index"],

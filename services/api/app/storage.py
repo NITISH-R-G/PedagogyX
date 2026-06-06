@@ -1,4 +1,5 @@
 from functools import lru_cache
+from typing import BinaryIO
 from uuid import UUID
 
 import boto3
@@ -24,13 +25,13 @@ def chunk_object_key(session_id: UUID, chunk_index: int) -> str:
     return f"sessions/{session_id}/chunks/{chunk_index:04d}.bin"
 
 
-def put_chunk(session_id: UUID, chunk_index: int, body: bytes, content_type: str | None) -> str:
+def put_chunk(session_id: UUID, chunk_index: int, file_obj: BinaryIO, content_type: str | None) -> str:
     key = chunk_object_key(session_id, chunk_index)
     client = s3_client()
-    client.put_object(
+    client.upload_fileobj(
+        Fileobj=file_obj,
         Bucket=settings.minio_bucket,
         Key=key,
-        Body=body,
-        ContentType=content_type or "application/octet-stream",
+        ExtraArgs={"ContentType": content_type or "application/octet-stream"},
     )
     return key
