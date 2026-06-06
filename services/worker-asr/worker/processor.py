@@ -6,8 +6,10 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 
+import contextlib
+
 import boto3
-import psycopg2
+from psycopg2 import pool
 import redis
 from botocore.client import Config
 from botocore.exceptions import ClientError
@@ -25,6 +27,15 @@ MINIO_BUCKET = os.environ.get("MINIO_BUCKET", "pedagogyx-uploads")
 MINIO_SECURE = os.environ.get("MINIO_SECURE", "false").lower() == "true"
 
 
+_pool = None
+
+def _get_pool():
+    global _pool
+    if _pool is None:
+        _pool = pool.SimpleConnectionPool(1, 10, dsn=DATABASE_URL)
+    return _pool
+
+
 def _s3():
     scheme = "https" if MINIO_SECURE else "http"
     return boto3.client(
@@ -37,8 +48,15 @@ def _s3():
     )
 
 
+@contextlib.contextmanager
 def _db_conn():
-    return psycopg2.connect(DATABASE_URL)
+    p = _get_pool()
+    conn = p.getconn()
+    try:
+        with conn:
+            yield conn
+    finally:
+        p.putconn(conn)
 
 
 _redis_client = None
