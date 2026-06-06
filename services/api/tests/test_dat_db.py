@@ -7,12 +7,13 @@ from app.dat_db import create_dat_session
 from app.db_utils import get_conn
 
 
+@patch("app.db_utils.sys.stderr", new_callable=MagicMock)
 @patch("app.db_utils.psycopg2.connect")
-def test_get_conn_psycopg2_error_rollback(mock_connect):
+def test_get_conn_psycopg2_error_rollback(mock_connect, mock_stderr):
     """
     Directly test the get_conn context manager to ensure that a psycopg2.Error
-    raised within its block causes a rollback, closes the connection,
-    and re-raises the exception.
+    raised within its block causes a rollback, logs to stderr, closes the
+    connection, and re-raises the exception.
     """
     mock_conn = MagicMock()
     mock_connect.return_value = mock_conn
@@ -24,6 +25,9 @@ def test_get_conn_psycopg2_error_rollback(mock_connect):
     mock_conn.rollback.assert_called_once()
     mock_conn.close.assert_called_once()
     mock_conn.commit.assert_not_called()
+
+    # Verify that the expected error message was written to stderr
+    mock_stderr.write.assert_any_call("Database error in get_conn: DB execute error")
 
 
 @patch("app.db_utils.psycopg2.connect")
