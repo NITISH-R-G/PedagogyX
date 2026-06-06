@@ -1,8 +1,29 @@
 import pytest
 from unittest.mock import MagicMock, patch
 
+import psycopg2
+
 from app.dat_db import create_dat_session
 from app.db_utils import get_conn
+
+
+@patch("app.db_utils.psycopg2.connect")
+def test_get_conn_psycopg2_error_rollback(mock_connect):
+    """
+    Directly test the get_conn context manager to ensure that a psycopg2.Error
+    raised within its block causes a rollback, closes the connection,
+    and re-raises the exception.
+    """
+    mock_conn = MagicMock()
+    mock_connect.return_value = mock_conn
+
+    with pytest.raises(psycopg2.Error, match="DB execute error"):
+        with get_conn():
+            raise psycopg2.Error("DB execute error")
+
+    mock_conn.rollback.assert_called_once()
+    mock_conn.close.assert_called_once()
+    mock_conn.commit.assert_not_called()
 
 
 @patch("app.db_utils.psycopg2.connect")
