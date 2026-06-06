@@ -190,8 +190,8 @@ def _serialize_metrics(metrics: dict) -> dict:
         "teacher_talk_ratio": metrics.get("teacher_talk_ratio"),
         "student_talk_ratio": metrics.get("student_talk_ratio"),
         "metric_confidence": metrics.get("metric_confidence"),
-        "preview_ready_at": metrics["preview_ready_at"].isoformat()
-        if metrics.get("preview_ready_at")
-        else None,
+        "preview_ready_at": (
+            metrics["preview_ready_at"].isoformat() if metrics.get("preview_ready_at") else None
+        ),
         "insight_latency_sec": metrics.get("insight_latency_sec"),
     }
