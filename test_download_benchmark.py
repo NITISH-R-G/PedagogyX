@@ -17,10 +17,20 @@ def download_sequential(client, chunks):
     tmp.close()
 
     start = time.perf_counter()
+    results = {}
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        future_to_idx = {executor.submit(_download_chunk, client, key): idx for idx, key in chunks}
+        for future in as_completed(future_to_idx):
+            idx = future_to_idx[future]
+            try:
+                results[idx] = future.result()
+            except Exception as exc:
+                raise RuntimeError(f"minio get concurrent: {exc}") from exc
+
     with open(path, "wb") as out:
-        for _idx, key in chunks:
-            obj = client.get_object(Bucket="test-bucket", Key=key)
-            out.write(obj["Body"].read())
+        for idx in sorted(results.keys()):
+            out.write(results[idx])
+
     elapsed = time.perf_counter() - start
     os.unlink(path)
     return elapsed
@@ -70,12 +80,14 @@ if __name__ == "__main__":
 
     chunks = [(i, f"bench-chunk-{i}") for i in range(20)]
 
+    from botocore.stub import ANY
+
     for i in range(20):
         # We need to stub each get_object call for sequential
         response = {
             'Body': DelayedStreamingBody(io.BytesIO(b"0" * 1024), 1024)
         }
-        expected_params = {'Bucket': 'test-bucket', 'Key': f'bench-chunk-{i}'}
+        expected_params = {'Bucket': 'test-bucket', 'Key': ANY}
         stubber.add_response('get_object', response, expected_params)
 
     stubber.activate()
