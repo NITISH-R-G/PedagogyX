@@ -50,12 +50,8 @@ class TestInsightLatencySec(unittest.TestCase):
 
 
 class TestComputeTalkRatio(unittest.TestCase):
-    @patch("worker.main.psycopg2.connect")
-    def test_compute_talk_ratio_no_row(self, mock_connect):
-        mock_conn = MagicMock()
+    def test_compute_talk_ratio_no_row(self):
         mock_cursor = MagicMock()
-        mock_connect.return_value.__enter__.return_value = mock_conn
-        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
 
         mock_cursor.fetchone.return_value = None
 
@@ -66,12 +62,8 @@ class TestComputeTalkRatio(unittest.TestCase):
         self.assertEqual(student, 0.32)
         self.assertEqual(confidence, "preview_stub")
 
-    @patch("worker.main.psycopg2.connect")
-    def test_compute_talk_ratio_empty_segments(self, mock_connect):
-        mock_conn = MagicMock()
+    def test_compute_talk_ratio_empty_segments(self):
         mock_cursor = MagicMock()
-        mock_connect.return_value.__enter__.return_value = mock_conn
-        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
 
         mock_cursor.fetchone.return_value = ["[]"]
 
@@ -82,12 +74,8 @@ class TestComputeTalkRatio(unittest.TestCase):
         self.assertEqual(student, 0.32)
         self.assertEqual(confidence, "preview_stub")
 
-    @patch("worker.main.psycopg2.connect")
-    def test_compute_talk_ratio_valid_segments(self, mock_connect):
-        mock_conn = MagicMock()
+    def test_compute_talk_ratio_valid_segments(self):
         mock_cursor = MagicMock()
-        mock_connect.return_value.__enter__.return_value = mock_conn
-        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
 
         import json
         segments = [
@@ -107,12 +95,8 @@ class TestComputeTalkRatio(unittest.TestCase):
         self.assertEqual(student, round(1.0 - 0.7143, 4))
         self.assertEqual(confidence, "preview_heuristic")
 
-    @patch("worker.main.psycopg2.connect")
-    def test_compute_talk_ratio_zero_duration(self, mock_connect):
-        mock_conn = MagicMock()
+    def test_compute_talk_ratio_zero_duration(self):
         mock_cursor = MagicMock()
-        mock_connect.return_value.__enter__.return_value = mock_conn
-        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
 
         import json
         segments = [
@@ -130,14 +114,19 @@ class TestComputeTalkRatio(unittest.TestCase):
 class TestProcessJob(unittest.TestCase):
     @patch("worker.main._insight_latency_sec")
     @patch("worker.main._compute_talk_ratio")
-    @patch("worker.main.psycopg2.connect")
-    def test_process_job(self, mock_connect, mock_compute, mock_insight):
+    @patch("worker.main.get_db_pool")
+    def test_process_job(self, mock_get_pool, mock_compute, mock_insight):
         mock_compute.return_value = (0.7, 0.3, "high")
         mock_insight.return_value = 10.5
 
+        mock_pool = MagicMock()
+        mock_get_pool.return_value = mock_pool
+
         mock_conn = MagicMock()
+        mock_pool.getconn.return_value = mock_conn
+
         mock_cursor = MagicMock()
-        mock_connect.return_value.__enter__.return_value = mock_conn
+        mock_conn.__enter__.return_value = mock_conn
         mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
 
         from datetime import datetime, timezone
@@ -147,5 +136,5 @@ class TestProcessJob(unittest.TestCase):
         payload = {"session_id": "session123"}
         process_job(payload)
 
-        mock_conn.commit.assert_called_once()
+        mock_pool.putconn.assert_called_once_with(mock_conn)
         self.assertEqual(mock_cursor.execute.call_count, 2)

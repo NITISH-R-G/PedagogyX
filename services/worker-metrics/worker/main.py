@@ -4,7 +4,7 @@ import sys
 import traceback
 from datetime import datetime, timezone
 
-import psycopg2
+from psycopg2 import pool
 import redis
 
 REDIS_URL = os.environ.get("REDIS_URL", None)
@@ -13,6 +13,14 @@ JOB_QUEUE = os.environ.get("JOB_QUEUE", "jobs:talk_ratio")
 JOB_QUEUE_DLQ = f"{JOB_QUEUE}:dlq"
 POLL_TIMEOUT = int(os.environ.get("POLL_TIMEOUT", "5"))
 PREVIEW_TEACHER_RATIO = float(os.environ.get("PREVIEW_TEACHER_RATIO", "0.68"))
+
+_db_pool = None
+
+def get_db_pool() -> pool.SimpleConnectionPool:
+    global _db_pool
+    if _db_pool is None:
+        _db_pool = pool.SimpleConnectionPool(1, 10, DATABASE_URL)
+    return _db_pool
 
 
 def _compute_talk_ratio(cur, session_id: str) -> tuple[float, float, str]:
@@ -65,36 +73,40 @@ def process_job(payload: dict) -> None:
     session_id = payload["session_id"]
     now = datetime.now(timezone.utc)
 
-    with psycopg2.connect(DATABASE_URL) as conn:
-        with conn.cursor() as cur:
-            teacher, student, confidence = _compute_talk_ratio(cur, session_id)
-            cur.execute(
-                "SELECT completed_at FROM sessions WHERE id = %s",
-                (session_id,),
-            )
-            completed = cur.fetchone()
-            latency = None
-            if completed and completed[0]:
-                latency = (now - completed[0].replace(tzinfo=timezone.utc)).total_seconds()
-
-            cur.execute(
-                """
-                INSERT INTO session_metrics (
-                    session_id, teacher_talk_ratio, student_talk_ratio,
-                    metric_confidence, preview_ready_at, insight_latency_sec, updated_at
+    db_pool = get_db_pool()
+    conn = db_pool.getconn()
+    try:
+        with conn:
+            with conn.cursor() as cur:
+                teacher, student, confidence = _compute_talk_ratio(cur, session_id)
+                cur.execute(
+                    "SELECT completed_at FROM sessions WHERE id = %s",
+                    (session_id,),
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
-                ON CONFLICT (session_id) DO UPDATE
-                SET teacher_talk_ratio = EXCLUDED.teacher_talk_ratio,
-                    student_talk_ratio = EXCLUDED.student_talk_ratio,
-                    metric_confidence = EXCLUDED.metric_confidence,
-                    preview_ready_at = EXCLUDED.preview_ready_at,
-                    insight_latency_sec = EXCLUDED.insight_latency_sec,
-                    updated_at = EXCLUDED.updated_at
-                """,
-                (session_id, teacher, student, confidence, now, latency, now),
-            )
-        conn.commit()
+                completed = cur.fetchone()
+                latency = None
+                if completed and completed[0]:
+                    latency = (now - completed[0].replace(tzinfo=timezone.utc)).total_seconds()
+
+                cur.execute(
+                    """
+                    INSERT INTO session_metrics (
+                        session_id, teacher_talk_ratio, student_talk_ratio,
+                        metric_confidence, preview_ready_at, insight_latency_sec, updated_at
+                    )
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    ON CONFLICT (session_id) DO UPDATE
+                    SET teacher_talk_ratio = EXCLUDED.teacher_talk_ratio,
+                        student_talk_ratio = EXCLUDED.student_talk_ratio,
+                        metric_confidence = EXCLUDED.metric_confidence,
+                        preview_ready_at = EXCLUDED.preview_ready_at,
+                        insight_latency_sec = EXCLUDED.insight_latency_sec,
+                        updated_at = EXCLUDED.updated_at
+                    """,
+                    (session_id, teacher, student, confidence, now, latency, now),
+                )
+    finally:
+        db_pool.putconn(conn)
 
     print(
         f"[worker-metrics] session={session_id} teacher={teacher:.0%} "
