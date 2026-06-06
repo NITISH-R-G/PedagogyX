@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel, Field
 
 from app import dat_db, db
-from app.dat_db import append_event
+from app.dat_db import append_event, EventData
 from app.auth import verify_api_key
 
 router = APIRouter(
@@ -33,7 +33,10 @@ def create_dat_session(body: DatSessionCreate):
     row = dat_db.create_dat_session(
         body.school_id, body.room_id, body.teacher_id, body.device_label
     )
-    append_event(row["id"], "SESSION_CREATED", None, "IDLE", {"device_label": body.device_label})
+    append_event(
+        row["id"],
+        EventData("SESSION_CREATED", None, "IDLE", {"device_label": body.device_label})
+    )
     return _serialize(row)
 
 
@@ -134,10 +137,7 @@ def _ensure_pedagogy_session(row: dict) -> dict:
     dat_db.link_pedagogy_session(row["id"], ped["id"])
     append_event(
         row["id"],
-        "PEDAGOGY_SESSION_LINKED",
-        None,
-        None,
-        {"pedagogy_session_id": str(ped["id"])},
+        EventData("PEDAGOGY_SESSION_LINKED", None, None, {"pedagogy_session_id": str(ped["id"])})
     )
     return dat_db.get_dat_session(row["id"]) or row
 
