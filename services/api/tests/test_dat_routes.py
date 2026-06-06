@@ -8,11 +8,7 @@ from app.main import app
 client = TestClient(app)
 
 
-
-
-
 client.headers.update({"Authorization": "Bearer dev_api_key_placeholder"})
-
 
 
 def test_start_stream_error_path():
@@ -77,11 +73,7 @@ def test_post_lifecycle_error_path():
 
         response = client.post(
             f"/v1/dat-sessions/{dat_session_id}/lifecycle",
-            json={
-                "event_type": "session.started",
-                "target": "session",
-                "to_state": "STARTED"
-            }
+            json={"event_type": "session.started", "target": "session", "to_state": "STARTED"},
         )
 
         assert response.status_code == 400
