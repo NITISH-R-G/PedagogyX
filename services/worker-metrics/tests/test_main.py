@@ -13,7 +13,6 @@ class TestComputeTalkRatio(unittest.TestCase):
         mock_cursor.fetchone.return_value = None
 
         from worker.main import _compute_talk_ratio
-
         teacher, student, confidence = _compute_talk_ratio(mock_cursor, "session123")
 
         self.assertEqual(teacher, 0.68)
@@ -30,7 +29,6 @@ class TestComputeTalkRatio(unittest.TestCase):
         mock_cursor.fetchone.return_value = ["[]"]
 
         from worker.main import _compute_talk_ratio
-
         teacher, student, confidence = _compute_talk_ratio(mock_cursor, "session123")
 
         self.assertEqual(teacher, 0.68)
@@ -45,16 +43,14 @@ class TestComputeTalkRatio(unittest.TestCase):
         mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
 
         import json
-
         segments = [
             {"start": 0.0, "end": 10.0},
             {"start": 10.0, "end": 20.0},
-            {"start": 20.0, "end": 35.0},
+            {"start": 20.0, "end": 35.0}
         ]
         mock_cursor.fetchone.return_value = [json.dumps(segments)]
 
         from worker.main import _compute_talk_ratio
-
         teacher, student, confidence = _compute_talk_ratio(mock_cursor, "session123")
 
         # total_dur = 10 + 10 + 15 = 35
@@ -72,18 +68,17 @@ class TestComputeTalkRatio(unittest.TestCase):
         mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
 
         import json
-
-        segments = [{"start": 10.0, "end": 10.0}]
+        segments = [
+            {"start": 10.0, "end": 10.0}
+        ]
         mock_cursor.fetchone.return_value = [json.dumps(segments)]
 
         from worker.main import _compute_talk_ratio
-
         teacher, student, confidence = _compute_talk_ratio(mock_cursor, "session123")
 
         self.assertEqual(teacher, 0.68)
         self.assertEqual(student, 0.32)
         self.assertEqual(confidence, "preview_heuristic")
-
 
 class TestProcessJob(unittest.TestCase):
     @patch("worker.main._compute_talk_ratio")
@@ -97,11 +92,9 @@ class TestProcessJob(unittest.TestCase):
         mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
 
         from datetime import datetime, timezone
-
         mock_cursor.fetchone.return_value = [datetime(2023, 1, 1, tzinfo=timezone.utc)]
 
         from worker.main import process_job
-
         payload = {"session_id": "session123"}
         process_job(payload)
 

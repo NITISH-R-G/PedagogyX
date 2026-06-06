@@ -110,7 +110,9 @@ def main() -> int:
     with httpx.Client(timeout=120.0) as client:
         check_health(client, base)
 
-        session_id = create_session(client, base, args.school_id, args.room_id, args.teacher_id)
+        session_id = create_session(
+            client, base, args.school_id, args.room_id, args.teacher_id
+        )
 
         upload_chunk(client, base, session_id, args.chunk_index, audio_path)
 

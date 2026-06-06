@@ -37,12 +37,12 @@ def generate_fallback_summary(reports):
 
     summary += "## Findings\n"
     if reports.get("ruff"):
-        summary += "- **Code Quality:** Ruff detected potential issues.\n"
+        summary += f"- **Code Quality:** Ruff detected potential issues.\n"
     else:
-        summary += "- **Code Quality:** No critical Ruff issues found.\n"
+        summary += f"- **Code Quality:** No critical Ruff issues found.\n"
 
     if reports.get("vulture"):
-         summary += "- **Dead Code:** Vulture identified potential dead code.\n"
+         summary += f"- **Dead Code:** Vulture identified potential dead code.\n"
 
     if reports.get("gitleaks") and "leak" in reports["gitleaks"].lower():
         summary += "- **Security:** Critical secret leak detected! Immediate action required.\n"

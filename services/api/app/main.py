@@ -1,4 +1,3 @@
-import asyncio
 import sys
 from contextlib import asynccontextmanager
 from uuid import UUID
@@ -58,17 +57,10 @@ def create_session(body: SessionCreateBody):
 
 
 @app.get("/v1/sessions/{session_id}")
-async def get_session(session_id: UUID):
-    row = await run_in_threadpool(db.get_session, session_id)
+def get_session(session_id: UUID):
+    row = db.get_session(session_id)
     if not row:
         raise HTTPException(status_code=404, detail="session not found")
-
-    chunks, metrics, transcript = await asyncio.gather(
-        run_in_threadpool(db.list_chunks, session_id),
-        run_in_threadpool(db.get_metrics, session_id),
-        run_in_threadpool(db.get_transcript, session_id),
-    )
-
     payload = _serialize_session(row)
     payload["chunks"] = [
         {
@@ -77,10 +69,12 @@ async def get_session(session_id: UUID):
             "content_type": c["content_type"],
             "uploaded_at": c["uploaded_at"].isoformat() if c.get("uploaded_at") else None,
         }
-        for c in chunks
+        for c in db.list_chunks(session_id)
     ]
+    metrics = db.get_metrics(session_id)
     if metrics:
         payload["metrics"] = _serialize_metrics(metrics)
+    transcript = db.get_transcript(session_id)
     if transcript:
         payload["transcript_preview"] = (transcript["text"] or "")[:200]
     return payload
@@ -190,8 +184,8 @@ def _serialize_metrics(metrics: dict) -> dict:
         "teacher_talk_ratio": metrics.get("teacher_talk_ratio"),
         "student_talk_ratio": metrics.get("student_talk_ratio"),
         "metric_confidence": metrics.get("metric_confidence"),
-        "preview_ready_at": (
-            metrics["preview_ready_at"].isoformat() if metrics.get("preview_ready_at") else None
-        ),
+        "preview_ready_at": metrics["preview_ready_at"].isoformat()
+        if metrics.get("preview_ready_at")
+        else None,
         "insight_latency_sec": metrics.get("insight_latency_sec"),
     }
