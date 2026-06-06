@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch
 from worker.processor import process_job
 
+
 class TestProcessor(unittest.TestCase):
     @patch("worker.processor._fetch_session")
     @patch("worker.processor._fetch_chunks")
@@ -18,7 +19,7 @@ class TestProcessor(unittest.TestCase):
         mock_transcribe,
         mock_download,
         mock_fetch_chunks,
-        mock_fetch_session
+        mock_fetch_session,
     ):
         mock_fetch_session.return_value = ("school_1", None)
         mock_fetch_chunks.return_value = [(1, "key1")]
@@ -41,11 +42,7 @@ class TestProcessor(unittest.TestCase):
     @patch("worker.processor._save_transcript")
     @patch("worker.processor._enqueue_metrics")
     def test_process_job_no_chunks(
-        self,
-        mock_enqueue,
-        mock_save,
-        mock_transcribe,
-        mock_fetch_chunks
+        self, mock_enqueue, mock_save, mock_transcribe, mock_fetch_chunks
     ):
         mock_fetch_chunks.return_value = []
         mock_transcribe.return_value = ("stub text", [{"text": "stub"}], 1.0)
@@ -57,6 +54,7 @@ class TestProcessor(unittest.TestCase):
         mock_transcribe.assert_called_once_with("test-session-123")
         mock_save.assert_called_once_with("test-session-123", "stub text", [{"text": "stub"}], 1.0)
         mock_enqueue.assert_called_once_with("test-session-123", "school_1")
+
 
 if __name__ == "__main__":
     unittest.main()
