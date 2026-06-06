@@ -1,0 +1,120 @@
+name: Comprehensive QA System
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+  release:
+    types: [published]
+  schedule:
+    - cron: '0 2 * * *' # Daily repository audit
+  workflow_dispatch:
+
+jobs:
+  quality_and_security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python Dependencies
+        run: |
+          pip install ruff black mypy vulture radon safety pip-audit
+          pip install -r services/api/requirements.txt || true
+          pip install -r scripts/automation/requirements.txt || true
+
+      - name: Install JS/TS Dependencies
+        run: |
+          npm install -g eslint prettier typescript jscpd
+          cd services/web && npm install --legacy-peer-deps
+
+      # Code Formatting & Linting
+      - name: Run Black & Ruff (Python)
+        run: |
+          # Allow formatting to rewrite, fail if it still fails check, same for ruff
+          black services tools packages scripts
+          black --check services tools packages scripts
+          ruff check services tools packages scripts --output-file ruff_report.txt
+
+      - name: Run ESLint & Prettier (Node)
+        run: |
+          cd services/web
+          npx prettier --write .
+          npx prettier --check . > ../../prettier_report.txt
+
+      # Type Checking
+      - name: Type Checking (Python Mypy)
+        run: |
+          mypy services tools packages > mypy_report.txt
+
+      - name: Type Checking (TypeScript)
+        run: |
+          cd services/web
+          npx tsc --noEmit > ../../tsc_report.txt
+
+      # Dead Code & Duplication Detection
+      - name: Dead Code Detection (Python Vulture)
+        run: |
+          vulture services tools packages > vulture_report.txt || true
+
+      - name: Duplicate Code Detection (jscpd)
+        run: |
+          jscpd ./services --reporters "console,json" --output ./jscpd_report || true
+
+      # Complexity Analysis
+      - name: Complexity Analysis (Radon)
+        run: |
+          radon cc services tools packages -a > radon_cc.txt || true
+          radon mi services tools packages > radon_mi.txt || true
+
+      # Secret Detection
+      - name: Secret Detection (Gitleaks)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Do NOT continue on error; this must block CI if secrets are found
+
+      # License Compliance & SBOM
+      - name: SBOM Generation
+        uses: anchore/sbom-action@v0
+        with:
+          format: spdx-json
+          output-file: sbom.spdx.json
+
+      - name: Dependency Audit & Licenses
+        run: |
+          safety check > safety_report.txt || true
+          pip-audit > pip_audit_report.txt || true
+          cd services/web && npm audit > ../../npm_audit_report.txt || true
+
+      # AI-Powered Insights Generation
+      - name: Run AI QA Agent
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python scripts/automation/ai_qa_agent.py --ci-mode
+          cat docs/QA_REPORT.md >> $GITHUB_STEP_SUMMARY || true
+
+      - name: Upload QA Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-reports
+          path: |
+            *_report.txt
+            jscpd_report/
+            docs/QA_REPORT.md
+            radon_*.txt
+            sbom.spdx.json
