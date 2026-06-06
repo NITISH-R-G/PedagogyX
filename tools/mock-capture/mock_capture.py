@@ -4,6 +4,7 @@
 import argparse
 import struct
 import sys
+import time
 import wave
 from pathlib import Path
 
@@ -11,6 +12,68 @@ import httpx
 
 DEFAULT_API = "http://localhost:8080"
 FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures"
+
+
+def check_health(client: httpx.Client, base: str) -> None:
+    health = client.get(f"{base}/health")
+    health.raise_for_status()
+    print(f"API health: {health.json()}")
+
+
+def create_session(
+    client: httpx.Client, base: str, school_id: str, room_id: str, teacher_id: str
+) -> str:
+    created = client.post(
+        f"{base}/v1/sessions",
+        json={
+            "school_id": school_id,
+            "room_id": room_id,
+            "teacher_id": teacher_id,
+        },
+    )
+    created.raise_for_status()
+    body = created.json()
+    session_id = body["session_id"]
+    print(f"Session created: {session_id}")
+    return session_id
+
+
+def upload_chunk(
+    client: httpx.Client, base: str, session_id: str, chunk_index: int, audio_path: Path
+) -> None:
+    with open(audio_path, "rb") as f:
+        upload = client.post(
+            f"{base}/v1/sessions/{session_id}/chunks/{chunk_index}",
+            files={"file": (audio_path.name, f, "audio/wav")},
+        )
+    upload.raise_for_status()
+    print(f"Chunk uploaded: {upload.json()}")
+
+
+def complete_session(client: httpx.Client, base: str, session_id: str) -> None:
+    done = client.post(f"{base}/v1/sessions/{session_id}/complete")
+    done.raise_for_status()
+    print(f"Session completed: {done.json()}")
+
+
+def poll_preview(client: httpx.Client, base: str, session_id: str) -> None:
+    for _ in range(30):
+        preview = client.get(f"{base}/v1/sessions/{session_id}/preview")
+        preview.raise_for_status()
+        data = preview.json()
+        if data.get("preview_ready"):
+            print(f"Preview ready: {data}")
+            break
+        time.sleep(1)
+    else:
+        print("WARN: preview not ready after 30s — check worker logs")
+
+
+def get_school_overview(client: httpx.Client, base: str, school_id: str) -> None:
+    overview = client.get(f"{base}/v1/schools/{school_id}/overview")
+    overview.raise_for_status()
+    m_a = overview.json().get("m_a_coverage", {})
+    print(f"School overview M-A: {m_a}")
 
 
 def ensure_sample_wav(path: Path) -> Path:
@@ -45,52 +108,19 @@ def main() -> int:
         audio_path = ensure_sample_wav(FIXTURE_DIR / "sample_3s.wav")
 
     with httpx.Client(timeout=120.0) as client:
-        health = client.get(f"{base}/health")
-        health.raise_for_status()
-        print(f"API health: {health.json()}")
+        check_health(client, base)
 
-        created = client.post(
-            f"{base}/v1/sessions",
-            json={
-                "school_id": args.school_id,
-                "room_id": args.room_id,
-                "teacher_id": args.teacher_id,
-            },
+        session_id = create_session(
+            client, base, args.school_id, args.room_id, args.teacher_id
         )
-        created.raise_for_status()
-        body = created.json()
-        session_id = body["session_id"]
-        print(f"Session created: {session_id}")
 
-        with open(audio_path, "rb") as f:
-            upload = client.post(
-                f"{base}/v1/sessions/{session_id}/chunks/{args.chunk_index}",
-                files={"file": (audio_path.name, f, "audio/wav")},
-            )
-        upload.raise_for_status()
-        print(f"Chunk uploaded: {upload.json()}")
+        upload_chunk(client, base, session_id, args.chunk_index, audio_path)
 
-        done = client.post(f"{base}/v1/sessions/{session_id}/complete")
-        done.raise_for_status()
-        print(f"Session completed: {done.json()}")
+        complete_session(client, base, session_id)
 
-        import time
+        poll_preview(client, base, session_id)
 
-        for _ in range(30):
-            preview = client.get(f"{base}/v1/sessions/{session_id}/preview")
-            preview.raise_for_status()
-            data = preview.json()
-            if data.get("preview_ready"):
-                print(f"Preview ready: {data}")
-                break
-            time.sleep(1)
-        else:
-            print("WARN: preview not ready after 30s — check worker logs")
-
-        overview = client.get(f"{base}/v1/schools/{args.school_id}/overview")
-        overview.raise_for_status()
-        m_a = overview.json().get("m_a_coverage", {})
-        print(f"School overview M-A: {m_a}")
+        get_school_overview(client, base, args.school_id)
 
     print("Mock capture OK")
     return 0
