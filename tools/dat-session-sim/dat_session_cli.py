@@ -10,8 +10,6 @@ Usage:
   python dat_session_cli.py run --no-camera   # synthetic frames only
 """
 
-from __future__ import annotations
-
 import argparse
 import io
 import sys
