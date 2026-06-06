@@ -24,6 +24,14 @@ jobs:
           python -m venv .venv
           source .venv/bin/activate
           pip install -r requirements.txt
+          pip install safety pip-audit
+
+      - name: Security & Dependency Audit
+        run: |
+          cd services/api
+          source .venv/bin/activate
+          safety check || echo "Safety checks completed (non-blocking for MVP)"
+          pip-audit || echo "Audit completed (non-blocking for MVP)"
 
       - name: Run Backend Tests
         env:
