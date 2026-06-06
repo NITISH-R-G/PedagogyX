@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """Mock capture: create session, upload chunk, complete — triggers ASR + talk ratio pipeline."""
 
-from __future__ import annotations
-
 import argparse
 import struct
 import sys
