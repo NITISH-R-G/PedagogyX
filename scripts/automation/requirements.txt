@@ -1,0 +1,5 @@
+networkx
+pyyaml
+jinja2
+openai
+requests

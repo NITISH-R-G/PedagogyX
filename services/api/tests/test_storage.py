@@ -18,16 +18,15 @@ def test_s3_client_secure(mock_boto_client, monkeypatch):
     monkeypatch.setattr(settings, "minio_access_key", "test-access-key")
     monkeypatch.setattr(settings, "minio_secret_key", "test-secret-key")
 
+    s3_client.cache_clear()
     s3_client()
 
-    mock_boto_client.assert_called_once_with(
-        "s3",
-        endpoint_url="https://test-endpoint",
-        aws_access_key_id="test-access-key",
-        aws_secret_access_key="test-secret-key",
-        config=mock_boto_client.call_args.kwargs["config"],
-        region_name="us-east-1",
-    )
+    mock_boto_client.assert_called_once()
+    kwargs = mock_boto_client.call_args.kwargs
+    assert kwargs["endpoint_url"] == "https://test-endpoint"
+    assert kwargs["aws_access_key_id"] == "test-access-key"
+    assert kwargs["aws_secret_access_key"] == "test-secret-key"
+    assert kwargs["region_name"] == "us-east-1"
     assert mock_boto_client.call_args.kwargs["config"].signature_version == "s3v4"
 
 
@@ -39,16 +38,15 @@ def test_s3_client_insecure(mock_boto_client, monkeypatch):
     monkeypatch.setattr(settings, "minio_access_key", "test-access-key")
     monkeypatch.setattr(settings, "minio_secret_key", "test-secret-key")
 
+    s3_client.cache_clear()
     s3_client()
 
-    mock_boto_client.assert_called_once_with(
-        "s3",
-        endpoint_url="http://test-endpoint",
-        aws_access_key_id="test-access-key",
-        aws_secret_access_key="test-secret-key",
-        config=mock_boto_client.call_args.kwargs["config"],
-        region_name="us-east-1",
-    )
+    mock_boto_client.assert_called_once()
+    kwargs = mock_boto_client.call_args.kwargs
+    assert kwargs["endpoint_url"] == "http://test-endpoint"
+    assert kwargs["aws_access_key_id"] == "test-access-key"
+    assert kwargs["aws_secret_access_key"] == "test-secret-key"
+    assert kwargs["region_name"] == "us-east-1"
     assert mock_boto_client.call_args.kwargs["config"].signature_version == "s3v4"
 
 

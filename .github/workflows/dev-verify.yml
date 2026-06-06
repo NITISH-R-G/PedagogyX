@@ -21,3 +21,14 @@ jobs:
 
       - name: Docs lint and format
         run: ./scripts/dev-verify.sh --docs-only
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Global Security & Dependency Audit
+        run: |
+          pip install safety pip-audit
+          safety check || echo "Safety checks completed (non-blocking)"
+          pip-audit || echo "Audit completed (non-blocking)"

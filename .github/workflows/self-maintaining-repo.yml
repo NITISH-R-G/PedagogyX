@@ -1,0 +1,50 @@
+name: Self-Maintaining Repository
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 0 * * *' # Run daily at midnight
+  workflow_dispatch:
+
+jobs:
+  analyze_and_document:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Automation Dependencies
+        run: pip install -r scripts/automation/requirements.txt
+
+      - name: Run Repository Analyzer
+        run: python scripts/automation/repo_analyzer.py
+
+      - name: Run Diagram Generator
+        run: python scripts/automation/diagram_generator.py
+
+      - name: Run AI Documentation Agent
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python scripts/automation/ai_doc_agent.py
+
+      - name: Run README Generator
+        run: python scripts/automation/readme_generator.py
+
+      - name: Commit and Push Documentation Changes
+        if: github.event_name != 'pull_request'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add knowledge_graph.json docs/architecture-diagrams.md docs/AI_SUMMARY.md README.md
+          git commit -m "docs: auto-generate repository documentation and diagrams [skip ci]" || echo "No changes to commit"
+          git push

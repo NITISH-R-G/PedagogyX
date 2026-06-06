@@ -1,36 +1,70 @@
-# PedagogyX
+# PedagogyX - Autonomous Repository
 
-**Multimodal AI classroom intelligence and teacher optimization platform** (planning phase).
+![CI Status](https://img.shields.io/github/actions/workflow/status/owner/repo/test.yml?branch=main&label=CI)
+![Auto-Docs](https://img.shields.io/badge/Docs-Auto--Generated-blue)
 
-## Current Status
+## Project Overview
+This repository is continuously analyzed, documented, and visualized automatically.
 
-🟡 **Phase 0 + MVP boilerplate** — cloud API + **Meta Ray-Ban (DAT)** Android client path.  
-**Plan change (2026-05-23):** Primary capture = **Ray-Ban smart glasses**, not smartboards — [ADR-0009](docs/08-rfc-adr/ADR-0009-meta-rayban-primary-client.md).  
-**Real school / student data** requires **G2** (see [docs/README.md](docs/README.md)).
+## Technology Stack
+- FastAPI
+- React
+- Next.js
 
-## Documentation
+## AI Generated Architecture Summary
 
-Start here: **[docs/README.md](docs/README.md)** · **Developing:** [DEVELOPING.md](DEVELOPING.md)
+This repository is built using **FastAPI, React, Next.js**.
 
-| Priority action                    | Document                                                                                                                                              |
-| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **G2 — counsel (1-click prep)**    | [COUNSEL_OUTREACH_PACKAGE.md](docs/07-compliance-ethics/COUNSEL_OUTREACH_PACKAGE.md) · [Issue #11](https://github.com/NITISH-R-G/PedagogyX/issues/11) |
-| **Run dev stack**                  | `make dev-up` or [DEVELOPING.md](DEVELOPING.md)                                                                                                       |
-| Dev (works **without 5070 today**) | `./scripts/dev-verify.sh` · [DEV_WITHOUT_GPU.md](benchmarks/DEV_WITHOUT_GPU.md)                                                                       |
-| Active sprint                      | [SPRINT_03_MVP_PREP.md](docs/09-agile/SPRINT_03_MVP_PREP.md)                                                                                          |
-| Architecture                       | [SYSTEM_ARCHITECTURE.md](docs/05-architecture/SYSTEM_ARCHITECTURE.md)                                                                                 |
+### Core Services
+- **api**: Microservice part of the architecture.
+- **web**: Microservice part of the architecture.
+- **worker-metrics**: Microservice part of the architecture.
+- **worker-cv**: Microservice part of the architecture.
+- **worker-asr**: Microservice part of the architecture.
 
-## Repository Contents
 
-| Path                           | Contents                                |
-| ------------------------------ | --------------------------------------- |
-| `docs/`                        | Phase 0 RFCs, ADRs, sprint plans        |
-| `services/`                    | API, worker-asr (stub), web admin shell |
-| `infra/`                       | `compose.dev.yaml` local stack          |
-| `benchmarks/`                  | RTX 5070 validation scripts (ADR-0006)  |
-| `tools/mock-capture/`          | Synthetic session CLI                   |
-| `clients/android-capture-dat/` | Meta Ray-Ban DAT host app (primary v1)  |
+## Repository Structure
+- **[api](services/api)**
+- **[web](services/web)**
+- **[worker-metrics](services/worker-metrics)**
+- **[worker-cv](services/worker-cv)**
+- **[worker-asr](services/worker-asr)**
 
-## License
+# Architecture Diagrams
 
-TBD by founder.
+## Services & Frameworks
+
+```mermaid
+graph TD
+    subgraph Services
+        api["api"]
+        click api href "services/api" "Go to api source"
+        web["web"]
+        click web href "services/web" "Go to web source"
+        worker_metrics["worker-metrics"]
+        click worker_metrics href "services/worker-metrics" "Go to worker-metrics source"
+        worker_cv["worker-cv"]
+        click worker_cv href "services/worker-cv" "Go to worker-cv source"
+        worker_asr["worker-asr"]
+        click worker_asr href "services/worker-asr" "Go to worker-asr source"
+    end
+
+    subgraph Frameworks
+        FastAPI(FastAPI)
+        React(React)
+        Next_js(Next.js)
+    end
+
+```
+
+
+## Setup Instructions
+1. Install dependencies via `pip install -r services/api/requirements.txt` or Node/NPM.
+2. Run locally via Docker: `docker compose -f infra/compose.dev.yaml up --build`
+
+## Environment Variables
+The following environment variables are detected in the codebase:
+
+## Contribution Guide
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+
