@@ -7,11 +7,34 @@ from app.db_utils import get_conn
 
 
 @patch("app.db_utils.psycopg2.connect")
-def test_get_conn_rollback_on_error(mock_connect):
+def test_get_conn_rollback_on_psycopg2_error(mock_connect, capsys):
+    """
+    Directly test the get_conn context manager to ensure that a psycopg2.Error
+    raised within its block causes a rollback, closes the connection,
+    prints to stderr, and re-raises the exception.
+    """
+    import psycopg2
+    mock_conn = MagicMock()
+    mock_connect.return_value = mock_conn
+
+    with pytest.raises(psycopg2.Error, match="DB psycopg2 error"):
+        with get_conn():
+            raise psycopg2.Error("DB psycopg2 error")
+
+    mock_conn.rollback.assert_called_once()
+    mock_conn.close.assert_called_once()
+    mock_conn.commit.assert_not_called()
+
+    captured = capsys.readouterr()
+    assert "Database error in get_conn: DB psycopg2 error" in captured.err
+
+
+@patch("app.db_utils.psycopg2.connect")
+def test_get_conn_rollback_on_error(mock_connect, capsys):
     """
     Directly test the get_conn context manager to ensure that an exception
     raised within its block causes a rollback, closes the connection,
-    and re-raises the exception.
+    prints to stderr, and re-raises the exception.
     """
     mock_conn = MagicMock()
     mock_connect.return_value = mock_conn
@@ -23,6 +46,9 @@ def test_get_conn_rollback_on_error(mock_connect):
     mock_conn.rollback.assert_called_once()
     mock_conn.close.assert_called_once()
     mock_conn.commit.assert_not_called()
+
+    captured = capsys.readouterr()
+    assert "Unexpected error in get_conn: DB error" in captured.err
 
 
 @patch("app.db_utils.psycopg2.connect")
