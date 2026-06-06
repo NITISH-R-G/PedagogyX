@@ -24,9 +24,13 @@ def main():
     # Load dynamically generated parts
     diagrams_path = os.path.join(repo_root, "docs/architecture-diagrams.md")
     diagrams_content = load_file(diagrams_path)
+    # Demote headings for inclusion in README
+    diagrams_content = diagrams_content.replace("# Architecture", "## Architecture").replace("## Services", "### Services")
 
     ai_summary_path = os.path.join(repo_root, "docs/AI_SUMMARY.md")
     ai_summary_content = load_file(ai_summary_path)
+    # Demote headings for inclusion in README
+    ai_summary_content = ai_summary_content.replace("# AI", "## AI").replace("## Core", "### Core")
 
     readme_content = "# PedagogyX - Autonomous Repository\n\n"
 

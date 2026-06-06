@@ -4,35 +4,38 @@
 ![Auto-Docs](https://img.shields.io/badge/Docs-Auto--Generated-blue)
 
 ## Project Overview
+
 This repository is continuously analyzed, documented, and visualized automatically.
 
 ## Technology Stack
+
 - FastAPI
 - React
 - Next.js
 
-## AI Generated Architecture Summary
+## AI Generated Architecture Summary (Fallback)
 
 This repository is built using **FastAPI, React, Next.js**.
 
 ### Core Services
+
 - **api**: Microservice part of the architecture.
 - **web**: Microservice part of the architecture.
 - **worker-metrics**: Microservice part of the architecture.
 - **worker-cv**: Microservice part of the architecture.
 - **worker-asr**: Microservice part of the architecture.
 
-
 ## Repository Structure
+
 - **[api](services/api)**
 - **[web](services/web)**
 - **[worker-metrics](services/worker-metrics)**
 - **[worker-cv](services/worker-cv)**
 - **[worker-asr](services/worker-asr)**
 
-# Architecture Diagrams
+## Architecture Diagrams
 
-## Services & Frameworks
+### Services & Frameworks
 
 ```mermaid
 graph TD
@@ -57,14 +60,15 @@ graph TD
 
 ```
 
-
 ## Setup Instructions
+
 1. Install dependencies via `pip install -r services/api/requirements.txt` or Node/NPM.
 2. Run locally via Docker: `docker compose -f infra/compose.dev.yaml up --build`
 
 ## Environment Variables
+
 The following environment variables are detected in the codebase:
 
 ## Contribution Guide
-Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.

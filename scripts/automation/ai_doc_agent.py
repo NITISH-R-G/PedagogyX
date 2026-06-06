@@ -9,10 +9,10 @@ def generate_summary(graph):
     frameworks = ", ".join(graph.get("frameworks", []))
     services = [s["name"] for s in graph.get("services", [])]
 
-    summary = "## AI Generated Architecture Summary\n\n"
+    summary = "# AI Generated Architecture Summary (Fallback)\n\n"
     summary += f"This repository is built using **{frameworks}**.\n\n"
 
-    summary += "### Core Services\n"
+    summary += "## Core Services\n\n"
     for svc in services:
         summary += f"- **{svc}**: Microservice part of the architecture.\n"
 
