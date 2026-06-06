@@ -2,11 +2,12 @@ import sys
 from contextlib import asynccontextmanager
 from uuid import UUID
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, FastAPI, File, HTTPException, UploadFile
 from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel, Field
 
 from app import db, minio_client, queue, storage
+from app.auth import verify_api_key
 from app.config import settings
 from app.dat_routes import router as dat_router
 
@@ -33,6 +34,8 @@ app = FastAPI(
 )
 app.include_router(dat_router)
 
+core_router = APIRouter(dependencies=[Depends(verify_api_key)])
+
 
 @app.get("/health")
 def health():
@@ -44,7 +47,7 @@ def health():
     }
 
 
-@app.post("/v1/sessions")
+@core_router.post("/v1/sessions")
 def create_session(body: SessionCreateBody):
     row = db.insert_session(body.school_id, body.room_id, body.teacher_id)
     sid = row["id"]
@@ -56,7 +59,7 @@ def create_session(body: SessionCreateBody):
     }
 
 
-@app.get("/v1/sessions/{session_id}")
+@core_router.get("/v1/sessions/{session_id}")
 def get_session(session_id: UUID):
     row = db.get_session(session_id)
     if not row:
@@ -80,7 +83,7 @@ def get_session(session_id: UUID):
     return payload
 
 
-@app.post("/v1/sessions/{session_id}/chunks/{chunk_index}")
+@core_router.post("/v1/sessions/{session_id}/chunks/{chunk_index}")
 def upload_chunk(
     session_id: UUID,
     chunk_index: int,
@@ -108,7 +111,7 @@ def upload_chunk(
     }
 
 
-@app.post("/v1/sessions/{session_id}/complete")
+@core_router.post("/v1/sessions/{session_id}/complete")
 def complete_session(session_id: UUID):
     row = db.get_session(session_id)
     if not row:
@@ -136,7 +139,7 @@ def complete_session(session_id: UUID):
     }
 
 
-@app.get("/v1/sessions/{session_id}/preview")
+@core_router.get("/v1/sessions/{session_id}/preview")
 def session_preview(session_id: UUID):
     row = db.get_session(session_id)
     if not row:
@@ -162,9 +165,12 @@ def session_preview(session_id: UUID):
     }
 
 
-@app.get("/v1/schools/{school_id}/overview")
+@core_router.get("/v1/schools/{school_id}/overview")
 def school_overview(school_id: str):
     return db.school_overview(school_id)
+
+
+app.include_router(core_router)
 
 
 def _serialize_session(row: dict) -> dict:
