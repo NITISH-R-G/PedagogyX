@@ -48,10 +48,12 @@
     "services/api/tests/test_dat_db.py",
     "services/api/tests/test_health.py",
     "services/api/tests/test_sessions.py",
+    "services/api/tests/test_schools.py",
     "services/api/tests/__init__.py",
     "services/api/tests/test_storage.py",
     "services/api/tests/test_dat_routes.py",
     "services/api/tests/test_dat_routes_extended.py",
+    "services/api/tests/test_main.py",
     "services/api/tests/test_config.py",
     "services/api/tests/app/test_minio_client.py",
     "services/api/tests/app/test_auth.py",
@@ -84,215 +86,226 @@
   "dependencies": {
     "benchmark.py": [
       "os",
+      "time",
       "json",
-      "datetime",
       "redis",
-      "time"
+      "datetime"
     ],
     "test_download_benchmark.py": [
-      "io",
-      "os",
-      "tempfile",
       "botocore",
+      "os",
       "boto3",
+      "tempfile",
       "concurrent",
-      "time"
+      "time",
+      "io"
     ],
     "packages/capture-core/py/pedagogyx_core/models.py": [
-      "pydantic",
-      "datetime",
       "typing",
+      "datetime",
+      "pydantic",
       "uuid"
     ],
     "packages/capture-core/py/pedagogyx_core/__init__.py": [
       "pedagogyx_core"
     ],
     "benchmarks/test_bench_ollama.py": [
+      "unittest",
+      "bench_ollama",
       "sys",
       "requests",
-      "unittest",
-      "io",
-      "bench_ollama"
+      "io"
     ],
     "benchmarks/bench_whisper.py": [
-      "torch",
-      "faster_whisper",
-      "pathlib",
-      "json",
-      "sys",
-      "argparse",
-      "datetime",
       "wave",
-      "time"
+      "faster_whisper",
+      "argparse",
+      "time",
+      "json",
+      "pathlib",
+      "sys",
+      "datetime",
+      "torch"
     ],
     "benchmarks/bench_ollama.py": [
       "os",
-      "pathlib",
-      "json",
-      "sys",
       "argparse",
+      "time",
+      "json",
+      "pathlib",
+      "sys",
       "requests",
-      "datetime",
-      "time"
+      "datetime"
     ],
     "benchmarks/bench_yolo_trt.py": [
       "numpy",
-      "pathlib",
-      "json",
-      "sys",
       "argparse",
+      "time",
+      "json",
+      "pathlib",
+      "sys",
       "ultralytics",
       "datetime",
-      "torch",
-      "time"
+      "torch"
     ],
     "benchmarks/tests/test_bench_whisper.py": [
       "os",
+      "wave",
       "bench_whisper",
       "pathlib",
-      "sys",
-      "wave"
+      "sys"
     ],
     "benchmarks/tests/__init__.py": [],
     "scripts/automation/ai_qa_agent.py": [
-      "json",
       "os",
-      "argparse",
-      "openai"
+      "openai",
+      "json",
+      "argparse"
     ],
     "scripts/automation/ai_doc_agent.py": [
-      "json",
       "os",
+      "json",
       "argparse"
     ],
     "scripts/automation/readme_generator.py": [
-      "json",
-      "os"
+      "os",
+      "json"
     ],
     "scripts/automation/generate_health_dashboard.py": [
-      "json",
       "os",
-      "subprocess",
-      "datetime"
+      "datetime",
+      "json",
+      "subprocess"
     ],
     "scripts/automation/diagram_generator.py": [
-      "json",
-      "os"
+      "os",
+      "json"
     ],
     "scripts/automation/repo_analyzer.py": [
-      "json",
+      "re",
       "os",
-      "re"
+      "json"
     ],
     "services/api/tests/test_queue.py": [
-      "json",
-      "uuid",
       "app",
-      "unittest"
+      "unittest",
+      "json",
+      "uuid"
     ],
     "services/api/tests/test_db.py": [
-      "uuid",
-      "app",
-      "psycopg2",
       "unittest",
-      "datetime"
+      "app",
+      "datetime",
+      "uuid",
+      "psycopg2"
     ],
     "services/api/tests/test_dat_db.py": [
-      "uuid",
-      "app",
-      "psycopg2",
       "unittest",
-      "pytest"
+      "app",
+      "pytest",
+      "uuid",
+      "psycopg2"
     ],
     "services/api/tests/test_health.py": [
-      "fastapi",
-      "app"
+      "app",
+      "fastapi"
     ],
     "services/api/tests/test_sessions.py": [
       "app",
-      "uuid",
+      "fastapi",
+      "unittest",
+      "uuid"
+    ],
+    "services/api/tests/test_schools.py": [
+      "app",
       "fastapi",
       "unittest"
     ],
     "services/api/tests/__init__.py": [],
     "services/api/tests/test_storage.py": [
-      "uuid",
       "app",
-      "unittest"
+      "unittest",
+      "uuid"
     ],
     "services/api/tests/test_dat_routes.py": [
       "app",
-      "uuid",
-      "fastapi",
-      "unittest"
-    ],
-    "services/api/tests/test_dat_routes_extended.py": [
-      "uuid",
-      "app",
       "fastapi",
       "unittest",
-      "datetime"
+      "uuid"
     ],
-    "services/api/tests/test_config.py": [
-      "pytest",
-      "app"
-    ],
-    "services/api/tests/app/test_minio_client.py": [
+    "services/api/tests/test_dat_routes_extended.py": [
+      "fastapi",
+      "unittest",
       "app",
-      "botocore",
+      "datetime",
+      "uuid"
+    ],
+    "services/api/tests/test_main.py": [
+      "app",
       "pytest",
       "unittest"
     ],
-    "services/api/tests/app/test_auth.py": [
-      "fastapi",
+    "services/api/tests/test_config.py": [
+      "app",
+      "pytest"
+    ],
+    "services/api/tests/app/test_minio_client.py": [
+      "botocore",
       "pytest",
+      "unittest",
       "app"
+    ],
+    "services/api/tests/app/test_auth.py": [
+      "app",
+      "pytest",
+      "fastapi"
     ],
     "services/api/tests/app/__init__.py": [],
     "services/api/tests/app/test_dat_routes.py": [
       "app",
-      "uuid",
       "fastapi",
-      "unittest"
+      "unittest",
+      "uuid"
     ],
     "services/api/tests/app/test_config.py": [
-      "os",
       "app",
+      "os",
       "unittest"
     ],
     "services/api/app/db.py": [
-      "datetime",
-      "psycopg2",
+      "app",
       "uuid",
-      "app"
+      "datetime",
+      "psycopg2"
     ],
     "services/api/app/main.py": [
       "contextlib",
-      "uuid",
+      "fastapi",
       "pydantic",
       "app",
       "sys",
-      "fastapi"
+      "asyncio",
+      "uuid"
     ],
     "services/api/app/auth.py": [
-      "fastapi",
-      "app"
+      "app",
+      "fastapi"
     ],
     "services/api/app/minio_client.py": [
-      "boto3",
       "botocore",
-      "app"
+      "app",
+      "boto3"
     ],
     "services/api/app/dat_routes.py": [
-      "uuid",
-      "pydantic",
+      "app",
       "fastapi",
-      "app"
+      "uuid",
+      "pydantic"
     ],
     "services/api/app/db_utils.py": [
       "contextlib",
-      "app",
       "typing",
+      "app",
       "sys",
       "psycopg2"
     ],
@@ -301,23 +314,23 @@
       "pydantic_settings"
     ],
     "services/api/app/storage.py": [
-      "functools",
-      "uuid",
       "botocore",
+      "boto3",
       "app",
-      "boto3"
+      "functools",
+      "uuid"
     ],
     "services/api/app/queue.py": [
       "uuid",
       "app",
       "json",
-      "datetime",
-      "redis"
+      "redis",
+      "datetime"
     ],
     "services/api/app/dat_db.py": [
+      "app",
       "uuid",
       "dataclasses",
-      "app",
       "psycopg2"
     ],
     "services/worker-cv/tests/test_main.py": [
@@ -325,65 +338,65 @@
     ],
     "services/worker-cv/tests/test_cv_main.py": [],
     "services/worker-metrics/tests/test_main.py": [
+      "unittest",
       "json",
-      "worker",
       "datetime",
-      "unittest"
+      "worker"
     ],
     "services/worker-metrics/worker/main.py": [
       "os",
-      "traceback",
       "json",
+      "traceback",
       "sys",
-      "psycopg2",
+      "redis",
       "datetime",
-      "redis"
+      "psycopg2"
     ],
     "services/worker-metrics/worker/__init__.py": [],
     "services/worker-asr/tests/test_processor.py": [
-      "worker",
-      "unittest"
+      "unittest",
+      "worker"
     ],
     "services/worker-asr/worker/main.py": [
       "os",
-      "traceback",
-      "json",
-      "sys",
       "worker",
+      "json",
+      "traceback",
+      "sys",
       "redis"
     ],
     "services/worker-asr/worker/processor.py": [
-      "os",
-      "faster_whisper",
-      "tempfile",
       "botocore",
+      "os",
+      "tempfile",
+      "boto3",
+      "faster_whisper",
+      "concurrent",
+      "time",
       "json",
       "sys",
-      "boto3",
-      "psycopg2",
-      "datetime",
       "redis",
-      "concurrent",
-      "time"
+      "datetime",
+      "psycopg2"
     ],
     "services/worker-asr/worker/__init__.py": [],
     "tools/dat-session-sim/dat_session_cli.py": [
-      "httpx",
-      "sys",
-      "argparse",
-      "PIL",
       "cv2",
-      "io",
-      "time"
+      "argparse",
+      "time",
+      "PIL",
+      "sys",
+      "httpx",
+      "io"
     ],
     "tools/mock-capture/mock_capture.py": [
-      "httpx",
+      "wave",
       "struct",
+      "httpx",
+      "argparse",
       "pathlib",
       "sys",
-      "argparse",
-      "wave",
-      "time"
+      "asyncio"
     ]
   },
   "env_vars": []
