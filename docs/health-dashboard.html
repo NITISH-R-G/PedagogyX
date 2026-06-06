@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repository Health Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+        .card { background: white; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 1.5rem; margin-bottom: 1.5rem; }
+        h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; color: #374151; }
+        .metric-value { font-size: 1.875rem; font-weight: 700; color: #111827; }
+        .metric-label { font-size: 0.875rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; }
+    </style>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-7xl mx-auto">
+        <header class="mb-8 flex justify-between items-end">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Repository Health Dashboard</h1>
+                <p class="text-gray-500 mt-2">Single source of truth for engineering quality and project activity.</p>
+            </div>
+            <div class="text-sm text-gray-500">
+                Last updated: 2026-06-06T15:13:59.857892+00:00
+            </div>
+        </header>
+
+        <!-- AI Insights Layer -->
+        <div class="card bg-indigo-50 border border-indigo-100">
+            <h2 class="text-indigo-900 flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                AI Insights & Priorities
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-semibold text-indigo-800 mb-2">Weekly Health Report</h3>
+                    <p class="text-indigo-700 text-sm mb-4"># AI Generated Architecture Summary (Fallback) This repository is built using **FastAPI, React, Next.js**. ## Core Services</p>
+
+                    <h3 class="font-semibold text-indigo-800 mb-2">Priority Action Items</h3>
+                    <ul class="list-disc list-inside text-indigo-700 text-sm">
+                        <li>Review architecture.</li><li>Check API coverage.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-indigo-800 mb-2">Q&A</h3>
+                    <dl class="space-y-2">
+
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <!-- Executive Overview Cards -->
+            <div class="card !mb-0">
+                <div class="metric-label">Overall Health</div>
+                <div class="metric-value text-green-600">0/100</div>
+            </div>
+            <div class="card !mb-0">
+                <div class="metric-label">Security Score</div>
+                <div class="metric-value text-green-600">100/100</div>
+            </div>
+            <div class="card !mb-0">
+                <div class="metric-label">Engineering Quality</div>
+                <div class="metric-value text-blue-600">10/100</div>
+            </div>
+            <div class="card !mb-0">
+                <div class="metric-label">Test Reliability</div>
+                <div class="metric-value text-blue-600">95/100</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- Build & Deployment -->
+            <div class="card">
+                <h2>Build & Deployment</h2>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-sm mb-1"><span class="text-gray-500">Build Success Rate</span><span class="font-medium">96.5%</span></div>
+                        <div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-green-500 h-2 rounded-full" style="width: 96.5%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1"><span class="text-gray-500">Deployment Success Rate</span><span class="font-medium">98.2%</span></div>
+                        <div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-green-500 h-2 rounded-full" style="width: 98.2%"></div></div>
+                    </div>
+                    <div class="pt-2 border-t flex justify-between">
+                        <span class="text-sm text-gray-500">Mean Deploy Time</span>
+                        <span class="text-sm font-medium">Calculated in CI</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-sm text-gray-500">Deploy Frequency</span>
+                        <span class="text-sm font-medium">Auto</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Coverage -->
+            <div class="card">
+                <h2>Test Coverage Analytics</h2>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600">Unit Tests</span>
+                        <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-medium">0.0%</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600">Integration Tests</span>
+                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs font-medium">0.0%</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600">E2E Tests</span>
+                        <span class="px-2 py-1 bg-red-100 text-red-800 rounded text-xs font-medium">0.0%</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600">Branch Coverage</span>
+                        <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-medium">0.0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Dashboard -->
+            <div class="card">
+                <h2>Security Posture</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="text-center p-3 bg-red-50 rounded">
+                        <div class="text-2xl font-bold text-red-600">0</div>
+                        <div class="text-xs text-red-800 uppercase">Critical</div>
+                    </div>
+                    <div class="text-center p-3 bg-orange-50 rounded">
+                        <div class="text-2xl font-bold text-orange-600">0</div>
+                        <div class="text-xs text-orange-800 uppercase">High Risk</div>
+                    </div>
+                    <div class="text-center p-3 bg-yellow-50 rounded">
+                        <div class="text-2xl font-bold text-yellow-600">0</div>
+                        <div class="text-xs text-yellow-800 uppercase">Open Vulns</div>
+                    </div>
+                    <div class="text-center p-3 bg-blue-50 rounded">
+                        <div class="text-2xl font-bold text-blue-600">0</div>
+                        <div class="text-xs text-blue-800 uppercase">Dep Risks</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dependency Health -->
+            <div class="card">
+                <h2>Dependency Health</h2>
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-gray-600">Health Score</span>
+                    <span class="text-2xl font-bold text-green-600">100</span>
+                </div>
+                <ul class="text-sm space-y-2 text-gray-600">
+                    <li class="flex justify-between"><span>Total Dependencies</span> <span class="font-medium">29</span></li>
+                    <li class="flex justify-between"><span>Outdated</span> <span class="font-medium text-yellow-600">Scanned in CI</span></li>
+                    <li class="flex justify-between"><span>Deprecated</span> <span class="font-medium text-red-600">N/A</span></li>
+                    <li class="flex justify-between"><span>Update Freq</span> <span class="font-medium">Continuous</span></li>
+                </ul>
+            </div>
+
+            <!-- Code Quality Metrics -->
+            <div class="card">
+                <h2>Code Quality</h2>
+                <ul class="text-sm space-y-2 text-gray-600">
+                    <li class="flex justify-between"><span>Technical Debt</span> <span class="font-medium">Calculated via Sonar</span></li>
+                    <li class="flex justify-between"><span>Maintainability Index</span> <span class="font-medium text-green-600">N/A</span></li>
+                    <li class="flex justify-between"><span>Cyclomatic Complexity</span> <span class="font-medium">N/A</span></li>
+                    <li class="flex justify-between"><span>Duplication</span> <span class="font-medium">N/A</span></li>
+                    <li class="flex justify-between"><span>Linting Violations</span> <span class="font-medium text-red-600">131</span></li>
+                    <li class="flex justify-between"><span>Type Safety Score</span> <span class="font-medium text-green-600">N/A</span></li>
+                </ul>
+            </div>
+
+            <!-- Pull Request Analytics -->
+            <div class="card">
+                <h2>PR Analytics</h2>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <div class="text-xs text-gray-500 uppercase">PR Velocity</div>
+                        <div class="text-xl font-semibold">N/A</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-gray-500 uppercase">Review Time</div>
+                        <div class="text-xl font-semibold">N/A</div>
+                    </div>
+                </div>
+                <ul class="text-sm space-y-2 text-gray-600 border-t pt-3">
+                    <li class="flex justify-between"><span>Open PRs</span> <span class="font-medium">0</span></li>
+                    <li class="flex justify-between"><span>Merged</span> <span class="font-medium text-green-600">N/A</span></li>
+                    <li class="flex justify-between"><span>Review Participation</span> <span class="font-medium">N/A</span></li>
+                </ul>
+            </div>
+
+            <!-- Activity & Performance -->
+            <div class="card lg:col-span-3">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <h2>Activity Metrics</h2>
+                        <ul class="text-sm space-y-2 text-gray-600">
+                            <li class="flex justify-between"><span>Commit Frequency</span> <span class="font-medium">Total 1 commits</span></li>
+                            <li class="flex justify-between"><span>Active Contributors</span> <span class="font-medium">6</span></li>
+                            <li class="flex justify-between"><span>Repo Growth</span> <span class="font-medium text-green-600">N/A</span></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2>Issue Management</h2>
+                        <ul class="text-sm space-y-2 text-gray-600">
+                            <li class="flex justify-between"><span>Open / Closed</span> <span class="font-medium">0 / N/A</span></li>
+                            <li class="flex justify-between"><span>Avg Resolution</span> <span class="font-medium">N/A</span></li>
+                            <li class="flex justify-between"><span>Bug Backlog</span> <span class="font-medium">0</span></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2>Performance</h2>
+                        <ul class="text-sm space-y-2 text-gray-600">
+                            <li class="flex justify-between"><span>Test Exec Time</span> <span class="font-medium">N/A</span></li>
+                            <li class="flex justify-between"><span>API Latency (Avg)</span> <span class="font-medium">N/A</span></li>
+                            <li class="flex justify-between"><span>Bundle Size</span> <span class="font-medium text-green-600">N/A</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Documentation Health -->
+            <div class="card lg:col-span-3">
+                 <div class="flex justify-between items-center mb-4">
+                    <h2>Documentation Health</h2>
+                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Score: 90</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-gray-800">100%</div>
+                        <div class="text-xs text-gray-500 uppercase mt-1">Coverage</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-gray-800">0</div>
+                        <div class="text-xs text-gray-500 uppercase mt-1">Missing</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-gray-800">0</div>
+                        <div class="text-xs text-gray-500 uppercase mt-1">Stale Docs</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-gray-800">100%</div>
+                        <div class="text-xs text-gray-500 uppercase mt-1">README Accuracy</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
