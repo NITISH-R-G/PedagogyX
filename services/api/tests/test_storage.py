@@ -1,3 +1,4 @@
+import io
 import uuid
 from unittest.mock import patch, MagicMock
 
@@ -60,18 +61,18 @@ def test_put_chunk_default_content_type(mock_s3_client, monkeypatch):
 
     session_id = uuid.uuid4()
     chunk_index = 0
-    body = b"test body"
+    body = io.BytesIO(b"test body")
     expected_key = f"sessions/{session_id}/chunks/0000.bin"
 
     result_key = put_chunk(session_id, chunk_index, body, None)
 
     assert result_key == expected_key
     mock_s3_client.assert_called_once()
-    mock_client_instance.put_object.assert_called_once_with(
+    mock_client_instance.upload_fileobj.assert_called_once_with(
+        Fileobj=body,
         Bucket="test-bucket",
         Key=expected_key,
-        Body=body,
-        ContentType="application/octet-stream",
+        ExtraArgs={"ContentType": "application/octet-stream"},
     )
 
 
@@ -85,7 +86,7 @@ def test_put_chunk_custom_content_type(mock_s3_client, monkeypatch):
 
     session_id = uuid.uuid4()
     chunk_index = 1
-    body = b"test body"
+    body = io.BytesIO(b"test body")
     custom_content_type = "audio/webm"
     expected_key = f"sessions/{session_id}/chunks/0001.bin"
 
@@ -93,9 +94,9 @@ def test_put_chunk_custom_content_type(mock_s3_client, monkeypatch):
 
     assert result_key == expected_key
     mock_s3_client.assert_called_once()
-    mock_client_instance.put_object.assert_called_once_with(
+    mock_client_instance.upload_fileobj.assert_called_once_with(
+        Fileobj=body,
         Bucket="test-bucket",
         Key=expected_key,
-        Body=body,
-        ContentType=custom_content_type,
+        ExtraArgs={"ContentType": custom_content_type},
     )
