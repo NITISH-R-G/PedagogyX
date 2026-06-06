@@ -3,7 +3,6 @@ import os
 import tempfile
 import boto3
 from botocore.client import Config
-from botocore.exceptions import ClientError
 from botocore.stub import Stubber
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
