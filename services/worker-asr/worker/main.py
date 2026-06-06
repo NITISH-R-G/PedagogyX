@@ -25,7 +25,7 @@ def main() -> None:
         try:
             payload = json.loads(raw)
         except json.JSONDecodeError:
-            print(f"[worker-asr] invalid job: {raw!r}", file=sys.stderr, flush=True)
+            print("worker-asr: invalid json payload, skipping", flush=True)
             continue
         try:
             process_job(payload)
