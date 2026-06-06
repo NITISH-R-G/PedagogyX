@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from uuid import UUID
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel, Field
 
 from app import db, minio_client, queue, storage
@@ -19,7 +20,7 @@ class SessionCreateBody(BaseModel):
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
-        minio_client.ensure_bucket()
+        await run_in_threadpool(minio_client.ensure_bucket)
     except Exception as exc:
         print(f"WARN: MinIO bucket init skipped: {exc}", file=sys.stderr)
     yield
