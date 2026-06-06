@@ -1,8 +1,18 @@
 import unittest
 from unittest.mock import patch
-from worker.processor import process_job
+from worker.processor import process_job, _transcribe_stub
 
 class TestProcessor(unittest.TestCase):
+    def test_transcribe_stub(self):
+        text, segments, rtf = _transcribe_stub("test-session-123")
+
+        self.assertEqual(text, "[stub transcript session=test-session-123] Teacher explanation segment. Student response segment.")
+        self.assertEqual(segments, [
+            {"start": 0.0, "end": 30.0, "text": "Teacher explanation segment."},
+            {"start": 30.0, "end": 45.0, "text": "Student response segment."},
+        ])
+        self.assertIsNone(rtf)
+
     @patch("worker.processor._fetch_session")
     @patch("worker.processor._fetch_chunks")
     @patch("worker.processor._download_chunks")
