@@ -6,16 +6,21 @@ from botocore.client import Config
 from app.config import settings
 
 
+_s3_client = None
+
 def s3_client():
-    scheme = "https" if settings.minio_secure else "http"
-    return boto3.client(
-        "s3",
-        endpoint_url=f"{scheme}://{settings.minio_endpoint}",
-        aws_access_key_id=settings.minio_access_key,
-        aws_secret_access_key=settings.minio_secret_key,
-        config=Config(signature_version="s3v4"),
-        region_name="us-east-1",
-    )
+    global _s3_client
+    if _s3_client is None:
+        scheme = "https" if settings.minio_secure else "http"
+        _s3_client = boto3.client(
+            "s3",
+            endpoint_url=f"{scheme}://{settings.minio_endpoint}",
+            aws_access_key_id=settings.minio_access_key,
+            aws_secret_access_key=settings.minio_secret_key,
+            config=Config(signature_version="s3v4"),
+            region_name="us-east-1",
+        )
+    return _s3_client
 
 
 def chunk_object_key(session_id: UUID, chunk_index: int) -> str:
