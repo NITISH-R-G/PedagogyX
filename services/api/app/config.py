@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     minio_access_key: str | None = None
     minio_secret_key: str | None = None
     minio_bucket: str = "pedagogyx-uploads"
-    minio_secure: bool = False
+    minio_secure: bool = True
     job_queue_asr: str = "jobs:asr"
     job_queue_metrics: str = "jobs:talk_ratio"
     overview_rooms_target: int = 20

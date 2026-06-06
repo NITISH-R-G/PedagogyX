@@ -21,7 +21,7 @@ def test_settings_default(clean_env):
     assert settings.minio_access_key is None
     assert settings.minio_secret_key is None
     assert settings.minio_bucket == "pedagogyx-uploads"
-    assert settings.minio_secure is False
+    assert settings.minio_secure is True
     assert settings.job_queue_asr == "jobs:asr"
     assert settings.job_queue_metrics == "jobs:talk_ratio"
     assert settings.overview_rooms_target == 20
