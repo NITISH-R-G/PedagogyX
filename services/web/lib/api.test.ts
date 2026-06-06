@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { fetchOverview } from './api';
+import { fetchOverview, fetchHealth } from './api';
 
 describe('fetchOverview', () => {
   const originalFetch = global.fetch;
@@ -52,5 +52,48 @@ describe('fetchOverview', () => {
     const result = await fetchOverview('test-school');
 
     expect(result).toEqual(mockData);
+  });
+});
+
+
+describe('fetchHealth', () => {
+  const originalFetch = global.fetch;
+
+  beforeEach(() => {
+    global.fetch = vi.fn();
+  });
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+    vi.clearAllMocks();
+  });
+
+  it('should return true when API returns status "ok"', async () => {
+    (global.fetch as any).mockResolvedValue({
+      json: () => Promise.resolve({ status: 'ok' })
+    });
+
+    const result = await fetchHealth();
+
+    expect(result).toBe(true);
+  });
+
+  it('should return false when API returns a status other than "ok"', async () => {
+    (global.fetch as any).mockResolvedValue({
+      json: () => Promise.resolve({ status: 'error' })
+    });
+
+    const result = await fetchHealth();
+
+    expect(result).toBe(false);
+  });
+
+  it('should return false when fetch throws an error', async () => {
+    const mockError = new Error('Network failure');
+    (global.fetch as any).mockRejectedValue(mockError);
+
+    const result = await fetchHealth();
+
+    expect(result).toBe(false);
   });
 });
