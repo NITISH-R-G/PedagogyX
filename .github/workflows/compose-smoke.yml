@@ -1,17 +1,18 @@
-name: compose-smoke
+name: Compose Smoke Test
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [main]
   pull_request:
-    paths:
-      - "infra/**"
-      - "services/**"
-      - "scripts/compose-smoke.sh"
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
-  smoke:
+  smoke-test:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - uses: actions/checkout@v4
-      - name: Compose smoke test
+      - name: Run Smoke Tests
         run: ./scripts/compose-smoke.sh

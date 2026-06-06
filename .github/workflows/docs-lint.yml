@@ -1,24 +1,24 @@
-name: Documentation Linting
+name: Docs Lint & Format
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main]
   pull_request:
-    branches: [ "main" ]
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
-  lint-docs:
+  docs-lint:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: "20"
 
-      - name: Run Prettier check
-        run: npx --yes prettier --check 'docs/**/*.md'
-
-      - name: Run Markdownlint
-        run: npx --yes markdownlint-cli 'docs/**/*.md'
+      - name: Run dev-verify (docs only)
+        run: ./scripts/dev-verify.sh --docs-only

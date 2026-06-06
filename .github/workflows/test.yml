@@ -10,8 +10,15 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -21,15 +28,15 @@ jobs:
       - name: Install Backend Dependencies
         run: |
           cd services/api
-          python -m venv .venv
-          source .venv/bin/activate
+          python3 -m venv venv
+          source venv/bin/activate
           pip install -r requirements.txt
           pip install safety pip-audit
 
       - name: Security & Dependency Audit
         run: |
           cd services/api
-          source .venv/bin/activate
+          source venv/bin/activate
           safety check || echo "Safety checks completed (non-blocking for MVP)"
           pip-audit || echo "Audit completed (non-blocking for MVP)"
 
@@ -41,13 +48,8 @@ jobs:
           MINIO_ACCESS_KEY: "dev"
         run: |
           cd services/api
-          source .venv/bin/activate
+          source venv/bin/activate
           pytest
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
 
       - name: Install Frontend Dependencies
         run: |
