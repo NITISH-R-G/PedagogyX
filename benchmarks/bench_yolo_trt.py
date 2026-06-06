@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """Benchmark YOLO11 inference FPS at 480p/720p. S01-09."""
 
-from __future__ import annotations
-
 import argparse
 import json
 import sys
