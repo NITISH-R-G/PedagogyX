@@ -1,3 +1,4 @@
+import asyncio
 import sys
 from contextlib import asynccontextmanager
 from uuid import UUID
@@ -57,11 +58,20 @@ def create_session(body: SessionCreateBody):
 
 
 @app.get("/v1/sessions/{session_id}")
-def get_session(session_id: UUID):
-    row = db.get_session(session_id)
+async def get_session(session_id: UUID):
+    row = await asyncio.to_thread(db.get_session, session_id)
     if not row:
         raise HTTPException(status_code=404, detail="session not found")
     payload = _serialize_session(row)
+
+    chunks_task = asyncio.to_thread(db.list_chunks, session_id)
+    metrics_task = asyncio.to_thread(db.get_metrics, session_id)
+    transcript_task = asyncio.to_thread(db.get_transcript, session_id)
+
+    chunks_data, metrics, transcript = await asyncio.gather(
+        chunks_task, metrics_task, transcript_task
+    )
+
     payload["chunks"] = [
         {
             "chunk_index": c["chunk_index"],
@@ -69,12 +79,10 @@ def get_session(session_id: UUID):
             "content_type": c["content_type"],
             "uploaded_at": c["uploaded_at"].isoformat() if c.get("uploaded_at") else None,
         }
-        for c in db.list_chunks(session_id)
+        for c in chunks_data
     ]
-    metrics = db.get_metrics(session_id)
     if metrics:
         payload["metrics"] = _serialize_metrics(metrics)
-    transcript = db.get_transcript(session_id)
     if transcript:
         payload["transcript_preview"] = (transcript["text"] or "")[:200]
     return payload
