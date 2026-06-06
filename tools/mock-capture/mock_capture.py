@@ -2,9 +2,9 @@
 """Mock capture: create session, upload chunk, complete — triggers ASR + talk ratio pipeline."""
 
 import argparse
+import asyncio
 import struct
 import sys
-import time
 import wave
 from pathlib import Path
 
@@ -14,16 +14,16 @@ DEFAULT_API = "http://localhost:8080"
 FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures"
 
 
-def check_health(client: httpx.Client, base: str) -> None:
-    health = client.get(f"{base}/health")
+async def check_health(client: httpx.AsyncClient, base: str) -> None:
+    health = await client.get(f"{base}/health")
     health.raise_for_status()
     print(f"API health: {health.json()}")
 
 
-def create_session(
-    client: httpx.Client, base: str, school_id: str, room_id: str, teacher_id: str
+async def create_session(
+    client: httpx.AsyncClient, base: str, school_id: str, room_id: str, teacher_id: str
 ) -> str:
-    created = client.post(
+    created = await client.post(
         f"{base}/v1/sessions",
         json={
             "school_id": school_id,
@@ -38,39 +38,42 @@ def create_session(
     return session_id
 
 
-def upload_chunk(
-    client: httpx.Client, base: str, session_id: str, chunk_index: int, audio_path: Path
+async def upload_chunk(
+    client: httpx.AsyncClient, base: str, session_id: str, chunk_index: int, audio_path: Path
 ) -> None:
     with open(audio_path, "rb") as f:
-        upload = client.post(
-            f"{base}/v1/sessions/{session_id}/chunks/{chunk_index}",
-            files={"file": (audio_path.name, f, "audio/wav")},
-        )
+        # We need to read the file so it can be passed to httpx without issues with async
+        file_content = f.read()
+
+    upload = await client.post(
+        f"{base}/v1/sessions/{session_id}/chunks/{chunk_index}",
+        files={"file": (audio_path.name, file_content, "audio/wav")},
+    )
     upload.raise_for_status()
     print(f"Chunk uploaded: {upload.json()}")
 
 
-def complete_session(client: httpx.Client, base: str, session_id: str) -> None:
-    done = client.post(f"{base}/v1/sessions/{session_id}/complete")
+async def complete_session(client: httpx.AsyncClient, base: str, session_id: str) -> None:
+    done = await client.post(f"{base}/v1/sessions/{session_id}/complete")
     done.raise_for_status()
     print(f"Session completed: {done.json()}")
 
 
-def poll_preview(client: httpx.Client, base: str, session_id: str) -> None:
+async def poll_preview(client: httpx.AsyncClient, base: str, session_id: str) -> None:
     for _ in range(30):
-        preview = client.get(f"{base}/v1/sessions/{session_id}/preview")
+        preview = await client.get(f"{base}/v1/sessions/{session_id}/preview")
         preview.raise_for_status()
         data = preview.json()
         if data.get("preview_ready"):
             print(f"Preview ready: {data}")
             break
-        time.sleep(1)
+        await asyncio.sleep(1)
     else:
         print("WARN: preview not ready after 30s — check worker logs")
 
 
-def get_school_overview(client: httpx.Client, base: str, school_id: str) -> None:
-    overview = client.get(f"{base}/v1/schools/{school_id}/overview")
+async def get_school_overview(client: httpx.AsyncClient, base: str, school_id: str) -> None:
+    overview = await client.get(f"{base}/v1/schools/{school_id}/overview")
     overview.raise_for_status()
     m_a = overview.json().get("m_a_coverage", {})
     print(f"School overview M-A: {m_a}")
@@ -92,7 +95,7 @@ def ensure_sample_wav(path: Path) -> Path:
     return path
 
 
-def main() -> int:
+async def main() -> int:
     parser = argparse.ArgumentParser(description="PedagogyX mock capture")
     parser.add_argument("--api-url", default=DEFAULT_API)
     parser.add_argument("--school-id", default="pilot-school-dev")
@@ -107,24 +110,24 @@ def main() -> int:
     if audio_path is None:
         audio_path = ensure_sample_wav(FIXTURE_DIR / "sample_3s.wav")
 
-    with httpx.Client(timeout=120.0) as client:
-        check_health(client, base)
+    async with httpx.AsyncClient(timeout=120.0) as client:
+        await check_health(client, base)
 
-        session_id = create_session(
+        session_id = await create_session(
             client, base, args.school_id, args.room_id, args.teacher_id
         )
 
-        upload_chunk(client, base, session_id, args.chunk_index, audio_path)
+        await upload_chunk(client, base, session_id, args.chunk_index, audio_path)
 
-        complete_session(client, base, session_id)
+        await complete_session(client, base, session_id)
 
-        poll_preview(client, base, session_id)
+        await poll_preview(client, base, session_id)
 
-        get_school_overview(client, base, args.school_id)
+        await get_school_overview(client, base, args.school_id)
 
     print("Mock capture OK")
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(asyncio.run(main()))
