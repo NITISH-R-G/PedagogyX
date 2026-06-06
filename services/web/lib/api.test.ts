@@ -53,4 +53,15 @@ describe('fetchOverview', () => {
 
     expect(result).toEqual(mockData);
   });
+
+  it('should return "unreachable" error when fetch throws a non-Error object', async () => {
+    (global.fetch as any).mockRejectedValue('String error');
+
+    const result = await fetchOverview('test-school');
+
+    expect(result).toEqual({
+      school_id: 'test-school',
+      error: 'unreachable'
+    });
+  });
 });
