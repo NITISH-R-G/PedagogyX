@@ -64,6 +64,77 @@ def capture_jpeg() -> bytes | None:
         return None
 
 
+def _create_dat_session(client: httpx.Client, args: argparse.Namespace) -> str:
+    created = post(
+        client,
+        "/v1/dat-sessions",
+        {
+            "school_id": args.school_id,
+            "room_id": args.room_id,
+            "teacher_id": args.teacher_id,
+            "device_label": args.device_label,
+        },
+    )
+    dat_id = created["dat_session_id"]
+    print(f"DAT session {dat_id} state={created['state']}")
+    return dat_id
+
+
+def _start_dat_session(client: httpx.Client, dat_id: str) -> None:
+    started = post(client, f"/v1/dat-sessions/{dat_id}/start")
+    print(f"session.start → state={started['state']}")
+
+
+def _start_dat_stream(client: httpx.Client, dat_id: str) -> str | None:
+    streaming = post(client, f"/v1/dat-sessions/{dat_id}/stream/start")
+    ped_id = streaming.get("pedagogy_session_id")
+    print(
+        f"stream.start → session={streaming['state']} stream={streaming['stream_state']} "
+        f"pedagogy_session={ped_id}"
+    )
+    return ped_id
+
+
+def _upload_stream_frames(
+    client: httpx.Client, dat_id: str, ped_id: str, args: argparse.Namespace
+) -> None:
+    for i in range(args.frames):
+        if args.no_camera:
+            jpeg = synthetic_jpeg()
+        else:
+            jpeg = capture_jpeg() or synthetic_jpeg()
+        upload_frame_jpeg(client, ped_id, i, jpeg)
+        post(
+            client,
+            f"/v1/dat-sessions/{dat_id}/lifecycle",
+            {
+                "event_type": "stream.frame",
+                "target": "stream",
+                "to_state": "STREAMING",
+                "detail": {"frame_index": i, "bytes": len(jpeg)},
+            },
+        )
+        print(f"  frame {i} uploaded ({len(jpeg)} bytes)")
+        time.sleep(args.frame_interval)
+
+
+def _complete_pedagogy_session(client: httpx.Client, ped_id: str) -> None:
+    post(client, f"/v1/sessions/{ped_id}/complete")
+    print(f"pedagogy session {ped_id} completed → ASR pipeline")
+
+
+def _stop_dat_session(client: httpx.Client, dat_id: str) -> None:
+    stopped = post(client, f"/v1/dat-sessions/{dat_id}/stop")
+    print(f"session.stop → state={stopped['state']} stream={stopped['stream_state']}")
+
+
+def _print_recent_events(client: httpx.Client, dat_id: str) -> None:
+    detail = client.get(f"/v1/dat-sessions/{dat_id}").json()
+    print(f"events: {len(detail.get('recent_events', []))} logged")
+    for ev in reversed(detail.get("recent_events", [])[:8]):
+        print(f"  - {ev['event_type']}: {ev.get('from_state')} → {ev.get('to_state')}")
+
+
 def run_session(args: argparse.Namespace) -> int:
     base = args.api_url.rstrip("/")
     headers = {}
@@ -71,66 +142,18 @@ def run_session(args: argparse.Namespace) -> int:
         headers["Authorization"] = f"Bearer {args.api_key}"
 
     with httpx.Client(base_url=base, headers=headers, timeout=60.0) as client:
-        created = post(
-            client,
-            "/v1/dat-sessions",
-            {
-                "school_id": args.school_id,
-                "room_id": args.room_id,
-                "teacher_id": args.teacher_id,
-                "device_label": args.device_label,
-            },
-        )
-        dat_id = created["dat_session_id"]
-        print(f"DAT session {dat_id} state={created['state']}")
+        dat_id = _create_dat_session(client, args)
+        _start_dat_session(client, dat_id)
 
-        started = post(client, f"/v1/dat-sessions/{dat_id}/start")
-        print(f"session.start → state={started['state']}")
-
-        streaming = post(client, f"/v1/dat-sessions/{dat_id}/stream/start")
-        ped_id = streaming.get("pedagogy_session_id")
-        print(
-            f"stream.start → session={streaming['state']} stream={streaming['stream_state']} "
-            f"pedagogy_session={ped_id}"
-        )
-
+        ped_id = _start_dat_stream(client, dat_id)
         if not ped_id:
             print("ERROR: no pedagogy_session_id linked", file=sys.stderr)
             return 1
 
-        for i in range(args.frames):
-            if args.no_camera:
-                jpeg = synthetic_jpeg()
-            else:
-                jpeg = capture_jpeg() or synthetic_jpeg()
-            upload_frame_jpeg(client, ped_id, i, jpeg)
-            post(
-                client,
-                f"/v1/dat-sessions/{dat_id}/lifecycle",
-                {
-                    "event_type": "stream.frame",
-                    "target": "stream",
-                    "to_state": "STREAMING",
-                    "detail": {"frame_index": i, "bytes": len(jpeg)},
-                },
-            )
-            print(f"  frame {i} uploaded ({len(jpeg)} bytes)")
-            time.sleep(args.frame_interval)
-
-        post(client, f"/v1/sessions/{ped_id}/complete")
-        print(f"pedagogy session {ped_id} completed → ASR pipeline")
-
-        stopped = post(client, f"/v1/dat-sessions/{dat_id}/stop")
-        print(
-            f"session.stop → state={stopped['state']} stream={stopped['stream_state']}"
-        )
-
-        detail = client.get(f"/v1/dat-sessions/{dat_id}").json()
-        print(f"events: {len(detail.get('recent_events', []))} logged")
-        for ev in reversed(detail.get("recent_events", [])[:8]):
-            print(
-                f"  - {ev['event_type']}: {ev.get('from_state')} → {ev.get('to_state')}"
-            )
+        _upload_stream_frames(client, dat_id, ped_id, args)
+        _complete_pedagogy_session(client, ped_id)
+        _stop_dat_session(client, dat_id)
+        _print_recent_events(client, dat_id)
 
     print("DAT session run OK")
     return 0
