@@ -25,6 +25,17 @@ describe('fetchOverview', () => {
     });
   });
 
+  it('should return fallback error when fetch throws a non-Error', async () => {
+    (global.fetch as any).mockRejectedValue('String error');
+
+    const result = await fetchOverview('test-school');
+
+    expect(result).toEqual({
+      school_id: 'test-school',
+      error: 'unreachable'
+    });
+  });
+
   it('should return error object when fetch returns non-ok status', async () => {
     (global.fetch as any).mockResolvedValue({
       ok: false,
