@@ -41,6 +41,15 @@ def _db_conn():
     return psycopg2.connect(DATABASE_URL)
 
 
+_redis_client = None
+
+def _get_redis_client():
+    global _redis_client
+    if _redis_client is None:
+        _redis_client = redis.from_url(REDIS_URL, decode_responses=True)
+    return _redis_client
+
+
 def _fetch_chunks(session_id: str) -> list[tuple[int, str]]:
     with _db_conn() as conn:
         with conn.cursor() as cur:
@@ -144,7 +153,7 @@ def _save_transcript(session_id: str, text: str, segments: list[dict], rtf: floa
 
 
 def _enqueue_metrics(session_id: str, school_id: str) -> None:
-    client = redis.from_url(REDIS_URL, decode_responses=True)
+    client = _get_redis_client()
     payload = {
         "job_type": "talk_ratio",
         "session_id": session_id,
