@@ -6,6 +6,7 @@ from app.main import app
 
 client = TestClient(app)
 
+
 @patch("app.main.db.insert_session")
 def test_create_session(mock_insert_session):
     mock_id = uuid.uuid4()
@@ -14,14 +15,13 @@ def test_create_session(mock_insert_session):
         "school_id": "school_123",
         "room_id": "room_abc",
         "teacher_id": "teacher_xyz",
-        "status": "active"
+        "status": "active",
     }
 
-    response = client.post("/v1/sessions", json={
-        "school_id": "school_123",
-        "room_id": "room_abc",
-        "teacher_id": "teacher_xyz"
-    })
+    response = client.post(
+        "/v1/sessions",
+        json={"school_id": "school_123", "room_id": "room_abc", "teacher_id": "teacher_xyz"},
+    )
 
     assert response.status_code == 200
     data = response.json()
@@ -39,12 +39,10 @@ def test_create_session_minimal(mock_insert_session):
         "school_id": "school_123",
         "room_id": None,
         "teacher_id": None,
-        "status": "active"
+        "status": "active",
     }
 
-    response = client.post("/v1/sessions", json={
-        "school_id": "school_123"
-    })
+    response = client.post("/v1/sessions", json={"school_id": "school_123"})
 
     assert response.status_code == 200
     data = response.json()
@@ -55,10 +53,9 @@ def test_create_session_minimal(mock_insert_session):
 
 
 def test_create_session_missing_school_id():
-    response = client.post("/v1/sessions", json={
-        "room_id": "room_abc",
-        "teacher_id": "teacher_xyz"
-    })
+    response = client.post(
+        "/v1/sessions", json={"room_id": "room_abc", "teacher_id": "teacher_xyz"}
+    )
 
     assert response.status_code == 422
     data = response.json()
@@ -68,11 +65,9 @@ def test_create_session_missing_school_id():
 
 
 def test_create_session_empty_school_id():
-    response = client.post("/v1/sessions", json={
-        "school_id": "",
-        "room_id": "room_abc",
-        "teacher_id": "teacher_xyz"
-    })
+    response = client.post(
+        "/v1/sessions", json={"school_id": "", "room_id": "room_abc", "teacher_id": "teacher_xyz"}
+    )
 
     assert response.status_code == 422
     data = response.json()
@@ -96,10 +91,7 @@ def test_complete_session_not_found(mock_get_session):
 @patch("app.main.db.get_session")
 def test_complete_session_already_completed(mock_get_session):
     session_id = uuid.uuid4()
-    mock_get_session.return_value = {
-        "id": session_id,
-        "status": "completed"
-    }
+    mock_get_session.return_value = {"id": session_id, "status": "completed"}
 
     response = client.post(f"/v1/sessions/{session_id}/complete")
 
@@ -115,10 +107,7 @@ def test_complete_session_already_completed(mock_get_session):
 @patch("app.main.db.get_session")
 def test_complete_session_zero_chunks(mock_get_session, mock_count_chunks):
     session_id = uuid.uuid4()
-    mock_get_session.return_value = {
-        "id": session_id,
-        "status": "active"
-    }
+    mock_get_session.return_value = {"id": session_id, "status": "active"}
     mock_count_chunks.return_value = 0
 
     response = client.post(f"/v1/sessions/{session_id}/complete")
@@ -133,17 +122,16 @@ def test_complete_session_zero_chunks(mock_get_session, mock_count_chunks):
 @patch("app.main.db.complete_session")
 @patch("app.main.db.count_chunks")
 @patch("app.main.db.get_session")
-def test_complete_session_success(mock_get_session, mock_count_chunks, mock_complete_session, mock_enqueue_asr_job):
+def test_complete_session_success(
+    mock_get_session, mock_count_chunks, mock_complete_session, mock_enqueue_asr_job
+):
     session_id = uuid.uuid4()
-    mock_get_session.return_value = {
-        "id": session_id,
-        "status": "active"
-    }
+    mock_get_session.return_value = {"id": session_id, "status": "active"}
     mock_count_chunks.return_value = 2
     mock_complete_session.return_value = {
         "id": session_id,
         "status": "completed",
-        "school_id": "school_123"
+        "school_id": "school_123",
     }
 
     response = client.post(f"/v1/sessions/{session_id}/complete")
