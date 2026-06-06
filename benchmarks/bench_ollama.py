@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """Benchmark Ollama LLM tokens/sec. S01-09."""
 
-from __future__ import annotations
-
 import argparse
 import json
 import os

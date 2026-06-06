@@ -1,10 +1,19 @@
 """DAT session persistence (Meta Wearables DAT lifecycle mirror)."""
 
+from dataclasses import dataclass
 from uuid import UUID
 
 from psycopg2.extras import Json, RealDictCursor
 
 from app.db_utils import get_conn
+
+
+@dataclass
+class EventData:
+    event_type: str
+    from_state: str | None
+    to_state: str | None
+    detail: dict | None = None
 
 # Allowed transitions (server-enforced subset)
 DAT_SESSION_TRANSITIONS: dict[str, set[str]] = {
@@ -69,30 +78,24 @@ def link_pedagogy_session(dat_id: UUID, pedagogy_session_id: UUID) -> None:
 def _append_event_with_cursor(
     cur,
     dat_id: UUID,
-    event_type: str,
-    from_state: str | None,
-    to_state: str | None,
-    detail: dict | None = None,
+    event: EventData,
 ) -> None:
     cur.execute(
         """
         INSERT INTO dat_session_events (dat_session_id, event_type, from_state, to_state, detail)
         VALUES (%s, %s, %s, %s, %s)
         """,
-        (str(dat_id), event_type, from_state, to_state, Json(detail or {})),
+        (str(dat_id), event.event_type, event.from_state, event.to_state, Json(event.detail or {})),
     )
 
 
 def append_event(
     dat_id: UUID,
-    event_type: str,
-    from_state: str | None,
-    to_state: str | None,
-    detail: dict | None = None,
+    event: EventData,
 ) -> None:
     with get_conn() as conn:
         with conn.cursor() as cur:
-            _append_event_with_cursor(cur, dat_id, event_type, from_state, to_state, detail)
+            _append_event_with_cursor(cur, dat_id, event)
 
 
 def transition_session_state(dat_id: UUID, new_state: str, event_type: str, detail: dict | None) -> dict:
@@ -115,7 +118,7 @@ def transition_session_state(dat_id: UUID, new_state: str, event_type: str, deta
                 (new_state, str(dat_id)),
             )
             updated = dict(cur.fetchone())
-            _append_event_with_cursor(cur, dat_id, event_type, current, new_state, detail)
+            _append_event_with_cursor(cur, dat_id, EventData(event_type, current, new_state, detail))
             return updated
 
 
@@ -148,7 +151,7 @@ def transition_stream_state(dat_id: UUID, new_state: str, event_type: str, detai
                 (new_state, session_state, str(dat_id)),
             )
             updated = dict(cur.fetchone())
-            _append_event_with_cursor(cur, dat_id, event_type, current, new_state, detail)
+            _append_event_with_cursor(cur, dat_id, EventData(event_type, current, new_state, detail))
             return updated
 
 

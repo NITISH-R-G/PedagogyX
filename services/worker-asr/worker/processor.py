@@ -6,10 +6,8 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 
-import contextlib
-
 import boto3
-from psycopg2 import pool
+import psycopg2
 import redis
 from botocore.client import Config
 from botocore.exceptions import ClientError
@@ -27,15 +25,6 @@ MINIO_BUCKET = os.environ.get("MINIO_BUCKET", "pedagogyx-uploads")
 MINIO_SECURE = os.environ.get("MINIO_SECURE", "false").lower() == "true"
 
 
-_pool = None
-
-def _get_pool():
-    global _pool
-    if _pool is None:
-        _pool = pool.SimpleConnectionPool(1, 10, dsn=DATABASE_URL)
-    return _pool
-
-
 def _s3():
     scheme = "https" if MINIO_SECURE else "http"
     return boto3.client(
@@ -48,15 +37,17 @@ def _s3():
     )
 
 
-@contextlib.contextmanager
 def _db_conn():
-    p = _get_pool()
-    conn = p.getconn()
-    try:
-        with conn:
-            yield conn
-    finally:
-        p.putconn(conn)
+    return psycopg2.connect(DATABASE_URL)
+
+
+_redis_client = None
+
+def _get_redis_client():
+    global _redis_client
+    if _redis_client is None:
+        _redis_client = redis.from_url(REDIS_URL, decode_responses=True)
+    return _redis_client
 
 
 def _fetch_chunks(session_id: str) -> list[tuple[int, str]]:
@@ -162,7 +153,7 @@ def _save_transcript(session_id: str, text: str, segments: list[dict], rtf: floa
 
 
 def _enqueue_metrics(session_id: str, school_id: str) -> None:
-    client = redis.from_url(REDIS_URL, decode_responses=True)
+    client = _get_redis_client()
     payload = {
         "job_type": "talk_ratio",
         "session_id": session_id,

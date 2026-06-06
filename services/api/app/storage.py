@@ -1,3 +1,4 @@
+from functools import lru_cache
 from uuid import UUID
 
 import boto3
@@ -6,6 +7,7 @@ from botocore.client import Config
 from app.config import settings
 
 
+@lru_cache(maxsize=1)
 def s3_client():
     scheme = "https" if settings.minio_secure else "http"
     return boto3.client(
