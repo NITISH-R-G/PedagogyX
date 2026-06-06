@@ -42,6 +42,26 @@ def test_stop_dat_session_error_path():
             assert response.json() == {"detail": "Invalid transition"}
 
 
+def test_post_lifecycle_error_path():
+    dat_session_id = uuid.uuid4()
+
+    with patch("app.dat_routes.dat_db.transition_session_state") as mock_transition:
+        mock_transition.side_effect = ValueError("Invalid transition")
+
+        response = client.post(
+            f"/v1/dat-sessions/{dat_session_id}/lifecycle",
+            headers={"Authorization": "Bearer dev_api_key_placeholder"},
+            json={
+                "event_type": "session.started",
+                "target": "session",
+                "to_state": "STARTED"
+            }
+        )
+
+        assert response.status_code == 400
+        assert response.json() == {"detail": "Invalid transition"}
+
+
 def test_stop_dat_session_not_found():
     dat_session_id = uuid.uuid4()
 
