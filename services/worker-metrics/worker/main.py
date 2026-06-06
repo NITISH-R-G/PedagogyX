@@ -45,22 +45,6 @@ def _compute_talk_ratio(cur, session_id: str) -> tuple[float, float, str]:
     return teacher, round(1.0 - teacher, 4), "preview_heuristic"
 
 
-def _insight_latency_sec(cur, session_id: str) -> float | None:
-    cur.execute(
-        """
-        SELECT EXTRACT(EPOCH FROM (m.preview_ready_at - s.completed_at))
-        FROM sessions s
-        LEFT JOIN session_metrics m ON m.session_id = s.id
-        WHERE s.id = %s AND s.completed_at IS NOT NULL
-        """,
-        (session_id,),
-    )
-    row = cur.fetchone()
-    if row and row[0] is not None:
-        return float(row[0])
-    return None
-
-
 def process_job(payload: dict) -> None:
     session_id = payload["session_id"]
     now = datetime.now(timezone.utc)
