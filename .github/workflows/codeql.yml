@@ -94,7 +94,7 @@ jobs:
       run: |
         if [[ "${{ matrix.language }}" == "java-kotlin" ]]; then
           cd clients/android-capture-dat
-          ./gradlew build -x test
+          gradle build -x test
         fi
 
     - name: Perform CodeQL Analysis
