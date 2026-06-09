@@ -2,13 +2,13 @@ name: Comprehensive QA System
 
 on:
   push:
-    branches: [ "**" ]
+    branches: ["**"]
   pull_request:
-    branches: [ "**" ]
+    branches: ["**"]
   release:
     types: [published]
   schedule:
-    - cron: '0 2 * * *' # Daily repository audit
+    - cron: "0 2 * * *" # Daily repository audit
   workflow_dispatch:
 
 jobs:

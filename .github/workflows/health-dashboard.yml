@@ -8,7 +8,7 @@ on:
   release:
     types: [published]
   schedule:
-    - cron: '0 0 * * *' # Run daily at midnight
+    - cron: "0 0 * * *" # Run daily at midnight
   workflow_dispatch:
 
 jobs:
@@ -52,7 +52,7 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'docs/'
+          path: "docs/"
 
   deploy_pages:
     needs: generate_dashboard

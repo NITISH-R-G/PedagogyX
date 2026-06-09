@@ -2,7 +2,11 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 
 export type Overview = {
   school_id: string;
-  m_a_coverage?: { rooms_observed: number; rooms_target: number; coverage_pct: number };
+  m_a_coverage?: {
+    rooms_observed: number;
+    rooms_target: number;
+    coverage_pct: number;
+  };
   m_b_median_insight_sec?: number | null;
   sessions_week?: number;
   recent_sessions?: Array<{
@@ -24,7 +28,10 @@ export async function fetchOverview(schoolId: string): Promise<Overview> {
     if (!res.ok) return { school_id: schoolId, error: `API ${res.status}` };
     return await res.json();
   } catch (e) {
-    return { school_id: schoolId, error: e instanceof Error ? e.message : "unreachable" };
+    return {
+      school_id: schoolId,
+      error: e instanceof Error ? e.message : "unreachable",
+    };
   }
 }
 
