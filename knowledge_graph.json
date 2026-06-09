@@ -1,9 +1,5 @@
 {
-  "frameworks": [
-    "FastAPI",
-    "React",
-    "Next.js"
-  ],
+  "frameworks": ["FastAPI", "React", "Next.js"],
   "services": [
     {
       "name": "api",
@@ -81,13 +77,7 @@
     "tools/mock-capture/mock_capture.py"
   ],
   "dependencies": {
-    "benchmark.py": [
-      "time",
-      "os",
-      "json",
-      "datetime",
-      "redis"
-    ],
+    "benchmark.py": ["time", "os", "json", "datetime", "redis"],
     "test_download_benchmark.py": [
       "botocore",
       "time",
@@ -103,9 +93,7 @@
       "uuid",
       "pydantic"
     ],
-    "packages/capture-core/py/pedagogyx_core/__init__.py": [
-      "pedagogyx_core"
-    ],
+    "packages/capture-core/py/pedagogyx_core/__init__.py": ["pedagogyx_core"],
     "benchmarks/test_bench_ollama.py": [
       "unittest",
       "requests",
@@ -153,42 +141,18 @@
       "pathlib"
     ],
     "benchmarks/tests/__init__.py": [],
-    "scripts/automation/ai_qa_agent.py": [
-      "argparse",
-      "json",
-      "os",
-      "openai"
-    ],
-    "scripts/automation/ai_doc_agent.py": [
-      "json",
-      "os",
-      "argparse"
-    ],
-    "scripts/automation/readme_generator.py": [
-      "json",
-      "os"
-    ],
+    "scripts/automation/ai_qa_agent.py": ["argparse", "json", "os", "openai"],
+    "scripts/automation/ai_doc_agent.py": ["json", "os", "argparse"],
+    "scripts/automation/readme_generator.py": ["json", "os"],
     "scripts/automation/generate_health_dashboard.py": [
       "json",
       "datetime",
       "subprocess",
       "os"
     ],
-    "scripts/automation/diagram_generator.py": [
-      "json",
-      "os"
-    ],
-    "scripts/automation/repo_analyzer.py": [
-      "json",
-      "os",
-      "re"
-    ],
-    "services/api/tests/test_queue.py": [
-      "json",
-      "unittest",
-      "uuid",
-      "app"
-    ],
+    "scripts/automation/diagram_generator.py": ["json", "os"],
+    "scripts/automation/repo_analyzer.py": ["json", "os", "re"],
+    "services/api/tests/test_queue.py": ["json", "unittest", "uuid", "app"],
     "services/api/tests/test_db.py": [
       "uuid",
       "psycopg2",
@@ -203,27 +167,16 @@
       "app",
       "pytest"
     ],
-    "services/api/tests/test_health.py": [
-      "app",
-      "fastapi"
-    ],
+    "services/api/tests/test_health.py": ["app", "fastapi"],
     "services/api/tests/test_sessions.py": [
       "unittest",
       "uuid",
       "app",
       "fastapi"
     ],
-    "services/api/tests/test_schools.py": [
-      "unittest",
-      "app",
-      "fastapi"
-    ],
+    "services/api/tests/test_schools.py": ["unittest", "app", "fastapi"],
     "services/api/tests/__init__.py": [],
-    "services/api/tests/test_storage.py": [
-      "unittest",
-      "uuid",
-      "app"
-    ],
+    "services/api/tests/test_storage.py": ["unittest", "uuid", "app"],
     "services/api/tests/test_dat_routes.py": [
       "unittest",
       "uuid",
@@ -237,26 +190,15 @@
       "datetime",
       "fastapi"
     ],
-    "services/api/tests/test_main.py": [
-      "unittest",
-      "app",
-      "pytest"
-    ],
-    "services/api/tests/test_config.py": [
-      "app",
-      "pytest"
-    ],
+    "services/api/tests/test_main.py": ["unittest", "app", "pytest"],
+    "services/api/tests/test_config.py": ["app", "pytest"],
     "services/api/tests/app/test_minio_client.py": [
       "unittest",
       "botocore",
       "app",
       "pytest"
     ],
-    "services/api/tests/app/test_auth.py": [
-      "app",
-      "pytest",
-      "fastapi"
-    ],
+    "services/api/tests/app/test_auth.py": ["app", "pytest", "fastapi"],
     "services/api/tests/app/__init__.py": [],
     "services/api/tests/app/test_dat_routes.py": [
       "unittest",
@@ -264,17 +206,8 @@
       "app",
       "fastapi"
     ],
-    "services/api/tests/app/test_config.py": [
-      "unittest",
-      "os",
-      "app"
-    ],
-    "services/api/app/db.py": [
-      "datetime",
-      "uuid",
-      "psycopg2",
-      "app"
-    ],
+    "services/api/tests/app/test_config.py": ["unittest", "os", "app"],
+    "services/api/app/db.py": ["datetime", "uuid", "psycopg2", "app"],
     "services/api/app/main.py": [
       "pydantic",
       "uuid",
@@ -284,21 +217,9 @@
       "asyncio",
       "fastapi"
     ],
-    "services/api/app/auth.py": [
-      "app",
-      "fastapi"
-    ],
-    "services/api/app/minio_client.py": [
-      "botocore",
-      "app",
-      "boto3"
-    ],
-    "services/api/app/dat_routes.py": [
-      "pydantic",
-      "uuid",
-      "app",
-      "fastapi"
-    ],
+    "services/api/app/auth.py": ["app", "fastapi"],
+    "services/api/app/minio_client.py": ["botocore", "app", "boto3"],
+    "services/api/app/dat_routes.py": ["pydantic", "uuid", "app", "fastapi"],
     "services/api/app/db_utils.py": [
       "typing",
       "psycopg2",
@@ -307,9 +228,7 @@
       "contextlib"
     ],
     "services/api/app/__init__.py": [],
-    "services/api/app/config.py": [
-      "pydantic_settings"
-    ],
+    "services/api/app/config.py": ["pydantic_settings"],
     "services/api/app/storage.py": [
       "uuid",
       "botocore",
@@ -317,22 +236,9 @@
       "boto3",
       "functools"
     ],
-    "services/api/app/queue.py": [
-      "uuid",
-      "app",
-      "json",
-      "datetime",
-      "redis"
-    ],
-    "services/api/app/dat_db.py": [
-      "dataclasses",
-      "uuid",
-      "psycopg2",
-      "app"
-    ],
-    "services/worker-cv/tests/test_cv_main.py": [
-      "unittest"
-    ],
+    "services/api/app/queue.py": ["uuid", "app", "json", "datetime", "redis"],
+    "services/api/app/dat_db.py": ["dataclasses", "uuid", "psycopg2", "app"],
+    "services/worker-cv/tests/test_cv_main.py": ["unittest"],
     "services/worker-metrics/tests/test_metrics_main.py": [
       "json",
       "unittest",
@@ -348,10 +254,7 @@
       "traceback",
       "datetime"
     ],
-    "services/worker-asr/tests/test_processor.py": [
-      "unittest",
-      "worker"
-    ],
+    "services/worker-asr/tests/test_processor.py": ["unittest", "worker"],
     "services/worker-asr/worker/processor.py": [
       "psycopg2",
       "botocore",

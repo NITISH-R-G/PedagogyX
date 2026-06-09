@@ -185,3 +185,23 @@ def test_upload_chunk_file_too_large(mock_settings, mock_get_session):
     )
     assert response.status_code == 413
     assert response.json()["detail"] == "chunk exceeds max size"
+
+@patch("app.main.db.get_session")
+@patch("app.main.db.complete_session")
+@patch("app.main.db.count_chunks")
+@patch("app.main.queue.enqueue_asr_job")
+def test_complete_session_failed_db(mock_enqueue, mock_count, mock_complete, mock_get_session):
+    mock_id = uuid.uuid4()
+    mock_get_session.return_value = {
+        "id": mock_id,
+        "school_id": "school_123",
+        "room_id": "room_abc",
+        "teacher_id": "teacher_xyz",
+        "status": "active"
+    }
+    mock_count.return_value = 1
+    mock_complete.return_value = None
+
+    response = client.post(f"/v1/sessions/{mock_id}/complete")
+    assert response.status_code == 500
+    assert response.json()["detail"] == "failed to complete session"
