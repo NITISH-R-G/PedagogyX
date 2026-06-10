@@ -27,3 +27,5 @@ __pycache__/
 .venv/
 venv/
 .coverage
+gradle-8.9
+gradle-8.9-bin.zip
