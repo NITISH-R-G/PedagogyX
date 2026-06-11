@@ -136,11 +136,13 @@ class CaptureSessionController(
 
     private suspend fun startDatDeviceSession() {
         callbacks.onStatus("Starting DAT device session…")
+        val createSessionResult = Wearables.createSession(AutoDeviceSelector())
         val session =
-            Wearables.createSession(AutoDeviceSelector()).fold(
-                onSuccess = { it },
-                onFailure = { error, _ -> throw IllegalStateException(error.description) },
-            )
+            if (createSessionResult is com.meta.wearable.dat.core.types.DatResult.Success) {
+                createSessionResult.value
+            } else {
+                throw IllegalStateException("createSession failed")
+            }
         deviceSession = session
         observeJobs +=
             scope.launch {
@@ -168,15 +170,15 @@ class CaptureSessionController(
                 videoQuality = VideoQuality.LOW,
                 frameRate = 15,
             )
+        val addStreamResult = session.addStream(config)
         val stream =
-            session.addStream(config).fold(
-                onSuccess = { it },
-                onFailure = { error, _ ->
-                    streamAttached = false
-                    callbacks.onError("addStream: ${error.description}")
-                    return
-                },
-            )
+            if (addStreamResult is com.meta.wearable.dat.core.types.DatResult.Success) {
+                addStreamResult.value
+            } else {
+                streamAttached = false
+                callbacks.onError("addStream: failed")
+                return
+            }
         activeStream = stream
         observeJobs +=
             scope.launch {
@@ -189,10 +191,10 @@ class CaptureSessionController(
             scope.launch {
                 stream.videoStream.collect { frame -> onVideoFrame(frame) }
             }
-        stream.start().fold(
-            onSuccess = { },
-            onFailure = { error, _ -> callbacks.onError("stream.start: ${error.description}") },
-        )
+        val startResult = stream.start()
+        if (startResult is com.meta.wearable.dat.core.types.DatResult.Failure) {
+            callbacks.onError("stream.start: failed")
+        }
     }
 
     private suspend fun onVideoFrame(frame: VideoFrame) {

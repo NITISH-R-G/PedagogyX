@@ -23,7 +23,7 @@ class CaptureActivity : AppCompatActivity(), CaptureSessionController.Callbacks 
     private lateinit var binding: ActivityCaptureBinding
     private lateinit var controller: CaptureSessionController
     private val permissionMutex = Mutex()
-    private var permissionContinuation: ((PermissionStatus) -> Unit)? = null
+    private var permissionContinuation: ((com.meta.wearable.dat.core.types.DatResult<PermissionStatus, com.meta.wearable.dat.core.types.PermissionError>) -> Unit)? = null
 
     private val permissionLauncher =
         registerForActivityResult(Wearables.RequestPermissionContract()) { result ->
@@ -86,14 +86,14 @@ class CaptureActivity : AppCompatActivity(), CaptureSessionController.Callbacks 
 
     private suspend fun ensureCameraPermission(): Boolean {
         var status = Wearables.checkPermissionStatus(Permission.CAMERA)
-        if (status == PermissionStatus.Granted) {
+        if (status is com.meta.wearable.dat.core.types.DatResult.Success && status.value == PermissionStatus.Granted) {
             return true
         }
-        status = requestWearablesPermission(Permission.CAMERA)
-        return status == PermissionStatus.Granted
+        val result = requestWearablesPermission(Permission.CAMERA)
+        return result is com.meta.wearable.dat.core.types.DatResult.Success && result.value == PermissionStatus.Granted
     }
 
-    private suspend fun requestWearablesPermission(permission: Permission): PermissionStatus =
+    private suspend fun requestWearablesPermission(permission: Permission): com.meta.wearable.dat.core.types.DatResult<PermissionStatus, com.meta.wearable.dat.core.types.PermissionError> =
         permissionMutex.withLock {
             suspendCoroutine { cont ->
                 permissionContinuation = { cont.resume(it) }
