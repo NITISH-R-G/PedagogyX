@@ -83,7 +83,7 @@ async def get_session(session_id: UUID):
     ]
     if metrics:
         payload["metrics"] = _serialize_metrics(metrics)
-    if transcript:
+    if transcript and "text" in transcript:
         payload["transcript_preview"] = (transcript["text"] or "")[:200]
     return payload
 
@@ -134,11 +134,13 @@ def complete_session(session_id: UUID):
             status_code=400,
             detail="upload at least one chunk before completing",
         )
-    row = db.complete_session(session_id)
-    queue.enqueue_asr_job(session_id, row["school_id"])
+    completed_row = db.complete_session(session_id)
+    if not completed_row:
+        raise HTTPException(status_code=404, detail="session not found")
+    queue.enqueue_asr_job(session_id, completed_row["school_id"])
     return {
-        "session_id": str(row["id"]),
-        "status": row["status"],
+        "session_id": str(completed_row["id"]),
+        "status": completed_row["status"],
         "chunks": n_chunks,
         "job_enqueued": "asr",
     }
@@ -161,11 +163,11 @@ def session_preview(session_id: UUID):
     return {
         "session_id": str(session_id),
         "status": row["status"],
-        "preview_ready": metrics.get("preview_ready_at") is not None,
-        "teacher_talk_ratio": metrics.get("teacher_talk_ratio"),
-        "student_talk_ratio": metrics.get("student_talk_ratio"),
-        "metric_confidence": metrics.get("metric_confidence"),
-        "insight_latency_sec": metrics.get("insight_latency_sec"),
+        "preview_ready": metrics.get("preview_ready_at") is not None if metrics else False,
+        "teacher_talk_ratio": metrics.get("teacher_talk_ratio") if metrics else None,
+        "student_talk_ratio": metrics.get("student_talk_ratio") if metrics else None,
+        "metric_confidence": metrics.get("metric_confidence") if metrics else None,
+        "insight_latency_sec": metrics.get("insight_latency_sec") if metrics else None,
         "transcript_excerpt": (transcript["text"][:300] if transcript else None),
     }
 

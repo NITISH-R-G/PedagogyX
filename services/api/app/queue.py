@@ -8,6 +8,8 @@ from app.config import settings
 
 
 def get_redis() -> redis.Redis:
+    if settings.redis_url is None:
+        raise ValueError("redis_url is not set in settings")
     return redis.from_url(settings.redis_url, decode_responses=True)
 
 
