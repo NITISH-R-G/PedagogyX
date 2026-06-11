@@ -17,16 +17,16 @@ This repository is built using **FastAPI, React, Next.js**.
 
 ### Core Services
 
-- **api**: Microservice part of the architecture.
 - **web**: Microservice part of the architecture.
+- **api**: Microservice part of the architecture.
 - **worker-cv**: Microservice part of the architecture.
 - **worker-metrics**: Microservice part of the architecture.
 - **worker-asr**: Microservice part of the architecture.
 
 
 ## Repository Structure
-- **[api](services/api)**
 - **[web](services/web)**
+- **[api](services/api)**
 - **[worker-cv](services/worker-cv)**
 - **[worker-metrics](services/worker-metrics)**
 - **[worker-asr](services/worker-asr)**
@@ -38,10 +38,10 @@ This repository is built using **FastAPI, React, Next.js**.
 ```mermaid
 graph TD
     subgraph Services
-        api["api"]
-        click api href "services/api" "Go to api source"
         web["web"]
         click web href "services/web" "Go to web source"
+        api["api"]
+        click api href "services/api" "Go to api source"
         worker_cv["worker-cv"]
         click worker_cv href "services/worker-cv" "Go to worker-cv source"
         worker_metrics["worker-metrics"]

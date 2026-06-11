@@ -5,10 +5,10 @@
 ```mermaid
 graph TD
     subgraph Services
-        api["api"]
-        click api href "services/api" "Go to api source"
         web["web"]
         click web href "services/web" "Go to web source"
+        api["api"]
+        click api href "services/api" "Go to api source"
         worker_cv["worker-cv"]
         click worker_cv href "services/worker-cv" "Go to worker-cv source"
         worker_metrics["worker-metrics"]
