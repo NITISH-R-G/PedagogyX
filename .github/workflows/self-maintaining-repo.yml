@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [main]
   schedule:
-    - cron: '0 0 * * *' # Run daily at midnight
+    - cron: "0 0 * * *" # Run daily at midnight
   workflow_dispatch:
 
 jobs:
@@ -17,6 +17,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
       - name: Setup Python
         uses: actions/setup-python@v5

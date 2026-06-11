@@ -2,13 +2,13 @@ name: Comprehensive QA System
 
 on:
   push:
-    branches: [ "**" ]
+    branches: ["**"]
   pull_request:
-    branches: [ "**" ]
+    branches: ["**"]
   release:
     types: [published]
   schedule:
-    - cron: '0 2 * * *' # Daily repository audit
+    - cron: "0 2 * * *" # Daily repository audit
   workflow_dispatch:
 
 jobs:
@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
         with:
           fetch-depth: 0
 
