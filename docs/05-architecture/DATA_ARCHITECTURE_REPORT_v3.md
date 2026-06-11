@@ -1,4 +1,5 @@
 # PedagogyX Data Architecture Report
+
 **Author:** Autonomous Senior Data Engineer & Scalable Data Platform Architect
 **Date:** Current
 **Version:** v3
@@ -6,24 +7,29 @@
 ## Data Problem Analysis
 
 ### Business Requirements
+
 PedagogyX is an educational analytics platform utilizing Meta Ray-Ban smart glasses (via the Wearables Device Access Toolkit and an Android companion app) as the primary v1 capture client. The system must process multimodal data (audio, video, telemetry) continuously, extract pedagogical insights, and serve these insights to educators with low latency to inform instructional strategies. The primary goal is to provide reliable, scalable, and actionable analytics without intruding on the teaching workflow.
 
 ### Data Sources
+
 1. **Meta Ray-Ban Smart Glasses:** Video (FPV), audio, and device telemetry via Bluetooth/Wi-Fi.
 2. **Android Companion App (Wearables DAT):** Session metadata, user interactions, synchronization state, and buffered edge data.
 3. **Internal Operational Data:** Application state, API usage logs, system health metrics.
 
 ### Scale Assumptions
+
 - **Ingestion:** Anticipating thousands of simultaneous teaching sessions (1-2 hours each), streaming ~2-5 Mbps of compressed AV data per client. Resulting in multi-TB daily ingestion.
 - **Processing:** Hundreds of concurrent stream processing jobs extracting transcriptions, speaker diarization, and visual cues (e.g., student engagement levels).
 - **Storage:** Petabyte-scale data lake for historical sessions to train future AI models; high-performance data warehouse for aggregated analytics.
 
 ### Freshness Requirements
+
 - Real-time event streams: sub-second latency for critical operational metrics and session state.
 - Analytics pipeline: < 5 minutes for post-session summarized insights (transcriptions, engagement scores).
 - Batch analytics: daily/weekly aggregates for school administration.
 
 ### Failure Scenarios
+
 - Unstable network connections in schools causing delayed, out-of-order, or malformed data packets.
 - Edge device battery depletion or app crashes causing abrupt session termination.
 - Spike in concurrent sessions overwhelming stream processing clusters.
@@ -31,36 +37,44 @@ PedagogyX is an educational analytics platform utilizing Meta Ray-Ban smart glas
 ## Data Architecture
 
 ### Ingestion Systems
+
 - **Edge-to-Cloud:** Android Companion App utilizes a resilient publish-subscribe mechanism (e.g., gRPC/WebSocket for control, multipart uploads for media) to land data securely into cloud object storage (raw zone) and stream events into a distributed message broker (Kafka).
 
 ### Transformation Pipelines
+
 - **Stream Processing (Apache Flink / Spark Structured Streaming):** Consumes Kafka topics to perform real-time deduplication, sessionization, and stateful event enrichment.
 - **Batch Processing (Apache Spark / Databricks):** Nightly processing jobs that run heavy ML inferences, re-process failed sessions, and aggregate metrics for the data warehouse.
 
 ### Storage Systems
+
 - **Data Lake (Amazon S3 / GCS):** Tiered storage architecture.
-  - *Raw Zone:* Immutable, appended-only raw captures.
-  - *Refined Zone:* Parquet/Delta Lake formatted tables (transcriptions, metadata).
-  - *Curated Zone:* Feature stores and ML-ready datasets.
+  - _Raw Zone:_ Immutable, appended-only raw captures.
+  - _Refined Zone:_ Parquet/Delta Lake formatted tables (transcriptions, metadata).
+  - _Curated Zone:_ Feature stores and ML-ready datasets.
 - **Data Warehouse (Snowflake / BigQuery):** Highly optimized OLAP storage for serving dashboard metrics to educators and administrators.
 
 ### Orchestration Workflows
+
 - **Apache Airflow / Dagster:** Centralized orchestration of all batch ETL/ELT jobs, ML pipeline triggers, and data quality checks. Ensures dependency management, retries, and SLA tracking.
 
 ### Serving Layers
+
 - **Real-time API (FastAPI/Redis):** Serves real-time session status and quick queries.
 - **Analytics API:** Exposes warehouse views securely to the PedagogyX Next.js frontend.
 
 ## Pipeline Design
 
 ### ETL/ELT Workflows
+
 - **ELT First Approach:** Raw data is immediately loaded into the Data Lake (Delta format). Transformation logic (dbt) runs over the refined zone to build dimensional models in the warehouse.
 
 ### Streaming Architecture
+
 - **Event Mesh:** Kafka topics structured by domain (e.g., `telemetry.raw`, `audio.transcribed`, `session.events`).
 - **Processing:** Flink jobs handle watermarking to manage late-arriving events from disconnected Android clients, ensuring accurate session boundaries.
 
 ### Retries & Replayability
+
 - **Idempotency:** All downstream sinks (Delta tables, OLAP DBs) enforce upserts based on a composite key (`session_id` + `event_id`).
 - **Dead Letter Queues (DLQs):** Malformed events are routed to DLQs for inspection, alerting, and manual/automated replay via Airflow.
 
@@ -69,8 +83,8 @@ PedagogyX is an educational analytics platform utilizing Meta Ray-Ban smart glas
 ### Schema Strategy
 
 - **Star Schema Design:**
-  - *Fact Tables:* `fact_session_events`, `fact_transcriptions`, `fact_engagement_metrics`.
-  - *Dimension Tables:* `dim_educator`, `dim_device`, `dim_school`, `dim_class`.
+  - _Fact Tables:_ `fact_session_events`, `fact_transcriptions`, `fact_engagement_metrics`.
+  - _Dimension Tables:_ `dim_educator`, `dim_device`, `dim_school`, `dim_class`.
 
 ### Partitioning & Indexing
 
@@ -147,12 +161,12 @@ PedagogyX is an educational analytics platform utilizing Meta Ray-Ban smart glas
 ### Operational Risks
 
 - Managing massive video data uploads over variable school Wi-Fi networks may lead to incomplete sessions.
-  *Mitigation:* Robust edge-side buffering on the Android device with resumable uploads.
+  _Mitigation:_ Robust edge-side buffering on the Android device with resumable uploads.
 
 ### Scaling Concerns
 
 - Sudden bursts of traffic at the start of a school day.
-  *Mitigation:* Over-provisioning Kafka ingest clusters and autoscaling Flink/Spark workers.
+  _Mitigation:_ Over-provisioning Kafka ingest clusters and autoscaling Flink/Spark workers.
 
 ### Consistency Tradeoffs
 
@@ -161,7 +175,7 @@ PedagogyX is an educational analytics platform utilizing Meta Ray-Ban smart glas
 ### Cost Implications
 
 - Petabyte-scale video storage is expensive.
-  *Tradeoff:* Aggressive lifecycle management and utilizing intelligent tiering to reduce long-term storage costs.
+  _Tradeoff:_ Aggressive lifecycle management and utilizing intelligent tiering to reduce long-term storage costs.
 
 ## Agile Sprint Plan
 
