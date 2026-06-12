@@ -9,11 +9,16 @@ on:
       - "infra/**"
       - "scripts/compose-smoke.sh"
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   dat-lifecycle:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       - name: DAT lifecycle against Compose API
         run: |
           COMPOSE_FILE=infra/compose.dev.yaml

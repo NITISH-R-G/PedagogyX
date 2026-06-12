@@ -8,10 +8,15 @@ on:
       - "services/**"
       - "scripts/compose-smoke.sh"
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   smoke:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       - name: Compose smoke test
         run: ./scripts/compose-smoke.sh
