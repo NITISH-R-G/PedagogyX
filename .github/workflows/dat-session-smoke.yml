@@ -4,32 +4,28 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - "tools/dat-session-sim/**"
       - "services/api/**"
-      - "services/worker-cv/**"
-      - "services/worker-asr/**"
-      - "services/worker-metrics/**"
-      - "scripts/dat-session-smoke.sh"
+      - "tools/dat-session-sim/**"
       - "infra/**"
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      - "scripts/compose-smoke.sh"
 
 jobs:
-  dat-smoke:
+  dat-lifecycle:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install DAT Simulator Dependencies
+      - name: DAT lifecycle against Compose API
         run: |
-          cd tools/dat-session-sim
-          pip install -r requirements.txt
-
-      - name: DAT Simulator smoke test
-        run: ./scripts/dat-session-smoke.sh
+          COMPOSE_FILE=infra/compose.dev.yaml
+          docker compose -f "$COMPOSE_FILE" up -d --build --wait
+          for i in $(seq 1 30); do
+            if curl --retry 5 --retry-connrefused --retry-delay 2 -sf http://localhost:8080/health >/dev/null; then
+              echo "API is ready!"
+              break
+            fi
+            echo "Waiting for API... $i/30"
+            sleep 2
+          done
+          pip install -r tools/dat-session-sim/requirements.txt
+          python3 tools/dat-session-sim/dat_session_cli.py run --api-url http://localhost:8080
+          docker compose -f "$COMPOSE_FILE" down

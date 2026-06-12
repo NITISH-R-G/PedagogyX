@@ -1,26 +1,70 @@
-name: health-dashboard
+name: Repository Health Dashboard
 
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
+  release:
+    types: [published]
   schedule:
-    - cron: '0 8 * * 1' # Every Monday at 8 AM
+    - cron: '0 0 * * *' # Run daily at midnight
   workflow_dispatch:
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
-  generate:
+  generate_dashboard:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+      issues: read
+      pull-requests: read
+
     steps:
       - uses: actions/checkout@v4
-
-      - name: Generate knowledge graph and dashboard
-        run: ./scripts/generate-dashboard.sh
-
-      - name: Upload dashboard
-        uses: actions/upload-artifact@v4
         with:
-          name: health-dashboard
-          path: docs/health-dashboard.html
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Dependencies
+        run: pip install -r scripts/automation/requirements.txt || echo "No specific requirements"
+
+      - name: Generate Coverage Report
+        run: |
+          cd services/api
+          python3 -m venv .venv
+          source .venv/bin/activate
+          pip install -r requirements.txt pytest httpx coverage
+          DATABASE_URL=dev REDIS_URL=dev API_KEY=dev_api_key_placeholder MINIO_ACCESS_KEY=dev coverage run -m pytest || true
+          coverage report || true
+
+      - name: Generate Health Dashboard
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/automation/generate_health_dashboard.py
+
+      - name: Upload artifact for GitHub Pages
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'docs/'
+
+  deploy_pages:
+    needs: generate_dashboard
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
