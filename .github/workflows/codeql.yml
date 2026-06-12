@@ -1,3 +1,6 @@
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 # For most projects, this workflow file will not need changing; you simply need
 # to commit it to your repository.
 #
@@ -91,6 +94,8 @@ jobs:
     - name: Run manual build steps
       if: matrix.build-mode == 'manual'
       shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         if [[ "${{ matrix.language }}" == "java-kotlin" ]]; then
           cd clients/android-capture-dat
