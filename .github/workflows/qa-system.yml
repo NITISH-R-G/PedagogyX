@@ -11,6 +11,9 @@ on:
     - cron: '0 2 * * *' # Daily repository audit
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   quality_and_security:
     runs-on: ubuntu-latest

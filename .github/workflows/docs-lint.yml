@@ -1,24 +1,24 @@
-name: Documentation Linting
+name: docs-lint
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main]
   pull_request:
-    branches: [ "main" ]
+    paths:
+      - "**.md"
+      - "docs/**"
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  lint-docs:
+  markdownlint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '24'
-
-      - name: Run Prettier check
-        run: npx --yes prettier --check 'docs/**/*.md'
-
-      - name: Run Markdownlint
-        run: npx --yes markdownlint-cli 'docs/**/*.md'
+          node-version: 24
+      - run: npm install -g markdownlint-cli prettier
+      - run: markdownlint '**/*.md' --ignore node_modules
+      - run: prettier --check '**/*.md'

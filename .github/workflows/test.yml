@@ -1,14 +1,16 @@
-name: Tests
+name: test
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  test:
+  pytest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,43 +20,30 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install Backend Dependencies
+      - name: Install dependencies
         run: |
-          cd services/api
-          python -m venv .venv
-          source .venv/bin/activate
-          pip install -r requirements.txt
-          pip install safety pip-audit
+          pip install -r services/api/requirements.txt
 
-      - name: Security & Dependency Audit
-        run: |
-          cd services/api
-          source .venv/bin/activate
-          safety check || echo "Safety checks completed (non-blocking for MVP)"
-          pip-audit || echo "Audit completed (non-blocking for MVP)"
-
-      - name: Run Backend Tests
+      - name: Run Pytest
         env:
-          DATABASE_URL: "dev"
-          REDIS_URL: "dev"
-          API_KEY: "dev_api_key_placeholder"
-          MINIO_ACCESS_KEY: "dev"
+          PYTHONPATH: services/api
+          API_KEY: dev_api_key_placeholder
         run: |
-          cd services/api
-          source .venv/bin/activate
-          pytest
+          pytest services/api/tests/
 
+  vitest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "24"
-
-      - name: Install Frontend Dependencies
+      - name: Install Web Deps
         run: |
           cd services/web
           npm install --legacy-peer-deps
-
-      - name: Run Frontend Tests
+      - name: Run Vitest
         run: |
           cd services/web
-          npm test
+          npm run test
