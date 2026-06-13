@@ -21,7 +21,7 @@ jobs:
           node-version: '24'
 
       - name: Run Prettier check
-        run: npx --yes prettier --check \'docs/**/*.md\' || true
+        run: npx --yes prettier --check 'docs/**/*.md' || true
 
       - name: Run Markdownlint
-        run: npx --yes markdownlint-cli \'docs/**/*.md\' || true
+        run: npx --yes markdownlint-cli 'docs/**/*.md' || true

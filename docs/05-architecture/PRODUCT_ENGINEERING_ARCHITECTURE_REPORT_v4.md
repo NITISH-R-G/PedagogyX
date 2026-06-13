@@ -1,11 +1,13 @@
 # Product Engineering Architecture Report v4
 
 ## Problem Analysis
+
 PedagogyX is developing an AI-driven multimodal classroom intelligence platform targeting a primary client base of Meta Ray-Ban smart glasses (DAT) users and low-end Windows smartboards.
 The system needs to operate efficiently in constrained environments (Indian schools with low bandwidth), using a centralized OSS-based inference cloud powered by consumer-grade GPUs (e.g., RTX 5070).
 We must enforce a strict zero-trust, privacy-focused architecture compliant with India's DPDP framework, specifically blocking production student data until G2 clearance is achieved. The core challenge is maintaining robust multi-stream ingestion, low-latency processing, and high reliability with zero customer budget for infrastructure (D-10 constraint).
 
 ## Architecture Design
+
 - **Client Tier**
   - Android-based DAT host app for Meta Ray-Ban glasses and low-end Windows smartboards acting as capture agents.
   - Edge nodes (District/School LAN) providing resilient ingest buffering.
@@ -20,6 +22,7 @@ We must enforce a strict zero-trust, privacy-focused architecture compliant with
   - Next.js based Admin Shell to visualize insights across a two-path system: Hot Path (real-time heuristics) and Cold Path (authoritative batch evaluations).
 
 ## Implementation Strategy
+
 - **Phase 1: Ingestion & Storage**
   - Deploy Docker Compose stack encompassing FastAPI, MinIO, PostgreSQL, and Redis.
   - Develop resilient, resumable chunk upload APIs with signature validation to handle intermittent connectivity.
@@ -32,6 +35,7 @@ We must enforce a strict zero-trust, privacy-focused architecture compliant with
   - Move from CPU-bound mock processing to GPU-bound (RTX 5070) inference models using TensorRT and vLLM.
 
 ## Code Quality Strategy
+
 - **Static Analysis & Formatting**
   - Enforce Ruff for Python formatting, linting, and bug detection.
   - Use ESLint and Prettier for the Next.js frontend TypeScript codebase.
@@ -43,6 +47,7 @@ We must enforce a strict zero-trust, privacy-focused architecture compliant with
   - Strict type checking utilizing Pydantic models in Python and TypeScript interfaces in the React frontend.
 
 ## Performance Optimization
+
 - **Database Access**
   - Share database cursors in backend helper functions to mitigate N+1 query inefficiencies.
 - **Worker Concurrency**
@@ -53,6 +58,7 @@ We must enforce a strict zero-trust, privacy-focused architecture compliant with
   - Quantization (e.g., INT4/AWQ) for Large Language Models to fit comfortably within the 12GB VRAM constraints of the RTX 5070.
 
 ## Security Considerations
+
 - **Environment Management**
   - Explicit enforcement of critical environment variables (e.g., `DATABASE_URL`, `REDIS_URL`, `API_KEY`) to prevent default-bypass vulnerabilities.
 - **Authentication & RBAC**
@@ -63,6 +69,7 @@ We must enforce a strict zero-trust, privacy-focused architecture compliant with
   - Student faces and identifiers are strictly excluded from LLM context; only anonymized metadata and transcripts are processed.
 
 ## Observability
+
 - **Structured Telemetry**
   - Aggregate standardized JSON logs from FastAPI and worker services.
   - Explicitly log worker failures, full tracebacks, and exceptions to `sys.stderr` via the DLQ flow.
@@ -72,6 +79,7 @@ We must enforce a strict zero-trust, privacy-focused architecture compliant with
   - Monitor GPU VRAM utilization, Celery queue wait times, and model drift in the pedagogical indices.
 
 ## Refactoring Opportunities
+
 - **Dead Letter Queue Robustness**
   - Standardize error handling and DLQ mechanisms across all async Python workers (`worker-asr`, `worker-metrics`, `worker-cv`).
 - **CSS Architecture**
@@ -80,6 +88,7 @@ We must enforce a strict zero-trust, privacy-focused architecture compliant with
   - Break down large API controllers into smaller, domain-driven service modules to reduce coupling.
 
 ## Risks & Tradeoffs
+
 - **Edge Connectivity Vulnerability**
   - Relying on intermittent school networks increases upload failure risk. **Tradeoff**: Implementing robust edge buffering complexity vs. simplified client apps.
 - **Hardware Constraints**
@@ -88,6 +97,7 @@ We must enforce a strict zero-trust, privacy-focused architecture compliant with
   - The strict G2 compliance block delays testing with real student data. **Tradeoff**: Reliance on synthetic mock data (MDK) limits early ML accuracy benchmarking but mitigates catastrophic legal risks.
 
 ## Agile Sprint Plan
+
 - **Sprint 1: Core API & Storage MVP**
   - Set up PostgreSQL schemas, MinIO buckets, and FastAPI endpoints for multipart chunk ingestion.
 - **Sprint 2: Async Pipeline Stability**

@@ -98,6 +98,8 @@ jobs:
         if [[ "${{ matrix.language }}" == "java-kotlin" ]]; then
           cd clients/android-capture-dat
           gradle wrapper --gradle-version 8.9
+          # Add GitHub packages repo for Meta artifacts
+          echo "GITHUB_TOKEN=\${{ secrets.GITHUB_TOKEN }}" > local.properties
           ./gradlew build -x test
         fi
 

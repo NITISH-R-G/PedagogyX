@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -17,7 +19,7 @@ android {
 
         // Emulator → host machine API (override in local.properties: pedagogyx.api.base.url)
         val localProps =
-            java.util.Properties().apply {
+            Properties().apply {
                 val f = rootProject.file("local.properties")
                 if (f.exists()) {
                     load(f.inputStream())
@@ -43,8 +45,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
     }
 
     buildFeatures {
