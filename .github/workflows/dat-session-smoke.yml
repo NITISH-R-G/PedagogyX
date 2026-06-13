@@ -1,31 +1,51 @@
-name: dat-session-smoke
-
+name: DAT Session Smoke Tests
 on:
-  workflow_dispatch:
+  push:
+    branches: [ "main" ]
   pull_request:
-    paths:
-      - "services/api/**"
-      - "tools/dat-session-sim/**"
-      - "infra/**"
-      - "scripts/compose-smoke.sh"
+    branches: [ "main" ]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  dat-lifecycle:
+  smoke-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: DAT lifecycle against Compose API
+
+      - name: Start Docker Compose Stack
+        run: docker compose -f infra/compose.dev.yaml up -d --build
+
+      - name: Wait for services
         run: |
-          COMPOSE_FILE=infra/compose.dev.yaml
-          docker compose -f "$COMPOSE_FILE" up -d --build --wait
-          for i in $(seq 1 30); do
-            if curl --retry 5 --retry-connrefused --retry-delay 2 -sf http://localhost:8080/health >/dev/null; then
-              echo "API is ready!"
-              break
-            fi
-            echo "Waiting for API... $i/30"
-            sleep 2
-          done
-          pip install -r tools/dat-session-sim/requirements.txt
-          python3 tools/dat-session-sim/dat_session_cli.py run --api-url http://localhost:8080
-          docker compose -f "$COMPOSE_FILE" down
+          echo "Waiting for API to be ready..."
+          timeout 60 bash -c 'until curl -s http://localhost:8080/api/v1/health | grep "\"status\":\"healthy\""; do sleep 2; done'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install tools dependencies
+        run: |
+          cd tools/dat-session-sim
+          pip install -r requirements.txt
+
+      - name: Run DAT Session Simulation
+        env:
+          API_BASE_URL: http://localhost:8080
+          API_KEY: dev_api_key_placeholder
+        run: |
+          cd tools/dat-session-sim
+          python dat_session_cli.py run \
+            --teacher test-teacher-1 \
+            --school test-school \
+            --room test-room \
+            --duration 10 \
+            --image-interval 2
+
+      - name: Dump logs on failure
+        if: failure()
+        run: docker compose -f infra/compose.dev.yaml logs
