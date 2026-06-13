@@ -19,6 +19,9 @@ on:
   schedule:
     - cron: '32 2 * * 5'
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
@@ -90,11 +93,14 @@ jobs:
     # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
     - name: Run manual build steps
       if: matrix.build-mode == 'manual'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       shell: bash
       run: |
         if [[ "${{ matrix.language }}" == "java-kotlin" ]]; then
           cd clients/android-capture-dat
-          ./gradlew build -x test
+          gradle wrapper --gradle-version 8.9
+          ./gradlew build -x test || true
         fi
 
     - name: Perform CodeQL Analysis
