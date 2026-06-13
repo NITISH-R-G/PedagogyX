@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 
 import sys
 sys.path.insert(0, "services/worker-metrics/worker")
-import metrics_main
+
 
 class TestComputeTalkRatio(unittest.TestCase):
     @patch("metrics_main.psycopg2.connect")
