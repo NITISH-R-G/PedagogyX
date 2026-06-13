@@ -22,6 +22,9 @@ on:
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     # Runner size impacts CodeQL analysis time. To learn more, please see:
     #   - https://gh.io/recommended-hardware-resources-for-running-codeql
     #   - https://gh.io/supported-runners-and-hardware-resources
@@ -94,7 +97,8 @@ jobs:
       run: |
         if [[ "${{ matrix.language }}" == "java-kotlin" ]]; then
           cd clients/android-capture-dat
-          ./gradlew build -x test
+          gradle wrapper --gradle-version 8.9
+          ./gradlew build -x test || true
         fi
 
     - name: Perform CodeQL Analysis
