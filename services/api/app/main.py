@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field
 from app import db, minio_client, queue, storage
 from app.config import settings
 from app.dat_routes import router as dat_router
+from app.db_utils import close_db_pool, init_db_pool
 
 
 class SessionCreateBody(BaseModel):
@@ -20,11 +21,13 @@ class SessionCreateBody(BaseModel):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    init_db_pool()
     try:
         await run_in_threadpool(minio_client.ensure_bucket)
     except Exception as exc:
         print(f"WARN: MinIO bucket init skipped: {exc}", file=sys.stderr)
     yield
+    close_db_pool()
 
 
 app = FastAPI(
