@@ -94,6 +94,7 @@ jobs:
       run: |
         if [[ "${{ matrix.language }}" == "java-kotlin" ]]; then
           cd clients/android-capture-dat
+          chmod +x ./gradlew
           ./gradlew build -x test
         fi
 
