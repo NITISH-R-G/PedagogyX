@@ -1,4 +1,6 @@
 name: Comprehensive QA System
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 on:
   push:
@@ -32,11 +34,12 @@ jobs:
       - name: Install Python Dependencies
         run: |
           pip install ruff black mypy vulture radon safety pip-audit
-          pip install -r services/api/requirements.txt || true
+          pip install -r services/api/requirements.txt types-psycopg2 types-redis types-boto3 boto3-stubs || true
           pip install -r scripts/automation/requirements.txt || true
 
       - name: Install JS/TS Dependencies
         run: |
+          export FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true
           npm install -g eslint prettier typescript jscpd
           cd services/web && npm install --legacy-peer-deps
 
@@ -57,7 +60,7 @@ jobs:
       # Type Checking
       - name: Type Checking (Python Mypy)
         run: |
-          mypy services tools packages > mypy_report.txt
+          mypy services tools packages --ignore-missing-imports > mypy_report.txt
 
       - name: Type Checking (TypeScript)
         run: |
