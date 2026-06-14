@@ -10,6 +10,8 @@
 # supported CodeQL languages.
 #
 name: "CodeQL Advanced"
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 on:
   push:
@@ -94,6 +96,7 @@ jobs:
       run: |
         if [[ "${{ matrix.language }}" == "java-kotlin" ]]; then
           cd clients/android-capture-dat
+          export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           ./gradlew build -x test
         fi
 
