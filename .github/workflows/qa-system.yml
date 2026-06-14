@@ -2,36 +2,32 @@ name: Comprehensive QA System
 
 on:
   push:
-    branches: [ "**" ]
+    branches: ["**"]
   pull_request:
-    branches: [ "**" ]
+    branches: ["**"]
   release:
     types: [published]
   schedule:
-    - cron: '0 2 * * *' # Daily repository audit
+    - cron: "0 2 * * *" # Daily repository audit
   workflow_dispatch:
 
 jobs:
   quality_and_security:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - uses: actions/checkout@v4
-        env:
-          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
         with:
           fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
-        env:
-          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
         with:
           node-version: "24"
 
       - name: Setup Python
         uses: actions/setup-python@v5
-        env:
-          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
         with:
           python-version: "3.12"
 
@@ -116,8 +112,6 @@ jobs:
       - name: Upload QA Artifacts
         if: always()
         uses: actions/upload-artifact@v4
-        env:
-          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
         with:
           name: qa-reports
           path: |
