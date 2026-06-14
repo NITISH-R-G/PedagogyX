@@ -1,7 +1,6 @@
 import unittest
 from unittest.mock import MagicMock, patch
 
-
 class TestComputeTalkRatio(unittest.TestCase):
     @patch("worker.metrics_main.psycopg2.connect")
     def test_compute_talk_ratio_no_row(self, mock_connect):
