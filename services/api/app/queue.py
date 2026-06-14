@@ -10,7 +10,7 @@ from app.config import settings
 def get_redis() -> redis.Redis:
     if settings.redis_url is None:
         raise ValueError("REDIS_URL must be provided")
-    return redis.from_url(settings.redis_url, decode_responses=True)
+    return redis.Redis.from_url(settings.redis_url, decode_responses=True)
 
 
 def enqueue_asr_job(session_id: UUID, school_id: str) -> None:

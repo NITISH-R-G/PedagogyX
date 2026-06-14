@@ -90,7 +90,7 @@ def process_job(payload: dict) -> None:
 def main() -> None:
     if REDIS_URL is None:
         raise ValueError("REDIS_URL environment variable must be set")
-    client = redis.from_url(REDIS_URL, decode_responses=True)
+    client = redis.Redis.from_url(REDIS_URL, decode_responses=True)
     print(f"[worker-metrics] listening on {JOB_QUEUE}", flush=True)
     while True:
         item = client.blpop(JOB_QUEUE, timeout=POLL_TIMEOUT)
