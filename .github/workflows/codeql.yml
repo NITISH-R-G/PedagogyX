@@ -72,6 +72,10 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    - name: Ensure gradlew is executable
+      if: matrix.language == 'java-kotlin'
+      run: chmod +x clients/android-capture-dat/gradlew
+
     # Add any setup steps before running the `github/codeql-action/init` action.
     # This includes steps like installing compilers or runtimes (`actions/setup-node`
     # or others). This is typically only required for manual builds.
