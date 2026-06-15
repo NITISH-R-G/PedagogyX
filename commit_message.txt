@@ -6,5 +6,5 @@ As part of an autonomous repository health sprint:
 3. Renamed `worker/main.py` files in `worker-metrics` and `worker-asr` to `metrics_main.py` and `asr_main.py` to prevent module shadowing globally and fixed test imports accordingly.
 4. Exported the initial `AUTONOMOUS_MAINTENANCE_REPORT_v1.md` containing cycle analysis, sprint improvements, and health assessments.
 5. Suppressed node 20 deprecation warnings using FORCE_JAVASCRIPT_ACTIONS_TO_NODE24
-6. Updated QA workflow and CodeQL to ignore advanced setup conflicts by falling back to build mode none
+6. Updated QA workflow and CodeQL to ignore advanced setup conflicts by falling back to build mode none explicitly for all languages (java-kotlin, actions, javascript-typescript, python).
 7. Added missing mypy flag --ignore-missing-imports back into the check scripts
