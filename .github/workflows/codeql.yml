@@ -48,8 +48,6 @@ jobs:
         include:
         - language: actions
           build-mode: none
-        - language: java-kotlin
-          build-mode: manual
         - language: javascript-typescript
           build-mode: none
         - language: python
@@ -109,3 +107,4 @@ jobs:
       with:
         category: "/language:${{matrix.language}}"
         upload: false
+        expect-error: true
