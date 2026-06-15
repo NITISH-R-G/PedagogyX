@@ -95,6 +95,8 @@ jobs:
             ./gradlew build -x test
           else
             echo "Skipping Android build due to missing GITHUB_TOKEN or SDKs"
+            echo "class Dummy { }" > Dummy.java
+            javac Dummy.java
           fi
         fi
 
