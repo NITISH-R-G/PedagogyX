@@ -1,3 +1,5 @@
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 # For most projects, this workflow file will not need changing; you simply need
 # to commit it to your repository.
 #
@@ -62,6 +64,17 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+
+    - name: Setup Java
+      if: matrix.language == 'java-kotlin'
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Ensure gradlew is executable
+      if: matrix.language == 'java-kotlin'
+      run: chmod +x clients/android-capture-dat/gradlew
 
     # Add any setup steps before running the `github/codeql-action/init` action.
     # This includes steps like installing compilers or runtimes (`actions/setup-node`
