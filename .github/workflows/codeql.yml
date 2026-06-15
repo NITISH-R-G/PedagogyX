@@ -19,6 +19,9 @@ on:
   schedule:
     - cron: '32 2 * * 5'
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
@@ -93,8 +96,12 @@ jobs:
       shell: bash
       run: |
         if [[ "${{ matrix.language }}" == "java-kotlin" ]]; then
-          cd clients/android-capture-dat
-          ./gradlew build -x test
+          if [[ -f "clients/android-capture-dat/gradlew" ]]; then
+            cd clients/android-capture-dat
+            ./gradlew build -x test
+          else
+            echo "Skipping Android build: gradlew not found"
+          fi
         fi
 
     - name: Perform CodeQL Analysis
