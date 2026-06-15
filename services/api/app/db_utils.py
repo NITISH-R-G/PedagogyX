@@ -3,13 +3,22 @@ import sys
 from typing import Any, Generator
 
 import psycopg2
+from psycopg2 import pool
 
 from app.config import settings
 
+_db_pool = None
+
+def get_pool():
+    global _db_pool
+    if _db_pool is None:
+        _db_pool = pool.ThreadedConnectionPool(1, 10, settings.database_url)
+    return _db_pool
 
 @contextlib.contextmanager
 def get_conn() -> Generator[Any, None, None]:
-    conn = psycopg2.connect(settings.database_url)
+    db_pool = get_pool()
+    conn = db_pool.getconn()
     try:
         yield conn
         conn.commit()
@@ -22,4 +31,4 @@ def get_conn() -> Generator[Any, None, None]:
         conn.rollback()
         raise
     finally:
-        conn.close()
+        db_pool.putconn(conn)
