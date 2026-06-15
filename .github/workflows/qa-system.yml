@@ -16,7 +16,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-    env:
     steps:
       - uses: actions/checkout@v4
         with:
@@ -86,6 +85,7 @@ jobs:
       - name: Secret Detection (Gitleaks)
         uses: gitleaks/gitleaks-action@v2
         env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # Do NOT continue on error; this must block CI if secrets are found
 
@@ -105,6 +105,7 @@ jobs:
       # AI-Powered Insights Generation
       - name: Run AI QA Agent
         env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           python scripts/automation/ai_qa_agent.py --ci-mode
