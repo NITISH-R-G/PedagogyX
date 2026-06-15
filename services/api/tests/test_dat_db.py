@@ -6,7 +6,7 @@ from app.dat_db import create_dat_session, get_dat_session
 from app.db_utils import get_conn
 
 
-@patch("app.db_utils.psycopg2.connect")
+@patch("app.db_utils._db_pool")
 def test_get_conn_rollback_on_psycopg2_error(mock_connect, capsys):
     """
     Directly test the get_conn context manager to ensure that a psycopg2.Error
@@ -15,21 +15,21 @@ def test_get_conn_rollback_on_psycopg2_error(mock_connect, capsys):
     """
     import psycopg2
     mock_conn = MagicMock()
-    mock_connect.return_value = mock_conn
+    mock_connect.getconn.return_value = mock_conn
 
     with pytest.raises(psycopg2.Error, match="DB psycopg2 error"):
         with get_conn():
             raise psycopg2.Error("DB psycopg2 error")
 
     mock_conn.rollback.assert_called_once()
-    mock_conn.close.assert_called_once()
+    mock_connect.putconn.assert_called_once_with(mock_conn)
     mock_conn.commit.assert_not_called()
 
     captured = capsys.readouterr()
     assert "Database error in get_conn: DB psycopg2 error" in captured.err
 
 
-@patch("app.db_utils.psycopg2.connect")
+@patch("app.db_utils._db_pool")
 def test_get_conn_rollback_on_error(mock_connect, capsys):
     """
     Directly test the get_conn context manager to ensure that an exception
@@ -37,28 +37,28 @@ def test_get_conn_rollback_on_error(mock_connect, capsys):
     prints to stderr, and re-raises the exception.
     """
     mock_conn = MagicMock()
-    mock_connect.return_value = mock_conn
+    mock_connect.getconn.return_value = mock_conn
 
     with pytest.raises(Exception, match="DB error"):
         with get_conn():
             raise Exception("DB error")
 
     mock_conn.rollback.assert_called_once()
-    mock_conn.close.assert_called_once()
+    mock_connect.putconn.assert_called_once_with(mock_conn)
     mock_conn.commit.assert_not_called()
 
     captured = capsys.readouterr()
     assert "Unexpected error in get_conn: DB error" in captured.err
 
 
-@patch("app.db_utils.psycopg2.connect")
+@patch("app.db_utils._db_pool")
 def test_create_dat_session_rollback_on_error(mock_connect):
     """
     Test that if an exception occurs during db operations inside get_conn,
     the connection rolls back, does not commit, and the exception is re-raised.
     """
     mock_conn = MagicMock()
-    mock_connect.return_value = mock_conn
+    mock_connect.getconn.return_value = mock_conn
 
     # Setup the mock for `with conn.cursor(...) as cur:`
     mock_cursor_ctx = MagicMock()
@@ -75,18 +75,18 @@ def test_create_dat_session_rollback_on_error(mock_connect):
 
     # Assert rollback and close were called, but not commit
     mock_conn.rollback.assert_called_once()
-    mock_conn.close.assert_called_once()
+    mock_connect.putconn.assert_called_once_with(mock_conn)
     mock_conn.commit.assert_not_called()
 
 
-@patch("app.db_utils.psycopg2.connect")
+@patch("app.db_utils._db_pool")
 def test_create_dat_session_success(mock_connect):
     """
     Test the happy path of create_dat_session to ensure it executes the query
     and returns the inserted row dictionary.
     """
     mock_conn = MagicMock()
-    mock_connect.return_value = mock_conn
+    mock_connect.getconn.return_value = mock_conn
 
     # Setup the mock for `with conn.cursor(...) as cur:`
     mock_cursor_ctx = MagicMock()
@@ -112,18 +112,18 @@ def test_create_dat_session_success(mock_connect):
 
     # Assert commit and close were called, but not rollback
     mock_conn.commit.assert_called_once()
-    mock_conn.close.assert_called_once()
+    mock_connect.putconn.assert_called_once_with(mock_conn)
     mock_conn.rollback.assert_not_called()
     mock_cur.execute.assert_called_once()
 
 
-@patch("app.db_utils.psycopg2.connect")
+@patch("app.db_utils._db_pool")
 def test_get_dat_session_not_found(mock_connect):
     """
     Test that get_dat_session returns None when no row is found.
     """
     mock_conn = MagicMock()
-    mock_connect.return_value = mock_conn
+    mock_connect.getconn.return_value = mock_conn
 
     # Setup the mock for `with conn.cursor(...) as cur:`
     mock_cursor_ctx = MagicMock()
@@ -143,13 +143,13 @@ def test_get_dat_session_not_found(mock_connect):
         "SELECT * FROM dat_sessions WHERE id = %s", (str(test_uuid),)
     )
 
-@patch("app.db_utils.psycopg2.connect")
+@patch("app.db_utils._db_pool")
 def test_get_dat_session_success(mock_connect):
     """
     Test the happy path of get_dat_session returning a row.
     """
     mock_conn = MagicMock()
-    mock_connect.return_value = mock_conn
+    mock_connect.getconn.return_value = mock_conn
 
     # Setup the mock for `with conn.cursor(...) as cur:`
     mock_cursor_ctx = MagicMock()
