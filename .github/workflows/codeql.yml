@@ -28,6 +28,8 @@ jobs:
     #   - https://gh.io/using-larger-runners (GitHub.com only)
     # Consider using larger runners or machines with greater resources for possible analysis time improvements.
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     permissions:
       # required for all workflows
       security-events: write
@@ -46,7 +48,7 @@ jobs:
         - language: actions
           build-mode: none
         - language: java-kotlin
-          build-mode: manual
+          build-mode: none
         - language: javascript-typescript
           build-mode: none
         - language: python
@@ -93,8 +95,12 @@ jobs:
       shell: bash
       run: |
         if [[ "${{ matrix.language }}" == "java-kotlin" ]]; then
-          cd clients/android-capture-dat
-          ./gradlew build -x test
+          if [ -d "clients/android-capture-dat" ] && [ -f "clients/android-capture-dat/build.gradle.kts" ]; then
+            cd clients/android-capture-dat
+            chmod +x gradlew && ./gradlew build -x test
+          else
+            echo "Directory clients/android-capture-dat not found or has no build file. Skipping build."
+          fi
         fi
 
     - name: Perform CodeQL Analysis
