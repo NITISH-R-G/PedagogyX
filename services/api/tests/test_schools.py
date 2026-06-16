@@ -3,7 +3,10 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 
+
+
 client = TestClient(app)
+client.headers.update({"Authorization": "Bearer dev_api_key_placeholder"})
 
 @patch("app.main.db.school_overview")
 def test_school_overview_success(mock_school_overview):

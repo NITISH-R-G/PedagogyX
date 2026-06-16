@@ -2,6 +2,7 @@ from fastapi.testclient import TestClient
 from app.main import app
 
 client = TestClient(app)
+client.headers.update({"Authorization": "Bearer dev_api_key_placeholder"})
 
 def test_health():
     response = client.get("/health")
