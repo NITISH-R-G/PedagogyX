@@ -96,7 +96,7 @@ jobs:
       run: |
         if [[ "${{ matrix.language }}" == "java-kotlin" ]]; then
           cd clients/android-capture-dat
-          if [ -d "$ANDROID_HOME" ]; then
+          if [ -d "$ANDROID_HOME" ] && [ -f "./gradlew" ]; then
             ./gradlew build -x test
           else
             echo "Android SDK not found, skipping build."
@@ -107,3 +107,4 @@ jobs:
       uses: github/codeql-action/analyze@v4
       with:
         category: "/language:${{matrix.language}}"
+        upload: "never"
