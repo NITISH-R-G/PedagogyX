@@ -14,7 +14,9 @@ POLL_TIMEOUT = int(os.environ.get("POLL_TIMEOUT", "5"))
 
 
 def main() -> None:
-    client = redis.from_url(REDIS_URL, decode_responses=True)
+    if REDIS_URL is None:
+        raise ValueError("REDIS_URL environment variable must be set")
+    client = redis.Redis.from_url(REDIS_URL, decode_responses=True)
     mode = os.environ.get("WORKER_MODE", "stub")
     print(f"[worker-asr] listening on {JOB_QUEUE} (mode={mode})", flush=True)
     while True:
