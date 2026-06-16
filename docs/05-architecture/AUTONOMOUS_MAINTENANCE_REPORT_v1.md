@@ -51,7 +51,7 @@
 
 ## Priority Improvements
 
-1. Add `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true` to `.github/workflows/test.yml` to suppress Node 20 deprecation warnings (Highest Impact, Lowest Complexity).
+1. Add `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true` to `.github/workflows/test.yml`, `.github/workflows/qa-system.yml`, and `.github/workflows/codeql.yml` to suppress Node 20 deprecation warnings (Highest Impact, Lowest Complexity).
 2. Enhance CI pipeline to run end-to-end tests for all microservices (High Impact, Medium Complexity).
 3. Consolidate architecture documentation (Medium Impact, High Complexity).
 
@@ -59,7 +59,7 @@
 
 - **Sprint Goal:** Fix CI pipeline deprecation warnings and ensure all tests pass.
 - **Tasks:**
-  - Add `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true` to `.github/workflows/test.yml`.
+  - Add `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true` to `.github/workflows/test.yml`, `.github/workflows/qa-system.yml`, and `.github/workflows/codeql.yml`.
   - Verify changes locally by running `scripts/dev-verify.sh`.
   - Run frontend and backend tests to ensure no regressions.
 - **Implementation Roadmap:** Update workflow file -> Run local verification -> Commit changes.
