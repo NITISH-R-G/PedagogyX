@@ -1,7 +1,9 @@
 from fastapi.testclient import TestClient
 from app.main import app
+from app.auth import verify_api_key
 
 client = TestClient(app)
+app.dependency_overrides[verify_api_key] = lambda: "mock"
 
 def test_health():
     response = client.get("/health")

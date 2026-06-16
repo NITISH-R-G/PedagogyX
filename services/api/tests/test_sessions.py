@@ -3,8 +3,10 @@ from fastapi.testclient import TestClient
 import uuid
 
 from app.main import app
+from app.auth import verify_api_key
 
 client = TestClient(app)
+app.dependency_overrides[verify_api_key] = lambda: "mock"
 
 @patch("app.main.db.insert_session")
 def test_create_session(mock_insert_session):
