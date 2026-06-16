@@ -1,3 +1,4 @@
+import os
 from app.config import settings
 import uuid
 from unittest.mock import patch
@@ -14,8 +15,12 @@ client = TestClient(app)
 
 
 
+
+
+os.environ["API_KEY"] = "dev_api_key_placeholder"
 settings.api_key = "dev_api_key_placeholder"
-client.headers.update({"Authorization": "Bearer dev_api_key_placeholder"})
+client.headers.update({"Authorization": f"Bearer {settings.api_key}"})
+
 
 
 
@@ -40,7 +45,7 @@ def test_start_stream_error_path():
         with patch("app.dat_routes.dat_db.transition_stream_state") as mock_transition:
             mock_transition.side_effect = ValueError("Invalid transition")
 
-            response = client.post(f"/v1/dat-sessions/{dat_session_id}/stream/start", headers={"Authorization": "Bearer dev_api_key_placeholder"})
+            response = client.post(f"/v1/dat-sessions/{dat_session_id}/stream/start", headers={"Authorization": f"Bearer {settings.api_key}"})
 
             assert response.status_code == 400
             assert response.json() == {"detail": "Invalid transition"}
@@ -67,7 +72,7 @@ def test_stop_dat_session_error_path():
         with patch("app.dat_routes.dat_db.transition_stream_state") as mock_transition:
             mock_transition.side_effect = ValueError("Invalid transition")
 
-            response = client.post(f"/v1/dat-sessions/{dat_session_id}/stop", headers={"Authorization": "Bearer dev_api_key_placeholder"})
+            response = client.post(f"/v1/dat-sessions/{dat_session_id}/stop", headers={"Authorization": f"Bearer {settings.api_key}"})
 
             assert response.status_code == 400
             assert response.json() == {"detail": "Invalid transition"}
@@ -81,7 +86,7 @@ def test_post_lifecycle_error_path():
 
         response = client.post(
             f"/v1/dat-sessions/{dat_session_id}/lifecycle",
-            headers={"Authorization": "Bearer dev_api_key_placeholder"},
+            headers={"Authorization": f"Bearer {settings.api_key}"},
             json={
                 "event_type": "session.started",
                 "target": "session",
@@ -99,7 +104,7 @@ def test_stop_dat_session_not_found():
     with patch("app.dat_routes.dat_db.get_dat_session") as mock_get_dat_session:
         mock_get_dat_session.return_value = None
 
-        response = client.post(f"/v1/dat-sessions/{dat_session_id}/stop", headers={"Authorization": "Bearer dev_api_key_placeholder"})
+        response = client.post(f"/v1/dat-sessions/{dat_session_id}/stop", headers={"Authorization": f"Bearer {settings.api_key}"})
 
         assert response.status_code == 404
         assert response.json() == {"detail": "dat session not found"}
