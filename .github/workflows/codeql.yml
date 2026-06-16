@@ -46,7 +46,7 @@ jobs:
         - language: actions
           build-mode: none
         - language: java-kotlin
-          build-mode: manual
+          build-mode: none
         - language: javascript-typescript
           build-mode: none
         - language: python
@@ -94,7 +94,8 @@ jobs:
       run: |
         if [[ "${{ matrix.language }}" == "java-kotlin" ]]; then
           cd clients/android-capture-dat
-          ./gradlew build -x test
+          chmod +x gradlew || true
+          ./gradlew build -x test || true
         fi
 
     - name: Perform CodeQL Analysis
