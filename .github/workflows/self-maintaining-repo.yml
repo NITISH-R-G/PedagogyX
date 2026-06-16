@@ -9,9 +9,6 @@ on:
     - cron: '0 0 * * *' # Run daily at midnight
   workflow_dispatch:
 
-env:
-  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
-
 jobs:
   analyze_and_document:
     runs-on: ubuntu-latest
