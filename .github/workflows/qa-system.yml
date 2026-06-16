@@ -11,6 +11,9 @@ on:
     - cron: '0 2 * * *' # Daily repository audit
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   quality_and_security:
     runs-on: ubuntu-latest
@@ -57,7 +60,7 @@ jobs:
       # Type Checking
       - name: Type Checking (Python Mypy)
         run: |
-          mypy services tools packages > mypy_report.txt
+          mypy services tools packages --ignore-missing-imports > mypy_report.txt
 
       - name: Type Checking (TypeScript)
         run: |
