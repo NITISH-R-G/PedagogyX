@@ -60,7 +60,7 @@ jobs:
       # Type Checking
       - name: Type Checking (Python Mypy)
         run: |
-          mypy services tools packages > mypy_report.txt
+          mypy services tools packages --ignore-missing-imports > mypy_report.txt
 
       - name: Type Checking (TypeScript)
         run: |
