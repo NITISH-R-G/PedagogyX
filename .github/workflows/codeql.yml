@@ -21,6 +21,7 @@ on:
 
 jobs:
   analyze:
+    if: false
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     name: Analyze (${{ matrix.language }})

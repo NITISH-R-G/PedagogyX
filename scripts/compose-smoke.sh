@@ -31,6 +31,7 @@ echo
 
 echo "=== compose-smoke: create session ==="
 SESSION_JSON=$(curl --retry 5 --retry-connrefused --retry-delay 2 -sf -X POST http://localhost:8080/v1/sessions \
+  -H 'Authorization: Bearer dev_api_key_placeholder' \
   -H 'Content-Type: application/json' \
   -d '{"school_id":"smoke-test","room_id":"1","teacher_id":"t1"}')
 echo "$SESSION_JSON"
@@ -40,15 +41,16 @@ echo "=== compose-smoke: upload chunk ==="
 CHUNK_FILE=$(mktemp)
 dd if=/dev/zero of="$CHUNK_FILE" bs=1024 count=1 2>/dev/null
 curl --retry 5 --retry-connrefused --retry-delay 2 -sf -X POST "http://localhost:8080/v1/sessions/${SESSION_ID}/chunks/0" \
+  -H 'Authorization: Bearer dev_api_key_placeholder' \
   -F "file=@${CHUNK_FILE};filename=chunk0.bin"
 rm -f "$CHUNK_FILE"
 
-curl --retry 5 --retry-connrefused --retry-delay 2 -sf -X POST "http://localhost:8080/v1/sessions/${SESSION_ID}/complete" >/dev/null
+curl --retry 5 --retry-connrefused --retry-delay 2 -sf -H 'Authorization: Bearer dev_api_key_placeholder' -X POST "http://localhost:8080/v1/sessions/${SESSION_ID}/complete" >/dev/null
 echo "Session completed: $SESSION_ID"
 
 echo "=== compose-smoke: wait for preview ==="
 for i in $(seq 1 45); do
-  PREVIEW=$(curl --retry 5 --retry-connrefused --retry-delay 2 -sf "http://localhost:8080/v1/sessions/${SESSION_ID}/preview" || true)
+  PREVIEW=$(curl --retry 5 --retry-connrefused --retry-delay 2 -sf -H 'Authorization: Bearer dev_api_key_placeholder' "http://localhost:8080/v1/sessions/${SESSION_ID}/preview" || true)
   if echo "$PREVIEW" | grep -q '"preview_ready": true'; then
     echo "$PREVIEW"
     break
@@ -56,7 +58,7 @@ for i in $(seq 1 45); do
   sleep 1
 done
 
-curl --retry 5 --retry-connrefused --retry-delay 2 -sf "http://localhost:8080/v1/schools/smoke-test/overview" | head -c 500
+curl --retry 5 --retry-connrefused --retry-delay 2 -sf -H 'Authorization: Bearer dev_api_key_placeholder' "http://localhost:8080/v1/schools/smoke-test/overview" | head -c 500
 echo
 
 echo "=== compose-smoke: web (optional) ==="
