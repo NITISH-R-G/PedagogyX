@@ -5,6 +5,7 @@ import uuid
 from app.main import app
 
 client = TestClient(app)
+client.headers.update({"Authorization": "Bearer dev_api_key_placeholder"})
 
 @patch("app.main.db.insert_session")
 def test_create_session(mock_insert_session):
