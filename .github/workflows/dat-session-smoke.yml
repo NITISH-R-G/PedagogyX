@@ -13,7 +13,7 @@ jobs:
   dat-lifecycle:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: DAT lifecycle against Compose API
         run: |
           COMPOSE_FILE=infra/compose.dev.yaml
