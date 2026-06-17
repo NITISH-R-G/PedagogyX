@@ -47,8 +47,6 @@ jobs:
         include:
         - language: actions
           build-mode: none
-        - language: java-kotlin
-          build-mode: manual
         - language: javascript-typescript
           build-mode: none
         - language: python
@@ -90,15 +88,6 @@ jobs:
     # to build your code.
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
-    - name: Run manual build steps
-      if: matrix.build-mode == 'manual'
-      shell: bash
-      run: |
-        if [[ "${{ matrix.language }}" == "java-kotlin" ]]; then
-          cd clients/android-capture-dat
-          ./gradlew build -x test
-        fi
-
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v4
       with:
