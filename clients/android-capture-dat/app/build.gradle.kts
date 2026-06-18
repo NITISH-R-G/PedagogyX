@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -16,13 +18,11 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // Emulator → host machine API (override in local.properties: pedagogyx.api.base.url)
-        val localProps =
-            java.util.Properties().apply {
-                val f = rootProject.file("local.properties")
-                if (f.exists()) {
-                    load(f.inputStream())
-                }
-            }
+        val localProps = Properties()
+        val f = rootProject.file("local.properties")
+        if (f.exists()) {
+            f.inputStream().use { localProps.load(it) }
+        }
         val apiBase =
             localProps.getProperty("pedagogyx.api.base.url")
                 ?: "http://10.0.2.2:8080"
