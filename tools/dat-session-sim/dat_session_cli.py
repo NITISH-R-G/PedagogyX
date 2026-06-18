@@ -37,7 +37,7 @@ def upload_frame_jpeg(
 
 def synthetic_jpeg() -> bytes:
     try:
-        from PIL import Image
+        from PIL import Image # type: ignore
 
         img = Image.new("RGB", (640, 480), color=(40, 80, 120))
         buf = io.BytesIO()
@@ -49,7 +49,7 @@ def synthetic_jpeg() -> bytes:
 
 def capture_jpeg() -> bytes | None:
     try:
-        import cv2
+        import cv2 # type: ignore
 
         cap = cv2.VideoCapture(0)
         if not cap.isOpened():

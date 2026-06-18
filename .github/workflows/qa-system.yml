@@ -18,6 +18,8 @@ on:
 jobs:
   quality_and_security:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,7 +39,11 @@ jobs:
         run: |
           pip install ruff black mypy vulture radon safety pip-audit
           pip install -r services/api/requirements.txt || true
+          pip install -r services/worker-asr/requirements.txt || true
+          pip install -r services/worker-cv/requirements.txt || true
+          pip install -r services/worker-metrics/requirements.txt || true
           pip install -r scripts/automation/requirements.txt || true
+          pip install pydantic-settings types-redis types-requests types-psycopg2 boto3-stubs faster_whisper pytest pydantic fastapi boto3 redis httpx || true
 
       - name: Install JS/TS Dependencies
         run: |
@@ -61,7 +67,9 @@ jobs:
       # Type Checking
       - name: Type Checking (Python Mypy)
         run: |
-          mypy services tools packages > mypy_report.txt
+          export PYTHONPATH=$PYTHONPATH:$(pwd)/services/api:$(pwd)/services/worker-asr:$(pwd)/services/worker-cv:$(pwd)/services/worker-metrics:$(pwd)/packages/capture-core/py:$(pwd)/tools/dat-session-sim
+          export MYPYPATH=$MYPYPATH:$(pwd)/services/api:$(pwd)/services/worker-asr:$(pwd)/services/worker-cv:$(pwd)/services/worker-metrics:$(pwd)/packages/capture-core/py:$(pwd)/tools/dat-session-sim
+          mypy services tools packages --explicit-package-bases --namespace-packages > mypy_report.txt
 
       - name: Type Checking (TypeScript)
         run: |
