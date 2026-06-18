@@ -5,10 +5,10 @@ from datetime import datetime
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.auth import verify_api_key
 
+app.dependency_overrides[verify_api_key] = lambda: "mock"
 client = TestClient(app)
-
-client.headers.update({"Authorization": "Bearer dev_api_key_placeholder"})
 
 
 def test_create_dat_session():
@@ -24,9 +24,10 @@ def test_create_dat_session():
         "pedagogy_session_id": None,
         "updated_at": datetime.now(),
     }
-    with patch("app.dat_routes.dat_db.create_dat_session") as mock_create, patch(
-        "app.dat_routes.append_event"
-    ) as mock_append:
+    with (
+        patch("app.dat_routes.dat_db.create_dat_session") as mock_create,
+        patch("app.dat_routes.append_event") as mock_append,
+    ):
         mock_create.return_value = mock_row
 
         response = client.post(
@@ -79,9 +80,10 @@ def test_get_dat_session_success():
             "created_at": datetime.now(),
         }
     ]
-    with patch("app.dat_routes.dat_db.get_dat_session") as mock_get, patch(
-        "app.dat_routes.dat_db.list_events"
-    ) as mock_list_events:
+    with (
+        patch("app.dat_routes.dat_db.get_dat_session") as mock_get,
+        patch("app.dat_routes.dat_db.list_events") as mock_list_events,
+    ):
         mock_get.return_value = mock_row
         mock_list_events.return_value = mock_events
 
@@ -138,13 +140,13 @@ def test_post_lifecycle_stream_with_pedagogy_link():
     mock_pedagogy = {
         "id": pedagogy_id,
     }
-    with patch("app.dat_routes.dat_db.transition_stream_state") as mock_transition, patch(
-        "app.dat_routes.db.insert_session"
-    ) as mock_insert_session, patch("app.dat_routes.dat_db.link_pedagogy_session"), patch(
-        "app.dat_routes.append_event"
-    ), patch(
-        "app.dat_routes.dat_db.get_dat_session"
-    ) as mock_get:
+    with (
+        patch("app.dat_routes.dat_db.transition_stream_state") as mock_transition,
+        patch("app.dat_routes.db.insert_session") as mock_insert_session,
+        patch("app.dat_routes.dat_db.link_pedagogy_session"),
+        patch("app.dat_routes.append_event"),
+        patch("app.dat_routes.dat_db.get_dat_session") as mock_get,
+    ):
         mock_transition.return_value = mock_row
         mock_insert_session.return_value = mock_pedagogy
         mock_row_with_pedagogy = dict(mock_row, pedagogy_session_id=pedagogy_id)
@@ -198,9 +200,10 @@ def test_start_stream():
         "pedagogy_session_id": uuid.uuid4(),
         "updated_at": datetime.now(),
     }
-    with patch("app.dat_routes.dat_db.get_dat_session") as mock_get, patch(
-        "app.dat_routes.dat_db.transition_stream_state"
-    ) as mock_transition:
+    with (
+        patch("app.dat_routes.dat_db.get_dat_session") as mock_get,
+        patch("app.dat_routes.dat_db.transition_stream_state") as mock_transition,
+    ):
         mock_get.return_value = mock_row
         mock_transition.side_effect = [None, mock_row]
 
