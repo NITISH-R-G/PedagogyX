@@ -4,9 +4,11 @@
 ![Auto-Docs](https://img.shields.io/badge/Docs-Auto--Generated-blue)
 
 ## Project Overview
+
 This repository is continuously analyzed, documented, and visualized automatically.
 
 ## Technology Stack
+
 - FastAPI
 - React
 - Next.js
@@ -23,8 +25,8 @@ This repository is built using **FastAPI, React, Next.js**.
 - **worker-metrics**: Microservice part of the architecture.
 - **worker-asr**: Microservice part of the architecture.
 
-
 ## Repository Structure
+
 - **[web](services/web)**
 - **[api](services/api)**
 - **[worker-cv](services/worker-cv)**
@@ -58,14 +60,15 @@ graph TD
 
 ```
 
-
 ## Setup Instructions
+
 1. Install dependencies via `pip install -r services/api/requirements.txt` or Node/NPM.
 2. Run locally via Docker: `docker compose -f infra/compose.dev.yaml up --build`
 
 ## Environment Variables
+
 The following environment variables are detected in the codebase:
 
 ## Contribution Guide
-Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.

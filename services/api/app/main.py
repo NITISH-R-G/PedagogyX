@@ -7,7 +7,7 @@ from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel, Field
 
-from app import db, minio_client, queue, storage
+from app import db, db_utils, minio_client, queue, storage
 from app.config import settings
 from app.dat_routes import router as dat_router
 
@@ -24,7 +24,9 @@ async def lifespan(app: FastAPI):
         await run_in_threadpool(minio_client.ensure_bucket)
     except Exception as exc:
         print(f"WARN: MinIO bucket init skipped: {exc}", file=sys.stderr)
+    db_utils.init_pool()
     yield
+    db_utils.close_pool()
 
 
 app = FastAPI(
