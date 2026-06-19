@@ -85,12 +85,12 @@ class CaptureActivity : AppCompatActivity(), CaptureSessionController.Callbacks 
     }
 
     private suspend fun ensureCameraPermission(): Boolean {
-        var status = Wearables.checkPermissionStatus(Permission.CAMERA)
-        if (status == PermissionStatus.Granted) {
+        var statusResult = Wearables.checkPermissionStatus(Permission.CAMERA)
+        if (statusResult.isSuccess && statusResult.getOrNull() == PermissionStatus.Granted) {
             return true
         }
-        status = requestWearablesPermission(Permission.CAMERA)
-        return status == PermissionStatus.Granted
+        val requestResult = requestWearablesPermission(Permission.CAMERA)
+        return requestResult == PermissionStatus.Granted
     }
 
     private suspend fun requestWearablesPermission(permission: Permission): PermissionStatus =
