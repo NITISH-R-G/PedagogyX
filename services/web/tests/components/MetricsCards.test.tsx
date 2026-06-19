@@ -56,7 +56,9 @@ describe("MetricsCards", () => {
 
     render(<MetricsCards overview={mockOverview} />);
 
-    expect(screen.getByText("Failed to load observation data")).toBeInTheDocument();
+    expect(
+      screen.getByText("Failed to load observation data"),
+    ).toBeInTheDocument();
     expect(screen.queryByText("No data")).not.toBeInTheDocument();
   });
 });
