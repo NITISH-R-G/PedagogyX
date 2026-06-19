@@ -3,9 +3,9 @@ import os
 import sys
 import traceback
 
-import redis
+import redis  # type: ignore
 
-from worker.processor import process_job
+from worker.processor import process_job  # type: ignore
 
 REDIS_URL = os.environ.get("REDIS_URL", None)
 JOB_QUEUE = os.environ.get("JOB_QUEUE", "jobs:asr")

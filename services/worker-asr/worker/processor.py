@@ -120,7 +120,7 @@ def _transcribe_stub(session_id: str) -> tuple[str, list[dict], float | None]:
 
 
 def _transcribe_whisper(audio_path: str) -> tuple[str, list[dict], float | None]:
-    from faster_whisper import WhisperModel
+    from faster_whisper import WhisperModel  # type: ignore
 
     model = WhisperModel(WHISPER_MODEL, device="cpu", compute_type="int8")
     started = time.perf_counter()

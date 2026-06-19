@@ -8,7 +8,7 @@ import sys
 import wave
 from pathlib import Path
 
-import httpx
+import httpx  # type: ignore
 
 DEFAULT_API = "http://localhost:8080"
 FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures"
