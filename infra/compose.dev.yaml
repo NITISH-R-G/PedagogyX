@@ -3,7 +3,7 @@ name: pedagogyx-dev
 
 services:
   postgres:
-    image: postgres:16-alpine
+    image: public.ecr.aws/docker/library/postgres:16-alpine
     environment:
       POSTGRES_USER: pedagogyx
       POSTGRES_PASSWORD: pedagogyx_dev
@@ -22,7 +22,7 @@ services:
       retries: 10
 
   redis:
-    image: redis:7-alpine
+    image: public.ecr.aws/docker/library/redis:7-alpine
     ports:
       - "6379:6379"
     healthcheck:
