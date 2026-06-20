@@ -136,7 +136,7 @@ def complete_session(session_id: UUID):
         )
     row = db.complete_session(session_id)
     if not row:
-        raise HTTPException(status_code=404, detail="Session not found after completion")
+        raise HTTPException(status_code=404, detail="session not found")
     queue.enqueue_asr_job(session_id, row["school_id"])
     return {
         "session_id": str(row["id"]),
