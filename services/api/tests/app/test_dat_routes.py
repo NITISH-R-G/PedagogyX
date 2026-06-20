@@ -1,9 +1,11 @@
+from app.auth import verify_api_key
 import uuid
 from unittest.mock import patch
 from fastapi.testclient import TestClient
 from app.main import app
 
 client = TestClient(app)
+app.dependency_overrides[verify_api_key] = lambda: 'mock'
 
 
 

@@ -88,7 +88,7 @@ def process_job(payload: dict) -> None:
 
 
 def main() -> None:
-    client = redis.from_url(REDIS_URL, decode_responses=True)
+    client = redis.from_url(str(REDIS_URL), decode_responses=True)
     print(f"[worker-metrics] listening on {JOB_QUEUE}", flush=True)
     while True:
         item = client.blpop(JOB_QUEUE, timeout=POLL_TIMEOUT)
