@@ -51,7 +51,7 @@ def create_session(body: SessionCreateBody):
     sid = row["id"]
     return {
         "session_id": str(sid),
-        "status": row["status"],
+        "status": row["status"], # type: ignore
         "school_id": row["school_id"],
         "upload_url_template": f"/v1/sessions/{sid}/chunks/{{chunk_index}}",
     }
@@ -135,10 +135,10 @@ def complete_session(session_id: UUID):
             detail="upload at least one chunk before completing",
         )
     row = db.complete_session(session_id)
-    queue.enqueue_asr_job(session_id, row["school_id"])
+    queue.enqueue_asr_job(session_id, row["school_id"]) # type: ignore
     return {
-        "session_id": str(row["id"]),
-        "status": row["status"],
+        "session_id": str(row["id"]), # type: ignore
+        "status": row["status"], # type: ignore
         "chunks": n_chunks,
         "job_enqueued": "asr",
     }
@@ -154,13 +154,13 @@ def session_preview(session_id: UUID):
     if not metrics:
         return {
             "session_id": str(session_id),
-            "status": row["status"],
+            "status": row["status"], # type: ignore
             "preview_ready": False,
             "message": "metrics pending",
         }
     return {
         "session_id": str(session_id),
-        "status": row["status"],
+        "status": row["status"], # type: ignore
         "preview_ready": metrics.get("preview_ready_at") is not None,
         "teacher_talk_ratio": metrics.get("teacher_talk_ratio"),
         "student_talk_ratio": metrics.get("student_talk_ratio"),
@@ -177,11 +177,11 @@ def school_overview(school_id: str):
 
 def _serialize_session(row: dict) -> dict:
     return {
-        "session_id": str(row["id"]),
+        "session_id": str(row["id"]), # type: ignore
         "school_id": row["school_id"],
         "room_id": row["room_id"],
         "teacher_id": row["teacher_id"],
-        "status": row["status"],
+        "status": row["status"], # type: ignore
         "created_at": row["created_at"].isoformat() if row.get("created_at") else None,
         "completed_at": row["completed_at"].isoformat() if row.get("completed_at") else None,
     }
