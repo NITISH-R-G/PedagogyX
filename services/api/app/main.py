@@ -135,6 +135,8 @@ def complete_session(session_id: UUID):
             detail="upload at least one chunk before completing",
         )
     row = db.complete_session(session_id)
+    if not row:
+        raise HTTPException(status_code=404, detail="Session not found")
     queue.enqueue_asr_job(session_id, row["school_id"])
     return {
         "session_id": str(row["id"]),
@@ -192,8 +194,8 @@ def _serialize_metrics(metrics: dict) -> dict:
         "teacher_talk_ratio": metrics.get("teacher_talk_ratio"),
         "student_talk_ratio": metrics.get("student_talk_ratio"),
         "metric_confidence": metrics.get("metric_confidence"),
-        "preview_ready_at": metrics["preview_ready_at"].isoformat()
-        if metrics.get("preview_ready_at")
-        else None,
+        "preview_ready_at": (
+            metrics["preview_ready_at"].isoformat() if metrics.get("preview_ready_at") else None
+        ),
         "insight_latency_sec": metrics.get("insight_latency_sec"),
     }
