@@ -2,8 +2,10 @@ from unittest.mock import patch
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.auth import verify_api_key
+app.dependency_overrides[verify_api_key] = lambda: 'test'
 
-client = TestClient(app)
+client = TestClient(app, headers={"Authorization": "Bearer dev_api_key_placeholder"})
 
 @patch("app.main.db.school_overview")
 def test_school_overview_success(mock_school_overview):
