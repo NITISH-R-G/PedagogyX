@@ -24,6 +24,7 @@ jobs:
           python -m venv .venv
           source .venv/bin/activate
           pip install -r requirements.txt
+          pip install pytest-asyncio
           pip install safety pip-audit
 
       - name: Security & Dependency Audit
