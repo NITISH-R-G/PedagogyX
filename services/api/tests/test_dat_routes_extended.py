@@ -8,7 +8,7 @@ from app.main import app
 
 client = TestClient(app)
 
-client.headers.update({"Authorization": "Bearer dev_api_key_placeholder"})
+client.headers = {"Authorization": "Bearer dev_api_key_placeholder"}
 
 
 def test_create_dat_session():
