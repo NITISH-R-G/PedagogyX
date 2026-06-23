@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 
 
 class TestComputeTalkRatio(unittest.TestCase):
-    @patch("worker.metrics_main.psycopg2.connect")
+    @patch("worker.main.psycopg2.connect")
     def test_compute_talk_ratio_no_row(self, mock_connect):
         mock_conn = MagicMock()
         mock_cursor = MagicMock()
@@ -19,7 +19,7 @@ class TestComputeTalkRatio(unittest.TestCase):
         self.assertEqual(student, 0.32)
         self.assertEqual(confidence, "preview_stub")
 
-    @patch("worker.metrics_main.psycopg2.connect")
+    @patch("worker.main.psycopg2.connect")
     def test_compute_talk_ratio_empty_segments(self, mock_connect):
         mock_conn = MagicMock()
         mock_cursor = MagicMock()
@@ -35,7 +35,7 @@ class TestComputeTalkRatio(unittest.TestCase):
         self.assertEqual(student, 0.32)
         self.assertEqual(confidence, "preview_stub")
 
-    @patch("worker.metrics_main.psycopg2.connect")
+    @patch("worker.main.psycopg2.connect")
     def test_compute_talk_ratio_valid_segments(self, mock_connect):
         mock_conn = MagicMock()
         mock_cursor = MagicMock()
@@ -60,7 +60,7 @@ class TestComputeTalkRatio(unittest.TestCase):
         self.assertEqual(student, round(1.0 - 0.7143, 4))
         self.assertEqual(confidence, "preview_heuristic")
 
-    @patch("worker.metrics_main.psycopg2.connect")
+    @patch("worker.main.psycopg2.connect")
     def test_compute_talk_ratio_zero_duration(self, mock_connect):
         mock_conn = MagicMock()
         mock_cursor = MagicMock()
@@ -81,8 +81,8 @@ class TestComputeTalkRatio(unittest.TestCase):
         self.assertEqual(confidence, "preview_heuristic")
 
 class TestProcessJob(unittest.TestCase):
-    @patch("worker.metrics_main._compute_talk_ratio")
-    @patch("worker.metrics_main.psycopg2.connect")
+    @patch("worker.main._compute_talk_ratio")
+    @patch("worker.main.psycopg2.connect")
     def test_process_job(self, mock_connect, mock_compute):
         mock_compute.return_value = (0.7, 0.3, "high")
 
