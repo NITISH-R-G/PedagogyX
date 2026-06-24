@@ -5,7 +5,7 @@ import traceback
 from datetime import datetime, timezone
 
 import psycopg2
-import redis
+import redis  # type: ignore
 
 REDIS_URL = os.environ.get("REDIS_URL", None)
 DATABASE_URL = os.environ.get("DATABASE_URL", None)

@@ -2,7 +2,7 @@ import json
 from datetime import datetime, timezone
 from uuid import UUID
 
-import redis
+import redis  # type: ignore
 
 from app.config import settings
 
