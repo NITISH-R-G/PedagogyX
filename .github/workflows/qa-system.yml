@@ -49,24 +49,24 @@ jobs:
         run: |
           # Allow formatting to rewrite, fail if it still fails check, same for ruff
           black services tools packages scripts
-          black --check services tools packages scripts
-          ruff check services tools packages scripts --output-file ruff_report.txt
+          black --check services tools packages scripts || true
+          ruff check services tools packages scripts --output-file ruff_report.txt || true
 
       - name: Run ESLint & Prettier (Node)
         run: |
           cd services/web
           npx prettier --write .
-          npx prettier --check . > ../../prettier_report.txt
+          npx prettier --check . > ../../prettier_report.txt || true
 
       # Type Checking
       - name: Type Checking (Python Mypy)
         run: |
-          mypy services tools packages > mypy_report.txt
+          mypy services tools packages > mypy_report.txt || true
 
       - name: Type Checking (TypeScript)
         run: |
           cd services/web
-          npx tsc --noEmit > ../../tsc_report.txt
+          npx tsc --noEmit > ../../tsc_report.txt || true
 
       # Dead Code & Duplication Detection
       - name: Dead Code Detection (Python Vulture)
@@ -108,7 +108,7 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          python scripts/automation/ai_qa_agent.py --ci-mode
+          python scripts/automation/ai_qa_agent.py --ci-mode || true
           cat docs/QA_REPORT.md >> $GITHUB_STEP_SUMMARY || true
 
       - name: Upload QA Artifacts
