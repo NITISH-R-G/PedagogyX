@@ -117,52 +117,52 @@ This report serves as the Phase 0 foundational interrogation, competitive analys
 ### Edthena
 
 - **System Type:** Video coaching platform
-- **Business Model:** B2B SaaS (Schools/Districts)
-- **Likely Infrastructure Cost:** Low/Medium (primarily storage and web hosting)
-- **Architecture Assumptions:** Standard multi-tier web application. Heavy reliance on AWS S3 for video storage, basic relational DB (Postgres/MySQL) for metadata. Asynchronous video transcoding pipelines (e.g., AWS Elemental MediaConvert). Low AI overhead.
-- **Strengths:** Strong market penetration, familiar UX for coaching
-- **Weaknesses:** Lacks deep multimodal AI, highly manual
-- **Opportunities for Disruption:** Disrupt with automated AI insights instead of manual peer review
+- **Business Model:** B2B SaaS (Schools/Districts), charging per-teacher annual licensing with tiered features.
+- **Likely Infrastructure Cost:** Low/Medium ($0.05/GB storage, primarily S3 standard IA and EC2 t3/m5 instances for basic web serving).
+- **Architecture Assumptions:** Standard multi-tier monolithic or microservices cloud architecture relying heavily on post-processing video uploads rather than real-time edge processing. Unlikely to use heavy GPU compute.
+- **Strengths:** Strong market penetration, familiar UX for coaching, deep integrations with existing LMS platforms.
+- **Weaknesses:** Lacks deep multimodal AI, highly manual annotation process, poor real-time feedback loops.
+- **Opportunities for Disruption:** Disrupt with automated AI insights using zero-click capture instead of manual peer review.
 
 ### Vosaic
 
 - **System Type:** Video analysis for education/healthcare
-- **Business Model:** B2B Subscriptions
-- **Likely Infrastructure Cost:** Medium (video processing)
-- **Architecture Assumptions:** Cloud-native video platform. Employs robust video streaming protocols (HLS/DASH) for playback. Uses custom or open-source annotation databases to sync tags with video timestamps. Moderate compute for video processing.
-- **Strengths:** Good coding/tagging interface
-- **Weaknesses:** No autonomous intelligence
-- **Opportunities for Disruption:** Automate the entire tagging process using CV and ASR
+- **Business Model:** B2B Subscriptions based on storage caps and active users.
+- **Likely Infrastructure Cost:** Medium (Moderate video processing costs using AWS Elemental MediaConvert, approx $0.012/min).
+- **Architecture Assumptions:** Cloud-native video platform. Employs robust video streaming protocols (HLS/DASH) for playback. Uses custom or open-source annotation databases to sync tags with video timestamps.
+- **Strengths:** Good coding/tagging interface, highly customizable rubrics.
+- **Weaknesses:** No autonomous intelligence, requires significant human effort to generate data.
+- **Opportunities for Disruption:** Automate the entire tagging process using CV (action recognition) and ASR (diarized transcripts).
 
 ### IRIS Connect
 
 - **System Type:** Professional development video system
-- **Business Model:** Enterprise SaaS + Hardware sales
-- **Likely Infrastructure Cost:** Medium (hardware + cloud storage)
-- **Architecture Assumptions:** Hybrid edge-cloud model but with legacy hardware. Custom hardware appliances in classrooms handle capture and local buffering, pushing to a centralized cloud architecture for storage and sharing. Likely monolithic backend.
-- **Strengths:** Hardware ecosystem, high trust
-- **Weaknesses:** Legacy architecture, slow AI adoption
-- **Opportunities for Disruption:** Replace bulky hardware with smart glasses (Meta Ray-Ban)
+- **Business Model:** Enterprise SaaS + Hardware sales (proprietary camera kits).
+- **Likely Infrastructure Cost:** Medium (hardware subsidies + standard cloud storage).
+- **Architecture Assumptions:** Hybrid edge-cloud model but with legacy hardware. Custom hardware appliances in classrooms handle capture and local buffering, pushing to a centralized cloud architecture for storage and sharing. Likely monolithic backend built on legacy stacks (Java/Spring).
+- **Strengths:** Hardware ecosystem ensures capture quality, high trust in UK markets.
+- **Weaknesses:** Legacy architecture, slow AI adoption, bulky hardware setup.
+- **Opportunities for Disruption:** Replace bulky hardware with consumer smart glasses (Meta Ray-Ban) for seamless, invisible capture.
 
 ### AI Sokrates
 
 - **System Type:** AI teaching assistant / analytics
-- **Business Model:** B2B SaaS
-- **Likely Infrastructure Cost:** High (GPU inference)
-- **Architecture Assumptions:** Modern AI-first architecture. Uses cloud GPU clusters (AWS EC2 P4d or similar) for NLP and basic CV tasks. Likely utilizes managed vector databases for semantic search across lesson transcripts.
-- **Strengths:** Early AI adopter
-- **Weaknesses:** Limited multimodal fusion
-- **Opportunities for Disruption:** Outcompete with deeper long-context multimodal analysis
+- **Business Model:** B2B SaaS, premium pricing for AI-generated reports.
+- **Likely Infrastructure Cost:** High ($3-4/hr for cloud GPU inference like AWS EC2 P4d or similar).
+- **Architecture Assumptions:** Modern AI-first architecture. Uses cloud GPU clusters for NLP and basic CV tasks. Likely utilizes managed vector databases (Pinecone/Weaviate) for semantic search across lesson transcripts.
+- **Strengths:** Early AI adopter, good marketing narrative around 'AI coaching'.
+- **Weaknesses:** Limited multimodal fusion (treats audio and video separately), struggles with long-context reasoning.
+- **Opportunities for Disruption:** Outcompete with deeper long-context multimodal analysis using RingAttention or similar infinite-context transformers.
 
 ### Chinese Smart Classroom Systems (Various)
 
 - **System Type:** Surveillance & analytics
-- **Business Model:** Gov/B2B (Top-down)
-- **Likely Infrastructure Cost:** Extremely High (Massive scale CV)
-- **Architecture Assumptions:** Massive distributed computing infrastructure. Heavy edge computing via specialized hardware (NVIDIA Jetson) directly connected to classroom IP cameras. High-throughput data ingestion pipelines feeding massive centralized data lakes for continuous model training.
-- **Strengths:** Scale, extensive hardware integration, aggressive CV
-- **Weaknesses:** Extreme privacy violations, unusable in Western/democratic markets
-- **Opportunities for Disruption:** Provide similar granular analytics but with privacy-first, ethical edge-AI processing
+- **Business Model:** Gov/B2B (Top-down procurement, massive multi-year contracts).
+- **Likely Infrastructure Cost:** Extremely High (Massive scale CV requiring dedicated on-prem GPU clusters or heavy edge AI nodes like NVIDIA Jetson AGX Orin).
+- **Architecture Assumptions:** Massive distributed computing infrastructure. Heavy edge computing directly connected to classroom IP cameras. High-throughput data ingestion pipelines (Kafka) feeding massive centralized data lakes for continuous model training.
+- **Strengths:** Scale, extensive hardware integration, aggressive CV (pose estimation, facial recognition).
+- **Weaknesses:** Extreme privacy violations, completely unusable in Western/democratic markets.
+- **Opportunities for Disruption:** Provide similar granular analytics (engagement heatmaps) but with privacy-first, ethical edge-AI processing (e.g., federated learning, local blurring).
 
 ## 4. Scientific Literature Review & Research Library
 
