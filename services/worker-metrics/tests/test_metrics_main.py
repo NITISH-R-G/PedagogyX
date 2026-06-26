@@ -12,7 +12,7 @@ class TestComputeTalkRatio(unittest.TestCase):
 
         mock_cursor.fetchone.return_value = None
 
-        from worker.main import _compute_talk_ratio
+        from worker.metrics_main import _compute_talk_ratio
         teacher, student, confidence = _compute_talk_ratio(mock_cursor, "session123")
 
         self.assertEqual(teacher, 0.68)
@@ -28,7 +28,7 @@ class TestComputeTalkRatio(unittest.TestCase):
 
         mock_cursor.fetchone.return_value = ["[]"]
 
-        from worker.main import _compute_talk_ratio
+        from worker.metrics_main import _compute_talk_ratio
         teacher, student, confidence = _compute_talk_ratio(mock_cursor, "session123")
 
         self.assertEqual(teacher, 0.68)
@@ -50,7 +50,7 @@ class TestComputeTalkRatio(unittest.TestCase):
         ]
         mock_cursor.fetchone.return_value = [json.dumps(segments)]
 
-        from worker.main import _compute_talk_ratio
+        from worker.metrics_main import _compute_talk_ratio
         teacher, student, confidence = _compute_talk_ratio(mock_cursor, "session123")
 
         # total_dur = 10 + 10 + 15 = 35
@@ -73,7 +73,7 @@ class TestComputeTalkRatio(unittest.TestCase):
         ]
         mock_cursor.fetchone.return_value = [json.dumps(segments)]
 
-        from worker.main import _compute_talk_ratio
+        from worker.metrics_main import _compute_talk_ratio
         teacher, student, confidence = _compute_talk_ratio(mock_cursor, "session123")
 
         self.assertEqual(teacher, 0.68)
@@ -94,7 +94,7 @@ class TestProcessJob(unittest.TestCase):
         from datetime import datetime, timezone
         mock_cursor.fetchone.return_value = [datetime(2023, 1, 1, tzinfo=timezone.utc)]
 
-        from worker.main import process_job
+        from worker.metrics_main import process_job
         payload = {"session_id": "session123"}
         process_job(payload)
 
