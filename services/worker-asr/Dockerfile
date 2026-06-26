@@ -7,4 +7,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY worker ./worker
 
-CMD ["python", "-m", "worker.main"]
+CMD ["python", "-m", "worker.asr_main"]
