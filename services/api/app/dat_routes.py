@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import status, APIRouter, HTTPException, Depends
 from pydantic import BaseModel, Field
 
 from app import dat_db, db
@@ -44,7 +44,7 @@ def create_dat_session(body: DatSessionCreate):
 def get_dat_session(dat_session_id: UUID):
     row = dat_db.get_dat_session(dat_session_id)
     if not row:
-        raise HTTPException(status_code=404, detail="dat session not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="dat session not found")
     out = _serialize(row)
     out["recent_events"] = [
         {
@@ -64,18 +64,18 @@ def post_lifecycle(dat_session_id: UUID, body: LifecycleEvent):
     try:
         if body.target == "session":
             if not body.to_state:
-                raise HTTPException(status_code=400, detail="to_state required for session")
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="to_state required for session")
             row = dat_db.transition_session_state(
                 dat_session_id, body.to_state, body.event_type, body.detail
             )
         else:
             if not body.to_state:
-                raise HTTPException(status_code=400, detail="to_state required for stream")
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="to_state required for stream")
             row = dat_db.transition_stream_state(
                 dat_session_id, body.to_state, body.event_type, body.detail
             )
     except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
 
     # On STREAMING: ensure linked PedagogyX upload session exists
     if body.target == "stream" and body.to_state == "STREAMING":
@@ -91,7 +91,7 @@ def start_dat_session(dat_session_id: UUID):
         dat_db.transition_session_state(dat_session_id, "STARTING", "session.start", {})
         row = dat_db.transition_session_state(dat_session_id, "STARTED", "session.started", {})
     except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
     return _serialize(row)
 
 
@@ -100,14 +100,14 @@ def start_stream(dat_session_id: UUID):
     """Convenience: addStream + start — STOPPED → STARTING → STREAMING."""
     row = dat_db.get_dat_session(dat_session_id)
     if not row:
-        raise HTTPException(status_code=404, detail="dat session not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="dat session not found")
     if row["state"] not in ("STARTED", "STREAMING", "PAUSED"):
-        raise HTTPException(status_code=409, detail="session must be STARTED before addStream")
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="session must be STARTED before addStream")
     try:
         dat_db.transition_stream_state(dat_session_id, "STARTING", "stream.add", {})
         row = dat_db.transition_stream_state(dat_session_id, "STREAMING", "stream.streaming", {})
     except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
     row = _ensure_pedagogy_session(row)
     return _serialize(row)
 
@@ -117,7 +117,7 @@ def stop_dat_session(dat_session_id: UUID):
     """Cascading stop: stream then session (DAT semantics)."""
     row = dat_db.get_dat_session(dat_session_id)
     if not row:
-        raise HTTPException(status_code=404, detail="dat session not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="dat session not found")
     try:
         if row["stream_state"] not in ("STOPPED",):
             dat_db.transition_stream_state(dat_session_id, "STOPPING", "stream.stop", {})
@@ -126,7 +126,7 @@ def stop_dat_session(dat_session_id: UUID):
             dat_db.transition_session_state(dat_session_id, "STOPPING", "session.stop", {})
             row = dat_db.transition_session_state(dat_session_id, "STOPPED", "session.stopped", {})
     except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
     return _serialize(row)
 
 
