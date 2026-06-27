@@ -143,7 +143,8 @@ def complete_session(session_id: UUID):
             "chunks": n_chunks,
             "job_enqueued": "asr",
         }
-    raise HTTPException(status_code=500, detail="Failed to complete session")
+    from fastapi import status
+    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to complete session")
 
 
 @app.get("/v1/sessions/{session_id}/preview")
