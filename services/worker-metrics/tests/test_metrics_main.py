@@ -1,9 +1,10 @@
 import unittest
 from unittest.mock import MagicMock, patch
 
+import worker.metrics_main
 
 class TestComputeTalkRatio(unittest.TestCase):
-    @patch("worker.main.psycopg2.connect")
+    @patch("worker.metrics_main.psycopg2.connect")
     def test_compute_talk_ratio_no_row(self, mock_connect):
         mock_conn = MagicMock()
         mock_cursor = MagicMock()
@@ -12,14 +13,14 @@ class TestComputeTalkRatio(unittest.TestCase):
 
         mock_cursor.fetchone.return_value = None
 
-        from worker.main import _compute_talk_ratio
+        from worker.metrics_main import _compute_talk_ratio
         teacher, student, confidence = _compute_talk_ratio(mock_cursor, "session123")
 
         self.assertEqual(teacher, 0.68)
         self.assertEqual(student, 0.32)
         self.assertEqual(confidence, "preview_stub")
 
-    @patch("worker.main.psycopg2.connect")
+    @patch("worker.metrics_main.psycopg2.connect")
     def test_compute_talk_ratio_empty_segments(self, mock_connect):
         mock_conn = MagicMock()
         mock_cursor = MagicMock()
@@ -28,14 +29,14 @@ class TestComputeTalkRatio(unittest.TestCase):
 
         mock_cursor.fetchone.return_value = ["[]"]
 
-        from worker.main import _compute_talk_ratio
+        from worker.metrics_main import _compute_talk_ratio
         teacher, student, confidence = _compute_talk_ratio(mock_cursor, "session123")
 
         self.assertEqual(teacher, 0.68)
         self.assertEqual(student, 0.32)
         self.assertEqual(confidence, "preview_stub")
 
-    @patch("worker.main.psycopg2.connect")
+    @patch("worker.metrics_main.psycopg2.connect")
     def test_compute_talk_ratio_valid_segments(self, mock_connect):
         mock_conn = MagicMock()
         mock_cursor = MagicMock()
@@ -50,7 +51,7 @@ class TestComputeTalkRatio(unittest.TestCase):
         ]
         mock_cursor.fetchone.return_value = [json.dumps(segments)]
 
-        from worker.main import _compute_talk_ratio
+        from worker.metrics_main import _compute_talk_ratio
         teacher, student, confidence = _compute_talk_ratio(mock_cursor, "session123")
 
         # total_dur = 10 + 10 + 15 = 35
@@ -60,7 +61,7 @@ class TestComputeTalkRatio(unittest.TestCase):
         self.assertEqual(student, round(1.0 - 0.7143, 4))
         self.assertEqual(confidence, "preview_heuristic")
 
-    @patch("worker.main.psycopg2.connect")
+    @patch("worker.metrics_main.psycopg2.connect")
     def test_compute_talk_ratio_zero_duration(self, mock_connect):
         mock_conn = MagicMock()
         mock_cursor = MagicMock()
@@ -73,7 +74,7 @@ class TestComputeTalkRatio(unittest.TestCase):
         ]
         mock_cursor.fetchone.return_value = [json.dumps(segments)]
 
-        from worker.main import _compute_talk_ratio
+        from worker.metrics_main import _compute_talk_ratio
         teacher, student, confidence = _compute_talk_ratio(mock_cursor, "session123")
 
         self.assertEqual(teacher, 0.68)
@@ -81,8 +82,8 @@ class TestComputeTalkRatio(unittest.TestCase):
         self.assertEqual(confidence, "preview_heuristic")
 
 class TestProcessJob(unittest.TestCase):
-    @patch("worker.main._compute_talk_ratio")
-    @patch("worker.main.psycopg2.connect")
+    @patch("worker.metrics_main._compute_talk_ratio")
+    @patch("worker.metrics_main.psycopg2.connect")
     def test_process_job(self, mock_connect, mock_compute):
         mock_compute.return_value = (0.7, 0.3, "high")
 
@@ -94,7 +95,7 @@ class TestProcessJob(unittest.TestCase):
         from datetime import datetime, timezone
         mock_cursor.fetchone.return_value = [datetime(2023, 1, 1, tzinfo=timezone.utc)]
 
-        from worker.main import process_job
+        from worker.metrics_main import process_job
         payload = {"session_id": "session123"}
         process_job(payload)
 
