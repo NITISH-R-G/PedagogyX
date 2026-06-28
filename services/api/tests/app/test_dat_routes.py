@@ -6,7 +6,7 @@ from app.main import app
 client = TestClient(app)
 
 
-client.headers.update({"Authorization": "Bearer dev_api_key_placeholder"})
+client.headers.update({"Authorization": "Bearer test-api-key"})
 
 
 @patch("app.dat_routes.dat_db.get_dat_session")
@@ -20,7 +20,7 @@ def test_stop_dat_session_not_found(mock_get_dat_session):
     # Call the endpoint
     response = client.post(
         f"/v1/dat-sessions/{session_id}/stop",
-        headers={"Authorization": "Bearer dev_api_key_placeholder"},
+        headers={"Authorization": "Bearer test-api-key"},
     )
 
     # Assert the response status code is 404

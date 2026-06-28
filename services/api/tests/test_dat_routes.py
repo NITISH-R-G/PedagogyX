@@ -8,7 +8,7 @@ from app.main import app
 client = TestClient(app)
 
 
-client.headers.update({"Authorization": "Bearer dev_api_key_placeholder"})
+client.headers.update({"Authorization": "Bearer test-api-key"})
 
 
 def test_start_stream_error_path():
@@ -34,7 +34,7 @@ def test_start_stream_error_path():
 
             response = client.post(
                 f"/v1/dat-sessions/{dat_session_id}/stream/start",
-                headers={"Authorization": "Bearer dev_api_key_placeholder"},
+                headers={"Authorization": "Bearer test-api-key"},
             )
 
             assert response.status_code == 400
@@ -64,7 +64,7 @@ def test_stop_dat_session_error_path():
 
             response = client.post(
                 f"/v1/dat-sessions/{dat_session_id}/stop",
-                headers={"Authorization": "Bearer dev_api_key_placeholder"},
+                headers={"Authorization": "Bearer test-api-key"},
             )
 
             assert response.status_code == 400
@@ -79,7 +79,7 @@ def test_post_lifecycle_error_path():
 
         response = client.post(
             f"/v1/dat-sessions/{dat_session_id}/lifecycle",
-            headers={"Authorization": "Bearer dev_api_key_placeholder"},
+            headers={"Authorization": "Bearer test-api-key"},
             json={"event_type": "session.started", "target": "session", "to_state": "STARTED"},
         )
 
@@ -95,7 +95,7 @@ def test_stop_dat_session_not_found():
 
         response = client.post(
             f"/v1/dat-sessions/{dat_session_id}/stop",
-            headers={"Authorization": "Bearer dev_api_key_placeholder"},
+            headers={"Authorization": "Bearer test-api-key"},
         )
 
         assert response.status_code == 404
