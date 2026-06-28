@@ -61,7 +61,7 @@ jobs:
       # Type Checking
       - name: Type Checking (Python Mypy)
         run: |
-          mypy services tools packages > mypy_report.txt
+          MYPYPATH=services/worker-metrics:services/worker-asr:$MYPYPATH mypy services tools packages > mypy_report.txt
 
       - name: Type Checking (TypeScript)
         run: |

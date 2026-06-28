@@ -5,6 +5,6 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY worker ./worker
+COPY worker_metrics ./worker_metrics
 
-CMD ["python", "-m", "worker.metrics_main"]
+CMD ["python", "-m", "worker_metrics.metrics_main"]

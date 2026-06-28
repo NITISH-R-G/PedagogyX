@@ -5,6 +5,6 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY worker ./worker
+COPY worker_asr ./worker_asr
 
-CMD ["python", "-m", "worker.asr_main"]
+CMD ["python", "-m", "worker_asr.asr_main"]
