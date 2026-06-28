@@ -100,11 +100,15 @@ def upload_chunk(
     if not row:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="session not found")
     if row["status"] not in ("active", "created"):
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="session not accepting uploads")
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="session not accepting uploads"
+        )
 
     body = file.file.read()
     if len(body) > settings.max_upload_bytes:
-        raise HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail="chunk exceeds max size")
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail="chunk exceeds max size"
+        )
 
     key = storage.put_chunk(session_id, chunk_index, body, file.content_type)
     chunk = db.insert_chunk(session_id, chunk_index, key, len(body), file.content_type)
@@ -192,8 +196,8 @@ def _serialize_metrics(metrics: dict) -> dict:
         "teacher_talk_ratio": metrics.get("teacher_talk_ratio"),
         "student_talk_ratio": metrics.get("student_talk_ratio"),
         "metric_confidence": metrics.get("metric_confidence"),
-        "preview_ready_at": metrics["preview_ready_at"].isoformat()
-        if metrics.get("preview_ready_at")
-        else None,
+        "preview_ready_at": (
+            metrics["preview_ready_at"].isoformat() if metrics.get("preview_ready_at") else None
+        ),
         "insight_latency_sec": metrics.get("insight_latency_sec"),
     }
