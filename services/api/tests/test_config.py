@@ -1,16 +1,27 @@
 import pytest
 from app.config import Settings
 
+
 @pytest.fixture
 def clean_env(monkeypatch):
     # Remove any existing env vars that might interfere with defaults
     env_vars = [
-        "DATABASE_URL", "REDIS_URL", "MINIO_ENDPOINT", "MINIO_ACCESS_KEY",
-        "MINIO_SECRET_KEY", "MINIO_BUCKET", "MINIO_SECURE", "JOB_QUEUE_ASR",
-        "JOB_QUEUE_METRICS", "OVERVIEW_ROOMS_TARGET", "MAX_UPLOAD_BYTES", "API_KEY"
+        "DATABASE_URL",
+        "REDIS_URL",
+        "MINIO_ENDPOINT",
+        "MINIO_ACCESS_KEY",
+        "MINIO_SECRET_KEY",
+        "MINIO_BUCKET",
+        "MINIO_SECURE",
+        "JOB_QUEUE_ASR",
+        "JOB_QUEUE_METRICS",
+        "OVERVIEW_ROOMS_TARGET",
+        "MAX_UPLOAD_BYTES",
+        "API_KEY",
     ]
     for var in env_vars:
         monkeypatch.delenv(var, raising=False)
+
 
 def test_settings_default(clean_env):
     settings = Settings(_env_file=None)
@@ -28,6 +39,7 @@ def test_settings_default(clean_env):
     assert settings.max_upload_bytes == 52_428_800
     assert settings.api_key is None
 
+
 def test_settings_overrides(monkeypatch):
     monkeypatch.setenv("DATABASE_URL", "postgresql://user:pass@localhost:5432/db")
     monkeypatch.setenv("REDIS_URL", "redis://localhost:6379/0")
@@ -40,7 +52,7 @@ def test_settings_overrides(monkeypatch):
     monkeypatch.setenv("JOB_QUEUE_METRICS", "test-metrics")
     monkeypatch.setenv("OVERVIEW_ROOMS_TARGET", "50")
     monkeypatch.setenv("MAX_UPLOAD_BYTES", "1024")
-    monkeypatch.setenv("API_KEY", "test-api-key")
+    monkeypatch.setenv("API_KEY", "dev_api_key_placeholder")
 
     settings = Settings(_env_file=None)
 
@@ -55,4 +67,4 @@ def test_settings_overrides(monkeypatch):
     assert settings.job_queue_metrics == "test-metrics"
     assert settings.overview_rooms_target == 50
     assert settings.max_upload_bytes == 1024
-    assert settings.api_key == "test-api-key"
+    assert settings.api_key == "dev_api_key_placeholder"
