@@ -5,7 +5,7 @@ import traceback
 
 import redis
 
-from worker.processor import process_job
+from worker_asr.processor import process_job
 
 REDIS_URL = os.environ.get("REDIS_URL", None)
 JOB_QUEUE = os.environ.get("JOB_QUEUE", "jobs:asr")

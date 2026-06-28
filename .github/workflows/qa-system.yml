@@ -35,7 +35,7 @@ jobs:
 
       - name: Install Python Dependencies
         run: |
-          pip install ruff black mypy vulture radon safety pip-audit
+          pip install ruff black mypy vulture radon safety pip-audit pytest pytest-cov
           pip install -r services/api/requirements.txt || true
           pip install -r scripts/automation/requirements.txt || true
 
@@ -61,7 +61,7 @@ jobs:
       # Type Checking
       - name: Type Checking (Python Mypy)
         run: |
-          mypy services tools packages > mypy_report.txt
+          MYPYPATH=services/worker-metrics:services/worker-asr:$MYPYPATH mypy services tools packages > mypy_report.txt
 
       - name: Type Checking (TypeScript)
         run: |
