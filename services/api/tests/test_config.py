@@ -52,7 +52,7 @@ def test_settings_overrides(monkeypatch):
     monkeypatch.setenv("JOB_QUEUE_METRICS", "test-metrics")
     monkeypatch.setenv("OVERVIEW_ROOMS_TARGET", "50")
     monkeypatch.setenv("MAX_UPLOAD_BYTES", "1024")
-    monkeypatch.setenv("API_KEY", "test-api-key")
+    monkeypatch.setenv("API_KEY", "dev_api_key_placeholder")
 
     settings = Settings(_env_file=None)
 
@@ -67,4 +67,4 @@ def test_settings_overrides(monkeypatch):
     assert settings.job_queue_metrics == "test-metrics"
     assert settings.overview_rooms_target == 50
     assert settings.max_upload_bytes == 1024
-    assert settings.api_key == "test-api-key"
+    assert settings.api_key == "dev_api_key_placeholder"
