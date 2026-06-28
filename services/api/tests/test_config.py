@@ -1,22 +1,33 @@
 import pytest
 from app.config import Settings
 
+
 @pytest.fixture
 def clean_env(monkeypatch):
     # Remove any existing env vars that might interfere with defaults
     env_vars = [
-        "DATABASE_URL", "REDIS_URL", "MINIO_ENDPOINT", "MINIO_ACCESS_KEY",
-        "MINIO_SECRET_KEY", "MINIO_BUCKET", "MINIO_SECURE", "JOB_QUEUE_ASR",
-        "JOB_QUEUE_METRICS", "OVERVIEW_ROOMS_TARGET", "MAX_UPLOAD_BYTES", "API_KEY"
+        "DATABASE_URL",
+        "REDIS_URL",
+        "MINIO_ENDPOINT",
+        "MINIO_ACCESS_KEY",
+        "MINIO_SECRET_KEY",
+        "MINIO_BUCKET",
+        "MINIO_SECURE",
+        "JOB_QUEUE_ASR",
+        "JOB_QUEUE_METRICS",
+        "OVERVIEW_ROOMS_TARGET",
+        "MAX_UPLOAD_BYTES",
+        "API_KEY",
     ]
     for var in env_vars:
         monkeypatch.delenv(var, raising=False)
+
 
 def test_settings_default(clean_env):
     settings = Settings(_env_file=None)
 
     assert settings.database_url is None
-    assert settings.redis_url is None
+    assert settings.redis_url == "redis://localhost:6379"
     assert settings.minio_endpoint == "localhost:9000"
     assert settings.minio_access_key is None
     assert settings.minio_secret_key is None
@@ -27,6 +38,7 @@ def test_settings_default(clean_env):
     assert settings.overview_rooms_target == 20
     assert settings.max_upload_bytes == 52_428_800
     assert settings.api_key is None
+
 
 def test_settings_overrides(monkeypatch):
     monkeypatch.setenv("DATABASE_URL", "postgresql://user:pass@localhost:5432/db")

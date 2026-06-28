@@ -3,7 +3,22 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 
-client = TestClient(app)
+
+class AuthedClient:
+    def __init__(self, c):
+        self.c = c
+
+    def post(self, url, **kwargs):
+        kwargs.setdefault("headers", {})["Authorization"] = "Bearer dev_api_key_placeholder"
+        return self.c.post(url, **kwargs)
+
+    def get(self, url, **kwargs):
+        kwargs.setdefault("headers", {})["Authorization"] = "Bearer dev_api_key_placeholder"
+        return self.c.get(url, **kwargs)
+
+
+client = AuthedClient(TestClient(app))
+
 
 @patch("app.main.db.school_overview")
 def test_school_overview_success(mock_school_overview):
@@ -18,7 +33,7 @@ def test_school_overview_success(mock_school_overview):
         "sessions_total": 20,
         "sessions_completed": 15,
         "sessions_week": 5,
-        "recent_sessions": []
+        "recent_sessions": [],
     }
     mock_school_overview.return_value = mock_data
 
