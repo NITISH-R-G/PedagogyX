@@ -3,7 +3,7 @@ import sys
 from contextlib import asynccontextmanager
 from uuid import UUID
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import status, FastAPI, File, HTTPException, UploadFile
 from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel, Field
 
@@ -61,7 +61,7 @@ def create_session(body: SessionCreateBody):
 async def get_session(session_id: UUID):
     row = await asyncio.to_thread(db.get_session, session_id)
     if not row:
-        raise HTTPException(status_code=404, detail="session not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="session not found")
     payload = _serialize_session(row)
 
     chunks_task = asyncio.to_thread(db.list_chunks, session_id)
@@ -95,16 +95,16 @@ def upload_chunk(
     file: UploadFile = File(...),
 ):
     if chunk_index < 0 or chunk_index > 9999:
-        raise HTTPException(status_code=400, detail="invalid chunk_index")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="invalid chunk_index")
     row = db.get_session(session_id)
     if not row:
-        raise HTTPException(status_code=404, detail="session not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="session not found")
     if row["status"] not in ("active", "created"):
-        raise HTTPException(status_code=409, detail="session not accepting uploads")
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="session not accepting uploads")
 
     body = file.file.read()
     if len(body) > settings.max_upload_bytes:
-        raise HTTPException(status_code=413, detail="chunk exceeds max size")
+        raise HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail="chunk exceeds max size")
 
     key = storage.put_chunk(session_id, chunk_index, body, file.content_type)
     chunk = db.insert_chunk(session_id, chunk_index, key, len(body), file.content_type)
@@ -120,7 +120,7 @@ def upload_chunk(
 def complete_session(session_id: UUID):
     row = db.get_session(session_id)
     if not row:
-        raise HTTPException(status_code=404, detail="session not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="session not found")
     if row["status"] == "completed":
         return {
             "session_id": str(session_id),
@@ -131,24 +131,26 @@ def complete_session(session_id: UUID):
     n_chunks = db.count_chunks(session_id)
     if n_chunks == 0:
         raise HTTPException(
-            status_code=400,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail="upload at least one chunk before completing",
         )
     row = db.complete_session(session_id)
-    queue.enqueue_asr_job(session_id, row["school_id"])
-    return {
-        "session_id": str(row["id"]),
-        "status": row["status"],
-        "chunks": n_chunks,
-        "job_enqueued": "asr",
-    }
+    if row:
+        queue.enqueue_asr_job(session_id, row["school_id"])
+        return {
+            "session_id": str(row["id"]),
+            "status": row["status"],
+            "chunks": n_chunks,
+            "job_enqueued": "asr",
+        }
+    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to complete session")
 
 
 @app.get("/v1/sessions/{session_id}/preview")
 def session_preview(session_id: UUID):
     row = db.get_session(session_id)
     if not row:
-        raise HTTPException(status_code=404, detail="session not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="session not found")
     metrics = db.get_metrics(session_id)
     transcript = db.get_transcript(session_id)
     if not metrics:
