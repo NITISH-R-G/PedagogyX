@@ -135,6 +135,11 @@ def complete_session(session_id: UUID):
             detail="upload at least one chunk before completing",
         )
     row = db.complete_session(session_id)
+    if not row:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Session not found",
+        )
     queue.enqueue_asr_job(session_id, row["school_id"])
     return {
         "session_id": str(row["id"]),
