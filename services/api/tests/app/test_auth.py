@@ -1,5 +1,5 @@
 import pytest
-from fastapi import HTTPException, status
+from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials
 from app.auth import verify_api_key
 from app.config import settings
