@@ -1,4 +1,3 @@
-import os
 import textwrap
 
 REPORT_PATH = "docs/01-phase0-founder-interrogation/FOUNDATIONAL_INTERROGATION_REPORT.md"
