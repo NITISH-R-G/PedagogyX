@@ -1,17 +1,13 @@
 from uuid import UUID
 
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, status
 from pydantic import BaseModel, Field
 
 from app import dat_db, db
 from app.dat_db import append_event, EventData
 from app.auth import verify_api_key
 
-router = APIRouter(
-    prefix="/v1/dat-sessions",
-    tags=["dat"],
-    dependencies=[Depends(verify_api_key)]
-)
+router = APIRouter(prefix="/v1/dat-sessions", tags=["dat"], dependencies=[Depends(verify_api_key)])
 
 
 class DatSessionCreate(BaseModel):
@@ -34,8 +30,7 @@ def create_dat_session(body: DatSessionCreate):
         body.school_id, body.room_id, body.teacher_id, body.device_label
     )
     append_event(
-        row["id"],
-        EventData("SESSION_CREATED", None, "IDLE", {"device_label": body.device_label})
+        row["id"], EventData("SESSION_CREATED", None, "IDLE", {"device_label": body.device_label})
     )
     return _serialize(row)
 
@@ -44,7 +39,7 @@ def create_dat_session(body: DatSessionCreate):
 def get_dat_session(dat_session_id: UUID):
     row = dat_db.get_dat_session(dat_session_id)
     if not row:
-        raise HTTPException(status_code=404, detail="dat session not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="dat session not found")
     out = _serialize(row)
     out["recent_events"] = [
         {
@@ -64,18 +59,18 @@ def post_lifecycle(dat_session_id: UUID, body: LifecycleEvent):
     try:
         if body.target == "session":
             if not body.to_state:
-                raise HTTPException(status_code=400, detail="to_state required for session")
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="to_state required for session")
             row = dat_db.transition_session_state(
                 dat_session_id, body.to_state, body.event_type, body.detail
             )
         else:
             if not body.to_state:
-                raise HTTPException(status_code=400, detail="to_state required for stream")
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="to_state required for stream")
             row = dat_db.transition_stream_state(
                 dat_session_id, body.to_state, body.event_type, body.detail
             )
     except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
 
     # On STREAMING: ensure linked PedagogyX upload session exists
     if body.target == "stream" and body.to_state == "STREAMING":
@@ -91,7 +86,7 @@ def start_dat_session(dat_session_id: UUID):
         dat_db.transition_session_state(dat_session_id, "STARTING", "session.start", {})
         row = dat_db.transition_session_state(dat_session_id, "STARTED", "session.started", {})
     except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
     return _serialize(row)
 
 
@@ -100,14 +95,14 @@ def start_stream(dat_session_id: UUID):
     """Convenience: addStream + start — STOPPED → STARTING → STREAMING."""
     row = dat_db.get_dat_session(dat_session_id)
     if not row:
-        raise HTTPException(status_code=404, detail="dat session not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="dat session not found")
     if row["state"] not in ("STARTED", "STREAMING", "PAUSED"):
-        raise HTTPException(status_code=409, detail="session must be STARTED before addStream")
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="session must be STARTED before addStream")
     try:
         dat_db.transition_stream_state(dat_session_id, "STARTING", "stream.add", {})
         row = dat_db.transition_stream_state(dat_session_id, "STREAMING", "stream.streaming", {})
     except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
     row = _ensure_pedagogy_session(row)
     return _serialize(row)
 
@@ -117,7 +112,7 @@ def stop_dat_session(dat_session_id: UUID):
     """Cascading stop: stream then session (DAT semantics)."""
     row = dat_db.get_dat_session(dat_session_id)
     if not row:
-        raise HTTPException(status_code=404, detail="dat session not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="dat session not found")
     try:
         if row["stream_state"] not in ("STOPPED",):
             dat_db.transition_stream_state(dat_session_id, "STOPPING", "stream.stop", {})
@@ -126,7 +121,7 @@ def stop_dat_session(dat_session_id: UUID):
             dat_db.transition_session_state(dat_session_id, "STOPPING", "session.stop", {})
             row = dat_db.transition_session_state(dat_session_id, "STOPPED", "session.stopped", {})
     except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
     return _serialize(row)
 
 
@@ -137,7 +132,7 @@ def _ensure_pedagogy_session(row: dict) -> dict:
     dat_db.link_pedagogy_session(row["id"], ped["id"])
     append_event(
         row["id"],
-        EventData("PEDAGOGY_SESSION_LINKED", None, None, {"pedagogy_session_id": str(ped["id"])})
+        EventData("PEDAGOGY_SESSION_LINKED", None, None, {"pedagogy_session_id": str(ped["id"])}),
     )
     return dat_db.get_dat_session(row["id"]) or row
 
@@ -151,11 +146,13 @@ def _serialize(row: dict) -> dict:
         "device_label": row.get("device_label"),
         "state": row["state"],
         "stream_state": row["stream_state"],
-        "pedagogy_session_id": str(row["pedagogy_session_id"])
-        if row.get("pedagogy_session_id")
-        else None,
-        "upload_session_url": f"/v1/sessions/{row['pedagogy_session_id']}/chunks/{{chunk_index}}"
-        if row.get("pedagogy_session_id")
-        else None,
+        "pedagogy_session_id": (
+            str(row["pedagogy_session_id"]) if row.get("pedagogy_session_id") else None
+        ),
+        "upload_session_url": (
+            f"/v1/sessions/{row['pedagogy_session_id']}/chunks/{{chunk_index}}"
+            if row.get("pedagogy_session_id")
+            else None
+        ),
         "updated_at": row["updated_at"].isoformat() if row.get("updated_at") else None,
     }
