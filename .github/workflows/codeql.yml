@@ -13,6 +13,7 @@ name: "CodeQL Advanced"
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  CODEQL_ACTION_EXTRA_OPTIONS: '{"extractor_options":{"python":{"buildless":false}}}'
 
 on:
   push:
