@@ -6,11 +6,8 @@ from fastapi.testclient import TestClient
 from app.main import app
 
 client = TestClient(app)
-
-
-
-
-
+from app.config import settings
+settings.api_key = "dev_api_key_placeholder"
 client.headers.update({"Authorization": "Bearer dev_api_key_placeholder"})
 
 

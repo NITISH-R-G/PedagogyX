@@ -77,7 +77,7 @@ async def get_session(session_id: UUID):
             "chunk_index": c["chunk_index"],
             "size_bytes": c["size_bytes"],
             "content_type": c["content_type"],
-            "uploaded_at": c["uploaded_at"].isoformat() if c.get("uploaded_at") else None,
+            "uploaded_at": c.get("uploaded_at").isoformat() if c.get("uploaded_at") else None,
         }
         for c in chunks_data
     ]
@@ -183,11 +183,11 @@ def _serialize_session(row: dict) -> dict:
     return {
         "session_id": str(row.get("id")),
         "school_id": row.get("school_id"),
-        "room_id": row["room_id"],
-        "teacher_id": row["teacher_id"],
+        "room_id": row.get("room_id"),
+        "teacher_id": row.get("teacher_id"),
         "status": row.get("status"),
-        "created_at": row["created_at"].isoformat() if row.get("created_at") else None,
-        "completed_at": row["completed_at"].isoformat() if row.get("completed_at") else None,
+        "created_at": row.get("created_at").isoformat() if row.get("created_at") else None,
+        "completed_at": row.get("completed_at").isoformat() if row.get("completed_at") else None,
     }
 
 
@@ -196,7 +196,7 @@ def _serialize_metrics(metrics: dict) -> dict:
         "teacher_talk_ratio": metrics.get("teacher_talk_ratio"),
         "student_talk_ratio": metrics.get("student_talk_ratio"),
         "metric_confidence": metrics.get("metric_confidence"),
-        "preview_ready_at": metrics["preview_ready_at"].isoformat()
+        "preview_ready_at": metrics.get("preview_ready_at").isoformat()
         if metrics.get("preview_ready_at")
         else None,
         "insight_latency_sec": metrics.get("insight_latency_sec"),
