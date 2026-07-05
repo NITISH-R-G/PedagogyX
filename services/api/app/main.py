@@ -135,6 +135,9 @@ def complete_session(session_id: UUID):
             detail="upload at least one chunk before completing",
         )
     row = db.complete_session(session_id)
+    if not row:
+        raise HTTPException(status_code=500, detail="failed to complete session")
+
     queue.enqueue_asr_job(session_id, row["school_id"])
     return {
         "session_id": str(row["id"]),
@@ -158,6 +161,11 @@ def session_preview(session_id: UUID):
             "preview_ready": False,
             "message": "metrics pending",
         }
+
+    transcript_excerpt = None
+    if transcript and "text" in transcript and isinstance(transcript["text"], str):
+        transcript_excerpt = transcript["text"][:300]
+
     return {
         "session_id": str(session_id),
         "status": row["status"],
@@ -166,7 +174,7 @@ def session_preview(session_id: UUID):
         "student_talk_ratio": metrics.get("student_talk_ratio"),
         "metric_confidence": metrics.get("metric_confidence"),
         "insight_latency_sec": metrics.get("insight_latency_sec"),
-        "transcript_excerpt": (transcript["text"][:300] if transcript else None),
+        "transcript_excerpt": transcript_excerpt,
     }
 
 
