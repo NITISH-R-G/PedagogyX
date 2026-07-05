@@ -135,10 +135,11 @@ def complete_session(session_id: UUID):
             detail="upload at least one chunk before completing",
         )
     row = db.complete_session(session_id)
-    queue.enqueue_asr_job(session_id, row["school_id"])
+    if row is not None:
+        queue.enqueue_asr_job(session_id, row["school_id"])
     return {
-        "session_id": str(row["id"]),
-        "status": row["status"],
+        "session_id": str(row["id"]) if row else str(session_id),
+        "status": row["status"] if row else "unknown",
         "chunks": n_chunks,
         "job_enqueued": "asr",
     }
