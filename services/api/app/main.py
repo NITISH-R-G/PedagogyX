@@ -3,7 +3,7 @@ import sys
 from contextlib import asynccontextmanager
 from uuid import UUID
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, HTTPException, UploadFile, status
 from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel, Field
 
@@ -136,7 +136,7 @@ def complete_session(session_id: UUID):
         )
     row = db.complete_session(session_id)
     if not row:
-        raise HTTPException(status_code=404, detail="session not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="session not found")
     queue.enqueue_asr_job(session_id, row["school_id"])
     return {
         "session_id": str(row["id"]),
