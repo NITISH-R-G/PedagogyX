@@ -135,6 +135,8 @@ def complete_session(session_id: UUID):
             detail="upload at least one chunk before completing",
         )
     row = db.complete_session(session_id)
+    if row is None:
+        raise HTTPException(status_code=500, detail="Failed to complete session")
     queue.enqueue_asr_job(session_id, row["school_id"])
     return {
         "session_id": str(row["id"]),
