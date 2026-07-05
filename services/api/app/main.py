@@ -72,18 +72,21 @@ async def get_session(session_id: UUID):
         chunks_task, metrics_task, transcript_task
     )
 
-    payload["chunks"] = [
-        {
-            "chunk_index": c["chunk_index"],
-            "size_bytes": c["size_bytes"],
-            "content_type": c["content_type"],
-            "uploaded_at": c["uploaded_at"].isoformat() if c.get("uploaded_at") else None,
-        }
-        for c in chunks_data
-    ]
+    if chunks_data:
+        payload["chunks"] = [
+            {
+                "chunk_index": c["chunk_index"],
+                "size_bytes": c["size_bytes"],
+                "content_type": c["content_type"],
+                "uploaded_at": c["uploaded_at"].isoformat() if c.get("uploaded_at") else None,
+            }
+            for c in chunks_data
+        ]
+    else:
+        payload["chunks"] = []
     if metrics:
         payload["metrics"] = _serialize_metrics(metrics)
-    if transcript:
+    if transcript and "text" in transcript:
         payload["transcript_preview"] = (transcript["text"] or "")[:200]
     return payload
 
@@ -135,6 +138,8 @@ def complete_session(session_id: UUID):
             detail="upload at least one chunk before completing",
         )
     row = db.complete_session(session_id)
+    if not row:
+        raise HTTPException(status_code=500, detail="failed to complete session")
     queue.enqueue_asr_job(session_id, row["school_id"])
     return {
         "session_id": str(row["id"]),
@@ -166,7 +171,7 @@ def session_preview(session_id: UUID):
         "student_talk_ratio": metrics.get("student_talk_ratio"),
         "metric_confidence": metrics.get("metric_confidence"),
         "insight_latency_sec": metrics.get("insight_latency_sec"),
-        "transcript_excerpt": (transcript["text"][:300] if transcript else None),
+        "transcript_excerpt": (transcript.get("text", "")[:300] if transcript and transcript.get("text") else None),
     }
 
 
@@ -177,11 +182,11 @@ def school_overview(school_id: str):
 
 def _serialize_session(row: dict) -> dict:
     return {
-        "session_id": str(row["id"]),
-        "school_id": row["school_id"],
-        "room_id": row["room_id"],
-        "teacher_id": row["teacher_id"],
-        "status": row["status"],
+        "session_id": str(row.get("id")),
+        "school_id": row.get("school_id"),
+        "room_id": row.get("room_id"),
+        "teacher_id": row.get("teacher_id"),
+        "status": row.get("status"),
         "created_at": row["created_at"].isoformat() if row.get("created_at") else None,
         "completed_at": row["completed_at"].isoformat() if row.get("completed_at") else None,
     }

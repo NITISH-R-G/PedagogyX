@@ -308,7 +308,7 @@ def test_school_overview_no_rooms_observed():
             "sessions_completed": 0,
             "sessions_week": 0
         }
-        mock_recent = []
+        mock_recent: list[dict] = []
         mock_median = {"percentile_cont": None}
 
         with patch("app.db.get_conn") as mock_get_conn:

@@ -13,7 +13,7 @@ def clean_env(monkeypatch):
         monkeypatch.delenv(var, raising=False)
 
 def test_settings_default(clean_env):
-    settings = Settings(_env_file=None)
+    settings = Settings(_env_file=None) # type: ignore
 
     assert settings.database_url is None
     assert settings.redis_url is None
@@ -42,7 +42,7 @@ def test_settings_overrides(monkeypatch):
     monkeypatch.setenv("MAX_UPLOAD_BYTES", "1024")
     monkeypatch.setenv("API_KEY", "test-api-key")
 
-    settings = Settings(_env_file=None)
+    settings = Settings(_env_file=None) # type: ignore
 
     assert settings.database_url == "postgresql://user:pass@localhost:5432/db"
     assert settings.redis_url == "redis://localhost:6379/0"
