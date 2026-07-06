@@ -77,14 +77,14 @@ async def get_session(session_id: UUID):
             "chunk_index": c["chunk_index"],
             "size_bytes": c["size_bytes"],
             "content_type": c["content_type"],
-            "uploaded_at": c["uploaded_at"].isoformat() if c.get("uploaded_at") else None,
+            "uploaded_at": c["uploaded_at"].isoformat() if c and c.get("uploaded_at") else None,
         }
         for c in chunks_data
     ]
     if metrics:
         payload["metrics"] = _serialize_metrics(metrics)
     if transcript:
-        payload["transcript_preview"] = (transcript["text"] or "")[:200]
+        payload["transcript_preview"] = (transcript.get("text") or "")[:200]
     return payload
 
 
@@ -108,11 +108,14 @@ def upload_chunk(
 
     key = storage.put_chunk(session_id, chunk_index, body, file.content_type)
     chunk = db.insert_chunk(session_id, chunk_index, key, len(body), file.content_type)
+    if not chunk:
+        raise HTTPException(status_code=500, detail="chunk upload failed")
+
     return {
         "session_id": str(session_id),
-        "chunk_index": chunk["chunk_index"],
-        "object_key": chunk["object_key"],
-        "size_bytes": chunk["size_bytes"],
+        "chunk_index": chunk.get("chunk_index"),
+        "object_key": chunk.get("object_key"),
+        "size_bytes": chunk.get("size_bytes"),
     }
 
 
@@ -135,10 +138,12 @@ def complete_session(session_id: UUID):
             detail="upload at least one chunk before completing",
         )
     row = db.complete_session(session_id)
-    queue.enqueue_asr_job(session_id, row["school_id"])
+    if not row:
+        raise HTTPException(status_code=500, detail="Failed to complete session")
+    queue.enqueue_asr_job(session_id, str(row.get("school_id", "")))
     return {
-        "session_id": str(row["id"]),
-        "status": row["status"],
+        "session_id": str(row.get("id")),
+        "status": row.get("status"),
         "chunks": n_chunks,
         "job_enqueued": "asr",
     }
@@ -158,6 +163,8 @@ def session_preview(session_id: UUID):
             "preview_ready": False,
             "message": "metrics pending",
         }
+
+    transcript_text = transcript.get("text") if transcript else None
     return {
         "session_id": str(session_id),
         "status": row["status"],
@@ -166,7 +173,7 @@ def session_preview(session_id: UUID):
         "student_talk_ratio": metrics.get("student_talk_ratio"),
         "metric_confidence": metrics.get("metric_confidence"),
         "insight_latency_sec": metrics.get("insight_latency_sec"),
-        "transcript_excerpt": (transcript["text"][:300] if transcript else None),
+        "transcript_excerpt": transcript_text[:300] if transcript_text else None,
     }
 
 
@@ -176,24 +183,27 @@ def school_overview(school_id: str):
 
 
 def _serialize_session(row: dict) -> dict:
+    created_at = row.get("created_at")
+    completed_at = row.get("completed_at")
     return {
         "session_id": str(row["id"]),
         "school_id": row["school_id"],
         "room_id": row["room_id"],
         "teacher_id": row["teacher_id"],
         "status": row["status"],
-        "created_at": row["created_at"].isoformat() if row.get("created_at") else None,
-        "completed_at": row["completed_at"].isoformat() if row.get("completed_at") else None,
+        "created_at": created_at.isoformat() if created_at else None,
+        "completed_at": completed_at.isoformat() if completed_at else None,
     }
 
 
 def _serialize_metrics(metrics: dict) -> dict:
+    preview_ready_at = metrics.get("preview_ready_at")
     return {
         "teacher_talk_ratio": metrics.get("teacher_talk_ratio"),
         "student_talk_ratio": metrics.get("student_talk_ratio"),
         "metric_confidence": metrics.get("metric_confidence"),
-        "preview_ready_at": metrics["preview_ready_at"].isoformat()
-        if metrics.get("preview_ready_at")
+        "preview_ready_at": preview_ready_at.isoformat()
+        if preview_ready_at
         else None,
         "insight_latency_sec": metrics.get("insight_latency_sec"),
     }
