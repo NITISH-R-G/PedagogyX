@@ -1,4 +1,5 @@
-import sys; sys.path.append('services/worker-cv')
+import sys
+sys.path.append('services/worker-cv')
 import unittest
 
 class TestCVWorker(unittest.TestCase):

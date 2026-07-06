@@ -1,4 +1,5 @@
-import sys; sys.path.append('services/worker-asr')
+import sys
+sys.path.append('services/worker-asr')
 import unittest
 from unittest.mock import patch
 from worker.processor import process_job, _transcribe_stub

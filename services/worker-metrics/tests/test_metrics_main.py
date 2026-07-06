@@ -1,4 +1,5 @@
-import sys; sys.path.append('services/worker-metrics')
+import sys
+sys.path.append('services/worker-metrics')
 import unittest
 from unittest.mock import MagicMock, patch
 
