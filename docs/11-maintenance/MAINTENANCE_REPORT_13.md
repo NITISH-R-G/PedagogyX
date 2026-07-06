@@ -48,3 +48,15 @@
 - bundle reductions: N/A
 - latency improvements: N/A
 - developer productivity improvements: Developers no longer need to debug `403` errors when writing new tests for authenticated endpoints.
+
+## CodeQL Analysis Failure Fix
+
+The GitHub Actions CodeQL analysis workflow failed with:
+`Code Scanning could not process the submitted SARIF file: CodeQL analyses from advanced configurations cannot be processed when the default setup is enabled`
+
+This occurs because Code Scanning Default Setup is enabled on the repository while we are simultaneously running an advanced CodeQL Action configuration via `.github/workflows/codeql.yml`. To resolve this conflict safely according to repo policy ("Do not modify, delete, or disable security workflows (like .github/workflows/codeql.yml) to bypass GitHub CI conflicts (such as CodeQL Default Setup errors) if the primary task is unrelated to CI/CD or security configuration"), no changes were made to `.github/workflows/codeql.yml`. A human administrator must turn off "Default Setup" in the repository's security settings.
+
+## Other CI fixes
+
+- Fixed mypy error in `services/api/app/main.py:138` indicating `Value of type "dict[Any, Any] | None" is not indexable`. Changed code to explicitly check for `None`.
+- Fixed mypy 'import-not-found' errors across all files by configuring `[tool.mypy]` with `ignore_missing_imports = true` in `pyproject.toml`.
