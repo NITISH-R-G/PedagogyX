@@ -81,10 +81,10 @@ async def get_session(session_id: UUID):
         }
         for c in chunks_data
     ]
-    if metrics is not None:
+    if metrics:
         payload["metrics"] = _serialize_metrics(metrics)
-    if transcript is not None:
-        payload["transcript_preview"] = (transcript.get("text") or "")[:200]
+    if transcript:
+        payload["transcript_preview"] = (transcript["text"] or "")[:200]
     return payload
 
 
@@ -135,8 +135,6 @@ def complete_session(session_id: UUID):
             detail="upload at least one chunk before completing",
         )
     row = db.complete_session(session_id)
-    if not row:
-        raise HTTPException(status_code=500, detail="failed to complete session")
     queue.enqueue_asr_job(session_id, row["school_id"])
     return {
         "session_id": str(row["id"]),
@@ -160,16 +158,15 @@ def session_preview(session_id: UUID):
             "preview_ready": False,
             "message": "metrics pending",
         }
-
     return {
         "session_id": str(session_id),
         "status": row["status"],
-        "preview_ready": metrics.get("preview_ready_at") is not None if metrics else False,
-        "teacher_talk_ratio": metrics.get("teacher_talk_ratio") if metrics else None,
-        "student_talk_ratio": metrics.get("student_talk_ratio") if metrics else None,
-        "metric_confidence": metrics.get("metric_confidence") if metrics else None,
-        "insight_latency_sec": metrics.get("insight_latency_sec") if metrics else None,
-        "transcript_excerpt": (transcript.get("text", "")[:300] if transcript else None),
+        "preview_ready": metrics.get("preview_ready_at") is not None,
+        "teacher_talk_ratio": metrics.get("teacher_talk_ratio"),
+        "student_talk_ratio": metrics.get("student_talk_ratio"),
+        "metric_confidence": metrics.get("metric_confidence"),
+        "insight_latency_sec": metrics.get("insight_latency_sec"),
+        "transcript_excerpt": (transcript["text"][:300] if transcript else None),
     }
 
 
@@ -192,13 +189,11 @@ def _serialize_session(row: dict) -> dict:
 
 def _serialize_metrics(metrics: dict) -> dict:
     return {
-        "teacher_talk_ratio": metrics.get("teacher_talk_ratio") if metrics else None,
-        "student_talk_ratio": metrics.get("student_talk_ratio") if metrics else None,
-        "metric_confidence": metrics.get("metric_confidence") if metrics else None,
-        "preview_ready_at": (
-            metrics["preview_ready_at"].isoformat()
-            if metrics and metrics.get("preview_ready_at")
-            else None
-        ),
-        "insight_latency_sec": metrics.get("insight_latency_sec") if metrics else None,
+        "teacher_talk_ratio": metrics.get("teacher_talk_ratio"),
+        "student_talk_ratio": metrics.get("student_talk_ratio"),
+        "metric_confidence": metrics.get("metric_confidence"),
+        "preview_ready_at": metrics["preview_ready_at"].isoformat()
+        if metrics.get("preview_ready_at")
+        else None,
+        "insight_latency_sec": metrics.get("insight_latency_sec"),
     }
