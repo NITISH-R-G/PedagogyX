@@ -135,13 +135,15 @@ def complete_session(session_id: UUID):
             detail="upload at least one chunk before completing",
         )
     row = db.complete_session(session_id)
-    queue.enqueue_asr_job(session_id, row["school_id"])
-    return {
-        "session_id": str(row["id"]),
-        "status": row["status"],
-        "chunks": n_chunks,
-        "job_enqueued": "asr",
-    }
+    if row:
+        queue.enqueue_asr_job(session_id, row["school_id"])
+        return {
+            "session_id": str(row["id"]),
+            "status": row["status"],
+            "chunks": n_chunks,
+            "job_enqueued": "asr",
+        }
+    raise HTTPException(status_code=500, detail="failed to complete session")
 
 
 @app.get("/v1/sessions/{session_id}/preview")
@@ -175,7 +177,9 @@ def school_overview(school_id: str):
     return db.school_overview(school_id)
 
 
-def _serialize_session(row: dict) -> dict:
+from typing import Any, Dict
+
+def _serialize_session(row: Dict[str, Any]) -> Dict[str, Any]:
     return {
         "session_id": str(row["id"]),
         "school_id": row["school_id"],
@@ -187,7 +191,7 @@ def _serialize_session(row: dict) -> dict:
     }
 
 
-def _serialize_metrics(metrics: dict) -> dict:
+def _serialize_metrics(metrics: Dict[str, Any]) -> Dict[str, Any]:
     return {
         "teacher_talk_ratio": metrics.get("teacher_talk_ratio"),
         "student_talk_ratio": metrics.get("student_talk_ratio"),
