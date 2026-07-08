@@ -2,16 +2,8 @@ import uuid
 from unittest.mock import patch
 from datetime import datetime
 
-from fastapi.testclient import TestClient
 
-from app.main import app
-
-client = TestClient(app)
-
-client.headers.update({"Authorization": "Bearer dev_api_key_placeholder"})
-
-
-def test_create_dat_session():
+def test_create_dat_session(client):
     mock_id = uuid.uuid4()
     mock_row = {
         "id": mock_id,
@@ -24,9 +16,10 @@ def test_create_dat_session():
         "pedagogy_session_id": None,
         "updated_at": datetime.now(),
     }
-    with patch("app.dat_routes.dat_db.create_dat_session") as mock_create, patch(
-        "app.dat_routes.append_event"
-    ) as mock_append:
+    with (
+        patch("app.dat_routes.dat_db.create_dat_session") as mock_create,
+        patch("app.dat_routes.append_event") as mock_append,
+    ):
         mock_create.return_value = mock_row
 
         response = client.post(
@@ -47,7 +40,7 @@ def test_create_dat_session():
         mock_append.assert_called_once()
 
 
-def test_get_dat_session_not_found():
+def test_get_dat_session_not_found(client):
     dat_session_id = uuid.uuid4()
     with patch("app.dat_routes.dat_db.get_dat_session") as mock_get:
         mock_get.return_value = None
@@ -57,7 +50,7 @@ def test_get_dat_session_not_found():
         assert response.json()["detail"] == "dat session not found"
 
 
-def test_get_dat_session_success():
+def test_get_dat_session_success(client):
     dat_session_id = uuid.uuid4()
     mock_row = {
         "id": dat_session_id,
@@ -79,9 +72,10 @@ def test_get_dat_session_success():
             "created_at": datetime.now(),
         }
     ]
-    with patch("app.dat_routes.dat_db.get_dat_session") as mock_get, patch(
-        "app.dat_routes.dat_db.list_events"
-    ) as mock_list_events:
+    with (
+        patch("app.dat_routes.dat_db.get_dat_session") as mock_get,
+        patch("app.dat_routes.dat_db.list_events") as mock_list_events,
+    ):
         mock_get.return_value = mock_row
         mock_list_events.return_value = mock_events
 
@@ -93,7 +87,7 @@ def test_get_dat_session_success():
         assert data["recent_events"][0]["event_type"] == "SESSION_CREATED"
 
 
-def test_post_lifecycle_session():
+def test_post_lifecycle_session(client):
     dat_session_id = uuid.uuid4()
     mock_row = {
         "id": dat_session_id,
@@ -121,7 +115,7 @@ def test_post_lifecycle_session():
         assert response.json()["state"] == "STARTED"
 
 
-def test_post_lifecycle_stream_with_pedagogy_link():
+def test_post_lifecycle_stream_with_pedagogy_link(client):
     dat_session_id = uuid.uuid4()
     mock_row = {
         "id": dat_session_id,
@@ -138,13 +132,13 @@ def test_post_lifecycle_stream_with_pedagogy_link():
     mock_pedagogy = {
         "id": pedagogy_id,
     }
-    with patch("app.dat_routes.dat_db.transition_stream_state") as mock_transition, patch(
-        "app.dat_routes.db.insert_session"
-    ) as mock_insert_session, patch("app.dat_routes.dat_db.link_pedagogy_session"), patch(
-        "app.dat_routes.append_event"
-    ), patch(
-        "app.dat_routes.dat_db.get_dat_session"
-    ) as mock_get:
+    with (
+        patch("app.dat_routes.dat_db.transition_stream_state") as mock_transition,
+        patch("app.dat_routes.db.insert_session") as mock_insert_session,
+        patch("app.dat_routes.dat_db.link_pedagogy_session"),
+        patch("app.dat_routes.append_event"),
+        patch("app.dat_routes.dat_db.get_dat_session") as mock_get,
+    ):
         mock_transition.return_value = mock_row
         mock_insert_session.return_value = mock_pedagogy
         mock_row_with_pedagogy = dict(mock_row, pedagogy_session_id=pedagogy_id)
@@ -164,7 +158,7 @@ def test_post_lifecycle_stream_with_pedagogy_link():
         assert data["pedagogy_session_id"] == str(pedagogy_id)
 
 
-def test_start_dat_session():
+def test_start_dat_session(client):
     dat_session_id = uuid.uuid4()
     mock_row = {
         "id": dat_session_id,
@@ -185,7 +179,7 @@ def test_start_dat_session():
         assert response.json()["state"] == "STARTED"
 
 
-def test_start_stream():
+def test_start_stream(client):
     dat_session_id = uuid.uuid4()
     mock_row = {
         "id": dat_session_id,
@@ -198,9 +192,10 @@ def test_start_stream():
         "pedagogy_session_id": uuid.uuid4(),
         "updated_at": datetime.now(),
     }
-    with patch("app.dat_routes.dat_db.get_dat_session") as mock_get, patch(
-        "app.dat_routes.dat_db.transition_stream_state"
-    ) as mock_transition:
+    with (
+        patch("app.dat_routes.dat_db.get_dat_session") as mock_get,
+        patch("app.dat_routes.dat_db.transition_stream_state") as mock_transition,
+    ):
         mock_get.return_value = mock_row
         mock_transition.side_effect = [None, mock_row]
 
