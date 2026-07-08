@@ -15,6 +15,8 @@ src = ["services", "tools", "packages/capture-core/py"]
 
 [tool.mypy]
 ignore_missing_imports = true
+mypy_path = "services/worker-asr:services/worker-metrics:services/worker-cv"
+explicit_package_bases = true
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

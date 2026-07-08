@@ -1,5 +1,10 @@
 import unittest
 from unittest.mock import patch
+import os
+import sys
+
+# Ensure worker package is imported from the correct directory
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from worker.processor import process_job, _transcribe_stub
 
 class TestProcessor(unittest.TestCase):

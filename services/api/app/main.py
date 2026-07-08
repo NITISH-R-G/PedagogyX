@@ -177,9 +177,7 @@ def school_overview(school_id: str):
     return db.school_overview(school_id)
 
 
-from typing import Any, Dict
-
-def _serialize_session(row: Dict[str, Any]) -> Dict[str, Any]:
+def _serialize_session(row: dict) -> dict:
     return {
         "session_id": str(row["id"]),
         "school_id": row["school_id"],
@@ -191,7 +189,7 @@ def _serialize_session(row: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def _serialize_metrics(metrics: Dict[str, Any]) -> Dict[str, Any]:
+def _serialize_metrics(metrics: dict) -> dict:
     return {
         "teacher_talk_ratio": metrics.get("teacher_talk_ratio"),
         "student_talk_ratio": metrics.get("student_talk_ratio"),
