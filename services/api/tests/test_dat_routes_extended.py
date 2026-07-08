@@ -5,8 +5,11 @@ from datetime import datetime
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.auth import verify_api_key
 
 client = TestClient(app)
+
+app.dependency_overrides[verify_api_key] = lambda: 'dev_api_key_placeholder'
 
 client.headers.update({"Authorization": "Bearer dev_api_key_placeholder"})
 
