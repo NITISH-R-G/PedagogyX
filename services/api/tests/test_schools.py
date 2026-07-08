@@ -1,12 +1,8 @@
 from unittest.mock import patch
-from fastapi.testclient import TestClient
 
-from app.main import app
-
-client = TestClient(app)
 
 @patch("app.main.db.school_overview")
-def test_school_overview_success(mock_school_overview):
+def test_school_overview_success(mock_school_overview, client):
     mock_data = {
         "school_id": "test_school_1",
         "m_a_coverage": {
@@ -18,7 +14,7 @@ def test_school_overview_success(mock_school_overview):
         "sessions_total": 20,
         "sessions_completed": 15,
         "sessions_week": 5,
-        "recent_sessions": []
+        "recent_sessions": [],
     }
     mock_school_overview.return_value = mock_data
 
