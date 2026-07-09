@@ -4,16 +4,11 @@ from unittest.mock import patch
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.auth import verify_api_key
+
+app.dependency_overrides[verify_api_key] = lambda: 'dev_api_key_placeholder'
 
 client = TestClient(app)
-
-
-
-
-
-client.headers.update({"Authorization": "Bearer dev_api_key_placeholder"})
-
-
 
 def test_start_stream_error_path():
     dat_session_id = uuid.uuid4()
