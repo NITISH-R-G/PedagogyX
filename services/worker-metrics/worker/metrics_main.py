@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 import psycopg2
 import redis
 
-REDIS_URL = os.environ.get("REDIS_URL", None)
+REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 DATABASE_URL = os.environ.get("DATABASE_URL", None)
 JOB_QUEUE = os.environ.get("JOB_QUEUE", "jobs:talk_ratio")
 JOB_QUEUE_DLQ = f"{JOB_QUEUE}:dlq"

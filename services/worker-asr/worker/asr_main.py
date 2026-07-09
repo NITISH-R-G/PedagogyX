@@ -7,7 +7,7 @@ import redis
 
 from worker.processor import process_job
 
-REDIS_URL = os.environ.get("REDIS_URL", None)
+REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 JOB_QUEUE = os.environ.get("JOB_QUEUE", "jobs:asr")
 JOB_QUEUE_DLQ = f"{JOB_QUEUE}:dlq"
 POLL_TIMEOUT = int(os.environ.get("POLL_TIMEOUT", "5"))

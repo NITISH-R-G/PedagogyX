@@ -10,7 +10,7 @@ def test_settings_default_values():
     with mock.patch.dict(os.environ, clear=True):
         settings = Settings()
         assert settings.database_url is None
-        assert settings.redis_url is None
+        assert settings.redis_url == "redis://localhost:6379/0"
         assert settings.minio_endpoint == "localhost:9000"
         assert settings.minio_access_key is None
         assert settings.minio_secret_key is None
