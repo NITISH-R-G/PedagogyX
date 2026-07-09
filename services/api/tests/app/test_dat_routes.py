@@ -1,7 +1,5 @@
 import uuid
 from unittest.mock import patch
-from fastapi.testclient import TestClient
-from app.main import app
 
 @patch("app.dat_routes.dat_db.get_dat_session")
 def test_stop_dat_session_not_found(mock_get_dat_session, client):
