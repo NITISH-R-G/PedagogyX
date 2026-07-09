@@ -13,7 +13,7 @@ from botocore.client import Config
 from botocore.exceptions import ClientError
 from psycopg2.extras import Json
 
-REDIS_URL = os.environ.get("REDIS_URL", None)
+REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 DATABASE_URL = os.environ.get("DATABASE_URL", None)
 JOB_QUEUE_METRICS = os.environ.get("JOB_QUEUE_METRICS", "jobs:talk_ratio")
 WORKER_MODE = os.environ.get("WORKER_MODE", "stub")
@@ -46,7 +46,7 @@ _redis_client = None
 def _get_redis_client():
     global _redis_client
     if _redis_client is None:
-        _redis_client = redis.from_url(str(REDIS_URL), decode_responses=True)
+        _redis_client = redis.from_url(REDIS_URL, decode_responses=True)
     return _redis_client
 
 

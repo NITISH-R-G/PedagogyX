@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 import psycopg2
 import redis
 
-REDIS_URL = os.environ.get("REDIS_URL", None)
+REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 DATABASE_URL = os.environ.get("DATABASE_URL", None)
 JOB_QUEUE = os.environ.get("JOB_QUEUE", "jobs:talk_ratio")
 JOB_QUEUE_DLQ = f"{JOB_QUEUE}:dlq"
@@ -88,7 +88,7 @@ def process_job(payload: dict) -> None:
 
 
 def main() -> None:
-    client = redis.from_url(str(REDIS_URL), decode_responses=True)
+    client = redis.from_url(REDIS_URL, decode_responses=True)
     print(f"[worker-metrics] listening on {JOB_QUEUE}", flush=True)
     while True:
         item = client.blpop(JOB_QUEUE, timeout=POLL_TIMEOUT)
