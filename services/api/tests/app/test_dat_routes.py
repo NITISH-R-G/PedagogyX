@@ -2,15 +2,9 @@ import uuid
 from unittest.mock import patch
 from fastapi.testclient import TestClient
 from app.main import app
-from app.auth import verify_api_key
-
-app.dependency_overrides[verify_api_key] = lambda: 'dev_api_key_placeholder'
-
-client = TestClient(app)
-
 
 @patch("app.dat_routes.dat_db.get_dat_session")
-def test_stop_dat_session_not_found(mock_get_dat_session):
+def test_stop_dat_session_not_found(mock_get_dat_session, client):
     # Mock dat_db.get_dat_session to return None
     mock_get_dat_session.return_value = None
 

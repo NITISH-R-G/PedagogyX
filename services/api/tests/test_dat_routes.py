@@ -4,13 +4,10 @@ from unittest.mock import patch
 from fastapi.testclient import TestClient
 
 from app.main import app
-from app.auth import verify_api_key
 
-app.dependency_overrides[verify_api_key] = lambda: 'dev_api_key_placeholder'
 
-client = TestClient(app)
 
-def test_start_stream_error_path():
+def test_start_stream_error_path(client):
     dat_session_id = uuid.uuid4()
 
     mock_row = {
@@ -37,7 +34,7 @@ def test_start_stream_error_path():
             assert response.json() == {"detail": "Invalid transition"}
 
 
-def test_stop_dat_session_error_path():
+def test_stop_dat_session_error_path(client):
     dat_session_id = uuid.uuid4()
 
     mock_row = {
@@ -64,7 +61,7 @@ def test_stop_dat_session_error_path():
             assert response.json() == {"detail": "Invalid transition"}
 
 
-def test_post_lifecycle_error_path():
+def test_post_lifecycle_error_path(client):
     dat_session_id = uuid.uuid4()
 
     with patch("app.dat_routes.dat_db.transition_session_state") as mock_transition:
@@ -84,7 +81,7 @@ def test_post_lifecycle_error_path():
         assert response.json() == {"detail": "Invalid transition"}
 
 
-def test_stop_dat_session_not_found():
+def test_stop_dat_session_not_found(client):
     dat_session_id = uuid.uuid4()
 
     with patch("app.dat_routes.dat_db.get_dat_session") as mock_get_dat_session:
