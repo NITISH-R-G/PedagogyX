@@ -7,8 +7,8 @@ from datetime import datetime, timezone
 import psycopg2
 import redis
 
-REDIS_URL = os.environ.get("REDIS_URL", "redis://redis:6379/0")
-DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://pedagogyx:pedagogyx_dev@postgres:5432/pedagogyx")
+REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://user:pass@localhost:5432/db")
 JOB_QUEUE = os.environ.get("JOB_QUEUE", "jobs:talk_ratio")
 JOB_QUEUE_DLQ = f"{JOB_QUEUE}:dlq"
 POLL_TIMEOUT = int(os.environ.get("POLL_TIMEOUT", "5"))
