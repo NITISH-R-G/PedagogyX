@@ -11,20 +11,109 @@
 
 ### 1.1 Product Interrogation
 
-- **Is this enterprise SaaS or B2B?** Are we selling to school districts, individual teachers, or state governments? This drastically alters the procurement and deployment strategy.
-- **Is this for teacher self-improvement, instructional coaching, or administrative surveillance?** If surveillance, union resistance will be high. If coaching, adoption is more likely.
-- **What are the primary target markets and jurisdictions?** If US, FERPA is non-negotiable. If Europe, GDPR is required. If India, DPDP compliance is mandatory.
-- **Is offline mode required?** Classrooms often have notoriously poor internet access. Do we need edge-first processing or a robust store-and-forward architecture?
-- **Are student facial and biometric analysis allowed?** Many jurisdictions explicitly ban facial recognition on minors. We must clarify the legal boundaries.
-- **Is explainable AI mandatory?** If we score a teacher's pedagogy, can we trace exactly _why_ the AI assigned that score to avoid algorithmic bias claims?
+1.  **Is this enterprise SaaS?** Are we selling to schools or individuals?
+2.  **Is this B2B?** Is there a path to direct-to-consumer later?
+3.  **Is this for schools or universities?** The pedagogical models differ drastically.
+4.  **Is this for governments?** Will there be state-level deployments requiring air-gapped infrastructure?
+5.  **Is this for teacher self-improvement?** Does the teacher opt-in and own their data?
+6.  **Is this for surveillance?** Will administrators use this for performance reviews and firing?
+7.  **Is this for instructional coaching?** Will human coaches have access to the dashboard?
+8.  **Is this for online classes?** (e.g., Zoom/Meet integrations)
+9.  **Is this for physical classrooms?**
+10. **Is this for hybrid classrooms?** How do we fuse remote feeds with physical cameras?
+11. **Is this real-time or post-processing?**
+12. **Is this cloud-native?** Or on-premise capable?
+13. **Is this edge AI?** Will models run on the teacher's phone/glasses?
+14. **Is privacy-first architecture required?**
+15. **Is offline mode required?**
+16. **What countries are target markets?**
+17. **Is China-style surveillance acceptable?**
+18. **Is student facial analysis allowed?**
+19. **Is biometric analysis allowed?**
+20. **What legal jurisdictions matter?**
+21. **Is FERPA compliance required?**
+22. **Is GDPR compliance required?**
+23. **Is India DPDP compliance required?**
+24. **Is explainable AI mandatory?**
+25. **Is human review mandatory?**
+26. **Is teacher scoring public or private?**
+27. **Are unions involved?**
+28. **Can administrators see teacher analytics?**
+29. **Should the AI score pedagogy?**
+30. **Should the AI detect emotional tone?**
+31. **Should the AI evaluate student engagement?**
+32. **Is multilingual support required?**
+33. **Is low-bandwidth mode required?**
+34. **Is mobile-first required?**
+35. How will we handle data ownership when a teacher changes schools?
+36. Are we responsible for long-term archiving of classroom videos?
+37. Who is liable if an AI hallucination leads to an unfair negative evaluation?
+38. Can parents request deletion of data containing their child's voice/image?
+39. Does the system support co-teaching models?
+40. Is there an integration required with existing LMS platforms (Canvas, Blackboard)?
+41. What is the expected churn rate if teachers find the AI feedback demoralizing?
+42. Do we have a pedagogical framework (e.g., Danielson, Marzano) we are mapping to?
+43. Are we providing actionable micro-interventions or just macro-level metrics?
+44. Will the AI generate lesson plans based on observed gaps?
+45. Is video strictly required, or can some schools opt for audio-only?
+46. How do we price the system? Per teacher, per student, or per hour of inference?
+47. Is there a free tier for individual teachers?
+48. What is our moat against generic multimodal models from OpenAI/Google?
+49. Will we open-source any components of our stack?
+50. How are we acquiring our initial, high-quality, legally cleared training data?
 
 ### 1.2 Technical Interrogation
 
-- **What are the exact latency requirements for inference?** Is real-time feedback required during the class, or is asynchronous post-processing acceptable?
-- **What is the classroom hardware topology?** Are we relying solely on Meta Ray-Ban glasses, or will there be fixed microphone arrays and ambient cameras?
-- **How do we handle robust multilingual/code-switching scenarios?** Specifically, Hindi-English code-switching in the India pilot context.
-- **What are the constraints for edge deployment?** How much compute is available locally if we must run models on-device vs. in the cloud?
-- **How do we handle long-context multimodal synchronization?** Syncing 60 minutes of high-resolution video with multichannel audio and slide content is a significant distributed systems challenge.
+51. **What are the exact scalability requirements?** How many concurrent sessions at peak?
+52. **What are the latency budgets?** (e.g., < 2s for live feedback vs. 24h for batch).
+53. **Inference pipelines:** Monolithic models vs. chained micro-models?
+54. **GPU requirements:** Can we run on consumer GPUs or do we need A100/H100 clusters?
+55. **Edge deployment:** Are we using ONNX/TensorRT?
+56. **Classroom hardware:** BYOD vs. provided appliances?
+57. **Audio quality:** How do we handle reverb, HVAC noise, and overlapping speech?
+58. **Microphone arrays:** Are we using beamforming?
+59. **Classroom camera topology:** One wide-angle vs. multiple PTZ cameras?
+60. **Synchronization pipelines:** How do we align drift between phone audio and wearable video?
+61. **Multimodal fusion:** Early fusion vs. late fusion architectures?
+62. **Storage architecture:** Object storage strategy (S3/MinIO) for raw vs. processed?
+63. **Distributed systems:** Celery vs. temporal.io for workflow orchestration?
+64. **Vector databases:** Qdrant vs. Milvus vs. Pinecone?
+65. **Observability:** Prometheus/Grafana vs. Datadog? Tracing for long-running inference jobs?
+66. **Security:** At-rest encryption and key management strategy?
+67. **Role-based access:** Granular RBAC for video segments?
+68. **ML ops:** Strategy for versioning datasets and models (DVC, MLflow)?
+69. **Data labeling:** In-house vs. outsourced annotation workflows?
+70. **Annotation workflows:** How do human annotators deal with PII?
+71. **Synthetic data generation:** Using LLMs/diffusion models to simulate classrooms?
+72. **Model retraining:** Continuous learning pipelines?
+73. **Privacy-preserving ML:** Differential privacy applications?
+74. **Federated learning:** Is on-device training viable?
+75. **Classroom network reliability:** Handling frequent disconnects during streaming?
+76. **Live transcription:** Whisper vs. Deepgram vs. custom models?
+77. **Temporal event modeling:** How do we represent events in time (e.g., TimeSformer)?
+78. **Multimodal embeddings:** ImageBind / VideoMAE implementations?
+79. **Long-context memory:** Handling 60-minute classes (RingAttention, Memformer)?
+80. **Streaming pipelines:** WebRTC vs. HLS vs. chunked uploads?
+81. How do we handle clock drift on student devices if they are used as secondary microphones?
+82. What is our strategy for reducing the cost of inference per hour of video?
+83. Can we dynamically downsample video resolution if the model detects low activity?
+84. How do we handle speaker diarization with highly overlapping child voices?
+85. What is the fallback if the primary ASR model fails?
+86. How are we handling database migrations with minimal downtime?
+87. What is our disaster recovery RPO/RTO for generated insights?
+88. How do we protect against adversarial attacks (e.g., students intentionally trying to trigger bad AI scores)?
+89. Are we using Kubernetes? If so, how are we handling GPU node scaling?
+90. What is our strategy for handling cross-region data residency laws technically?
+91. How do we implement 'forgetting' to comply with GDPR Right to Erasure in vector DBs?
+92. Will we build custom silicon or edge TPUs into hardware in the future?
+93. What is the exact API contract between the wearable client and the ingest gateway?
+94. How do we monitor model drift and performance degradation over time?
+95. Are we using Redis Streams or Kafka for our message broker?
+96. How do we handle schema evolution for heavily nested JSON metadata from ML models?
+97. What is our strategy for caching LLM responses to reduce API costs?
+98. Do we use semantic caching for RAG queries?
+99. How are we load testing the system for 10,000 concurrent classrooms?
+100.  What is the SLA for the API endpoint serving the teacher dashboard?
 
 ---
 
