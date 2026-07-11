@@ -15,3 +15,12 @@ src = ["services", "tools", "packages/capture-core/py"]
 
 [tool.mypy]
 ignore_missing_imports = true
+
+
+
+namespace_packages = true
+explicit_package_bases = true
+
+exclude = [
+    "services/worker-metrics/worker",
+]
