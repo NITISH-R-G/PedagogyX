@@ -17,7 +17,7 @@ jobs:
       - name: DAT lifecycle against Compose API
         run: |
           COMPOSE_FILE=infra/compose.dev.yaml
-          docker compose -f "$COMPOSE_FILE" up -d --build --wait
+          DOCKER_BUILDKIT=0 docker compose -f "$COMPOSE_FILE" up -d --build --wait
           for i in $(seq 1 30); do
             if curl --retry 5 --retry-connrefused --retry-delay 2 -sf http://localhost:8080/health >/dev/null; then
               echo "API is ready!"
