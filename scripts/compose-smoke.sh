@@ -13,7 +13,7 @@ fi
 COMPOSE_FILE="infra/compose.dev.yaml"
 
 echo "=== compose-smoke: up ==="
-docker compose -f "$COMPOSE_FILE" up -d --build --wait
+DOCKER_BUILDKIT=0 docker compose -f "$COMPOSE_FILE" up -d --build --wait
 
 echo "=== compose-smoke: wait for API to be fully ready ==="
 for i in $(seq 1 30); do
