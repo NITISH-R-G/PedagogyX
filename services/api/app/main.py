@@ -3,7 +3,7 @@ import sys
 from contextlib import asynccontextmanager
 from uuid import UUID
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, HTTPException, UploadFile, status
 from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel, Field
 
@@ -61,7 +61,7 @@ def create_session(body: SessionCreateBody):
 async def get_session(session_id: UUID):
     row = await asyncio.to_thread(db.get_session, session_id)
     if not row:
-        raise HTTPException(status_code=404, detail="session not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="session not found")
     payload = _serialize_session(row)
 
     chunks_task = asyncio.to_thread(db.list_chunks, session_id)
@@ -98,7 +98,7 @@ def upload_chunk(
         raise HTTPException(status_code=400, detail="invalid chunk_index")
     row = db.get_session(session_id)
     if not row:
-        raise HTTPException(status_code=404, detail="session not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="session not found")
     if row["status"] not in ("active", "created"):
         raise HTTPException(status_code=409, detail="session not accepting uploads")
 
@@ -120,7 +120,7 @@ def upload_chunk(
 def complete_session(session_id: UUID):
     row = db.get_session(session_id)
     if not row:
-        raise HTTPException(status_code=404, detail="session not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="session not found")
     if row["status"] == "completed":
         return {
             "session_id": str(session_id),
@@ -136,7 +136,7 @@ def complete_session(session_id: UUID):
         )
     row = db.complete_session(session_id)
     if row is None:
-        raise HTTPException(status_code=404, detail="session not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="session not found")
     queue.enqueue_asr_job(session_id, row["school_id"])
     return {
         "session_id": str(row["id"]),
@@ -150,7 +150,7 @@ def complete_session(session_id: UUID):
 def session_preview(session_id: UUID):
     row = db.get_session(session_id)
     if not row:
-        raise HTTPException(status_code=404, detail="session not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="session not found")
     metrics = db.get_metrics(session_id)
     transcript = db.get_transcript(session_id)
     if not metrics:
