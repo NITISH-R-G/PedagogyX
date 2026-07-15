@@ -1,9 +1,7 @@
 import uuid
 from unittest.mock import patch
 
-from fastapi.testclient import TestClient
 
-from app.main import app
 
 # # # client = TestClient(app)
 
@@ -43,7 +41,7 @@ def test_start_stream_error_path(client):
             assert response.json() == {"detail": "Invalid transition"}
 
 
-def test_start_stream_error_path(client):
+def test_stop_dat_session_error_path(client):
     # test_stop_dat_session_error_path():
     dat_session_id = uuid.uuid4()
 
@@ -71,7 +69,7 @@ def test_start_stream_error_path(client):
             assert response.json() == {"detail": "Invalid transition"}
 
 
-def test_start_stream_error_path(client):
+def test_post_lifecycle_error_path(client):
     # test_post_lifecycle_error_path():
     dat_session_id = uuid.uuid4()
 
@@ -92,7 +90,7 @@ def test_start_stream_error_path(client):
         assert response.json() == {"detail": "Invalid transition"}
 
 
-def test_start_stream_error_path(client):
+def test_stop_dat_session_not_found(client):
     # test_stop_dat_session_not_found():
     dat_session_id = uuid.uuid4()
 
