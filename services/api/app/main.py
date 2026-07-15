@@ -83,7 +83,7 @@ async def get_session(session_id: UUID):
     ]
     if metrics:
         payload["metrics"] = _serialize_metrics(metrics)
-    if transcript:
+    if transcript and "text" in transcript:
         payload["transcript_preview"] = (transcript["text"] or "")[:200]
     return payload
 
@@ -135,10 +135,10 @@ def complete_session(session_id: UUID):
             detail="upload at least one chunk before completing",
         )
     row = db.complete_session(session_id)
-    queue.enqueue_asr_job(session_id, row["school_id"])
+    queue.enqueue_asr_job(session_id, row["school_id"] if row else "")
     return {
-        "session_id": str(row["id"]),
-        "status": row["status"],
+        "session_id": str(row["id"]) if row else str(session_id),
+        "status": row["status"] if row else "unknown",
         "chunks": n_chunks,
         "job_enqueued": "asr",
     }
@@ -166,7 +166,7 @@ def session_preview(session_id: UUID):
         "student_talk_ratio": metrics.get("student_talk_ratio"),
         "metric_confidence": metrics.get("metric_confidence"),
         "insight_latency_sec": metrics.get("insight_latency_sec"),
-        "transcript_excerpt": (transcript["text"][:300] if transcript else None),
+        "transcript_excerpt": (transcript["text"][:300] if transcript and "text" in transcript else None),
     }
 
 

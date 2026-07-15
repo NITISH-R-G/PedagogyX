@@ -20,15 +20,15 @@ jobs:
 
       - name: Install Backend Dependencies
         run: |
-          cd services/api
+          cd .
           python -m venv .venv
           source .venv/bin/activate
-          pip install -r requirements.txt
+          pip install -r services/api/requirements.txt -r services/worker-asr/requirements.txt -r services/worker-metrics/requirements.txt  pytest pytest-asyncio
           pip install safety pip-audit
 
       - name: Security & Dependency Audit
         run: |
-          cd services/api
+          cd .
           source .venv/bin/activate
           safety check || echo "Safety checks completed (non-blocking for MVP)"
           pip-audit || echo "Audit completed (non-blocking for MVP)"
@@ -40,9 +40,9 @@ jobs:
           API_KEY: "dev_api_key_placeholder"
           MINIO_ACCESS_KEY: "dev"
         run: |
-          cd services/api
+          cd .
           source .venv/bin/activate
-          pytest
+          PYTHONPATH=services/api:services/worker-asr/worker:services/worker-metrics/worker:services/worker-cv/worker pytest services/api/tests/ services/worker-asr/tests/ services/worker-metrics/tests/ services/worker-cv/tests/
 
       - name: Setup Node
         uses: actions/setup-node@v4
