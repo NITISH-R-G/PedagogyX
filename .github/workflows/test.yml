@@ -23,7 +23,7 @@ jobs:
           cd .
           python -m venv .venv
           source .venv/bin/activate
-          pip install -r services/api/requirements.txt -r services/worker-asr/requirements.txt -r services/worker-metrics/requirements.txt -r services/worker-cv/requirements.txt pytest pytest-asyncio
+          pip install -r services/api/requirements.txt -r services/worker-asr/requirements.txt -r services/worker-metrics/requirements.txt  pytest pytest-asyncio
           pip install safety pip-audit
 
       - name: Security & Dependency Audit
