@@ -6,12 +6,13 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 
-client = TestClient(app)
+# # # client = TestClient(app)
 
-client.headers.update({"Authorization": "Bearer dev_api_key_placeholder"})
+# client.headers.update({"Authorization": "Bearer dev_api_key_placeholder"})
 
 
-def test_create_dat_session():
+def test_create_dat_session(client):
+    # test_create_dat_session():
     mock_id = uuid.uuid4()
     mock_row = {
         "id": mock_id,
@@ -47,7 +48,8 @@ def test_create_dat_session():
         mock_append.assert_called_once()
 
 
-def test_get_dat_session_not_found():
+def test_create_dat_session(client):
+    # test_get_dat_session_not_found():
     dat_session_id = uuid.uuid4()
     with patch("app.dat_routes.dat_db.get_dat_session") as mock_get:
         mock_get.return_value = None
@@ -57,7 +59,8 @@ def test_get_dat_session_not_found():
         assert response.json()["detail"] == "dat session not found"
 
 
-def test_get_dat_session_success():
+def test_create_dat_session(client):
+    # test_get_dat_session_success():
     dat_session_id = uuid.uuid4()
     mock_row = {
         "id": dat_session_id,
@@ -93,7 +96,8 @@ def test_get_dat_session_success():
         assert data["recent_events"][0]["event_type"] == "SESSION_CREATED"
 
 
-def test_post_lifecycle_session():
+def test_create_dat_session(client):
+    # test_post_lifecycle_session():
     dat_session_id = uuid.uuid4()
     mock_row = {
         "id": dat_session_id,
@@ -121,7 +125,8 @@ def test_post_lifecycle_session():
         assert response.json()["state"] == "STARTED"
 
 
-def test_post_lifecycle_stream_with_pedagogy_link():
+def test_create_dat_session(client):
+    # test_post_lifecycle_stream_with_pedagogy_link():
     dat_session_id = uuid.uuid4()
     mock_row = {
         "id": dat_session_id,
@@ -164,7 +169,8 @@ def test_post_lifecycle_stream_with_pedagogy_link():
         assert data["pedagogy_session_id"] == str(pedagogy_id)
 
 
-def test_start_dat_session():
+def test_create_dat_session(client):
+    # test_start_dat_session():
     dat_session_id = uuid.uuid4()
     mock_row = {
         "id": dat_session_id,
@@ -185,7 +191,8 @@ def test_start_dat_session():
         assert response.json()["state"] == "STARTED"
 
 
-def test_start_stream():
+def test_create_dat_session(client):
+    # test_start_stream():
     dat_session_id = uuid.uuid4()
     mock_row = {
         "id": dat_session_id,

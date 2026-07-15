@@ -3,10 +3,10 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 
-client = TestClient(app)
+# # # # client = TestClient(app)
 
 @patch("app.main.db.school_overview")
-def test_school_overview_success(mock_school_overview):
+def test_school_overview_success(mock_school_overview, client):
     mock_data = {
         "school_id": "test_school_1",
         "m_a_coverage": {
