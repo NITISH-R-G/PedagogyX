@@ -17,19 +17,19 @@ This repository is built using **FastAPI, React, Next.js**.
 
 ### Core Services
 
-- **web**: Microservice part of the architecture.
 - **api**: Microservice part of the architecture.
-- **worker-cv**: Microservice part of the architecture.
-- **worker-metrics**: Microservice part of the architecture.
 - **worker-asr**: Microservice part of the architecture.
+- **web**: Microservice part of the architecture.
+- **worker-metrics**: Microservice part of the architecture.
+- **worker-cv**: Microservice part of the architecture.
 
 
 ## Repository Structure
-- **[web](services/web)**
 - **[api](services/api)**
-- **[worker-cv](services/worker-cv)**
-- **[worker-metrics](services/worker-metrics)**
 - **[worker-asr](services/worker-asr)**
+- **[web](services/web)**
+- **[worker-metrics](services/worker-metrics)**
+- **[worker-cv](services/worker-cv)**
 
 ## Architecture Diagrams
 
@@ -38,16 +38,16 @@ This repository is built using **FastAPI, React, Next.js**.
 ```mermaid
 graph TD
     subgraph Services
-        web["web"]
-        click web href "services/web" "Go to web source"
         api["api"]
         click api href "services/api" "Go to api source"
-        worker_cv["worker-cv"]
-        click worker_cv href "services/worker-cv" "Go to worker-cv source"
-        worker_metrics["worker-metrics"]
-        click worker_metrics href "services/worker-metrics" "Go to worker-metrics source"
         worker_asr["worker-asr"]
         click worker_asr href "services/worker-asr" "Go to worker-asr source"
+        web["web"]
+        click web href "services/web" "Go to web source"
+        worker_metrics["worker-metrics"]
+        click worker_metrics href "services/worker-metrics" "Go to worker-metrics source"
+        worker_cv["worker-cv"]
+        click worker_cv href "services/worker-cv" "Go to worker-cv source"
     end
 
     subgraph Frameworks
