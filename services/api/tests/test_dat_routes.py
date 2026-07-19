@@ -3,7 +3,6 @@ from unittest.mock import patch
 
 
 
-from app.main import app
 
 # client fixture used instead
 

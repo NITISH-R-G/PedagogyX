@@ -4,7 +4,6 @@ from datetime import datetime
 
 
 
-from app.main import app
 
 # client fixture used instead
 

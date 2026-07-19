@@ -2,7 +2,6 @@ from unittest.mock import patch
 
 import uuid
 
-from app.main import app
 
 # client fixture used instead
 
