@@ -1,13 +1,12 @@
 from unittest.mock import patch
-from fastapi.testclient import TestClient
+
 import uuid
 
-from app.main import app
 
-client = TestClient(app)
+# client fixture used instead
 
 @patch("app.main.db.insert_session")
-def test_create_session(mock_insert_session):
+def test_create_session(mock_insert_session, client):
     mock_id = uuid.uuid4()
     mock_insert_session.return_value = {
         "id": mock_id,
@@ -32,7 +31,7 @@ def test_create_session(mock_insert_session):
 
 
 @patch("app.main.db.insert_session")
-def test_create_session_minimal(mock_insert_session):
+def test_create_session_minimal(mock_insert_session, client):
     mock_id = uuid.uuid4()
     mock_insert_session.return_value = {
         "id": mock_id,
@@ -54,7 +53,7 @@ def test_create_session_minimal(mock_insert_session):
     mock_insert_session.assert_called_once_with("school_123", None, None)
 
 
-def test_create_session_missing_school_id():
+def test_create_session_missing_school_id(client):
     response = client.post("/v1/sessions", json={
         "room_id": "room_abc",
         "teacher_id": "teacher_xyz"
@@ -67,7 +66,7 @@ def test_create_session_missing_school_id():
     assert data["detail"][0]["type"] == "missing"
 
 
-def test_create_session_empty_school_id():
+def test_create_session_empty_school_id(client):
     response = client.post("/v1/sessions", json={
         "school_id": "",
         "room_id": "room_abc",
@@ -84,7 +83,7 @@ def test_create_session_empty_school_id():
 @patch("app.main.db.get_session")
 @patch("app.main.storage.put_chunk")
 @patch("app.main.db.insert_chunk")
-def test_upload_chunk_success(mock_insert_chunk, mock_put_chunk, mock_get_session):
+def test_upload_chunk_success(mock_insert_chunk, mock_put_chunk, mock_get_session, client):
     mock_id = uuid.uuid4()
     mock_get_session.return_value = {
         "id": mock_id,
@@ -117,7 +116,7 @@ def test_upload_chunk_success(mock_insert_chunk, mock_put_chunk, mock_get_sessio
     mock_insert_chunk.assert_called_once_with(mock_id, 1, "s3_key_abc", 10, "text/plain")
 
 
-def test_upload_chunk_invalid_index():
+def test_upload_chunk_invalid_index(client):
     mock_id = uuid.uuid4()
     response = client.post(
         f"/v1/sessions/{mock_id}/chunks/10000",
@@ -135,7 +134,7 @@ def test_upload_chunk_invalid_index():
 
 
 @patch("app.main.db.get_session")
-def test_upload_chunk_session_not_found(mock_get_session):
+def test_upload_chunk_session_not_found(mock_get_session, client):
     mock_id = uuid.uuid4()
     mock_get_session.return_value = None
 
@@ -148,7 +147,7 @@ def test_upload_chunk_session_not_found(mock_get_session):
 
 
 @patch("app.main.db.get_session")
-def test_upload_chunk_invalid_status(mock_get_session):
+def test_upload_chunk_invalid_status(mock_get_session, client):
     mock_id = uuid.uuid4()
     mock_get_session.return_value = {
         "id": mock_id,
@@ -168,7 +167,7 @@ def test_upload_chunk_invalid_status(mock_get_session):
 
 @patch("app.main.db.get_session")
 @patch("app.main.settings")
-def test_upload_chunk_file_too_large(mock_settings, mock_get_session):
+def test_upload_chunk_file_too_large(mock_settings, mock_get_session, client):
     mock_id = uuid.uuid4()
     mock_get_session.return_value = {
         "id": mock_id,
