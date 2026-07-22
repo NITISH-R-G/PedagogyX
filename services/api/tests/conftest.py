@@ -1,5 +1,4 @@
 import pytest
-from fastapi.testclient import TestClient
 from app.main import app
 from app.auth import verify_api_key
 import os
