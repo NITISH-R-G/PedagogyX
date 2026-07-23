@@ -134,11 +134,13 @@ def complete_session(session_id: UUID):
             status_code=400,
             detail="upload at least one chunk before completing",
         )
-    row = db.complete_session(session_id)
-    queue.enqueue_asr_job(session_id, row["school_id"])
+    completed_row = db.complete_session(session_id)
+    if not completed_row:
+        raise HTTPException(status_code=500, detail="failed to complete session")
+    queue.enqueue_asr_job(session_id, completed_row["school_id"])
     return {
-        "session_id": str(row["id"]),
-        "status": row["status"],
+        "session_id": str(completed_row["id"]),
+        "status": completed_row["status"],
         "chunks": n_chunks,
         "job_enqueued": "asr",
     }
@@ -166,7 +168,7 @@ def session_preview(session_id: UUID):
         "student_talk_ratio": metrics.get("student_talk_ratio"),
         "metric_confidence": metrics.get("metric_confidence"),
         "insight_latency_sec": metrics.get("insight_latency_sec"),
-        "transcript_excerpt": (transcript["text"][:300] if transcript else None),
+        "transcript_excerpt": (transcript["text"][:300] if transcript and transcript.get("text") else None),
     }
 
 
