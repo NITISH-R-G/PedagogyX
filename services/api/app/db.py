@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from uuid import UUID
 
 from psycopg2.extras import RealDictCursor, Json
@@ -130,7 +130,7 @@ def save_metrics(
     confidence: str,
     insight_latency_sec: float | None,
 ) -> None:
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     with get_conn() as conn:
         with conn.cursor() as cur:
             cur.execute(

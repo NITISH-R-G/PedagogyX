@@ -4,7 +4,7 @@ import sys
 import tempfile
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import boto3
 import psycopg2
@@ -156,7 +156,7 @@ def _enqueue_metrics(session_id: str, school_id: str) -> None:
         "job_type": "talk_ratio",
         "session_id": session_id,
         "school_id": school_id,
-        "enqueued_at": datetime.now(timezone.utc).isoformat(),
+        "enqueued_at": datetime.now(UTC).isoformat(),
     }
     client.rpush(JOB_QUEUE_METRICS, json.dumps(payload))
 
