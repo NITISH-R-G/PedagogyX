@@ -1,9 +1,9 @@
-import pytest
-from unittest.mock import patch, MagicMock
-from botocore.exceptions import ClientError
+from unittest.mock import MagicMock, patch
 
-from app.minio_client import ensure_bucket
+import pytest
 from app.config import settings
+from app.minio_client import ensure_bucket
+from botocore.exceptions import ClientError
 
 
 @patch("app.minio_client.boto3.client")

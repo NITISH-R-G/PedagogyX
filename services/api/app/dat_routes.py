@@ -1,11 +1,11 @@
 from uuid import UUID
 
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
 from app import dat_db, db
-from app.dat_db import append_event, EventData
 from app.auth import verify_api_key
+from app.dat_db import EventData, append_event
 
 router = APIRouter(prefix="/v1/dat-sessions", tags=["dat"], dependencies=[Depends(verify_api_key)])
 

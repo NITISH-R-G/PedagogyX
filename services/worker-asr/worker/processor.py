@@ -4,7 +4,7 @@ import sys
 import tempfile
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import boto3
 import psycopg2
@@ -52,29 +52,27 @@ def _get_redis_client():
 
 
 def _fetch_chunks(session_id: str) -> list[tuple[int, str]]:
-    with _db_conn() as conn:
-        with conn.cursor() as cur:
-            cur.execute(
-                """
+    with _db_conn() as conn, conn.cursor() as cur:
+        cur.execute(
+            """
                 SELECT chunk_index, object_key FROM session_chunks
                 WHERE session_id = %s ORDER BY chunk_index
                 """,
-                (session_id,),
-            )
-            return list(cur.fetchall())
+            (session_id,),
+        )
+        return list(cur.fetchall())
 
 
 def _fetch_session(session_id: str) -> tuple[str, datetime | None]:
-    with _db_conn() as conn:
-        with conn.cursor() as cur:
-            cur.execute(
-                "SELECT school_id, completed_at FROM sessions WHERE id = %s",
-                (session_id,),
-            )
-            row = cur.fetchone()
-            if not row:
-                raise ValueError(f"session not found: {session_id}")
-            return row[0], row[1]
+    with _db_conn() as conn, conn.cursor() as cur:
+        cur.execute(
+            "SELECT school_id, completed_at FROM sessions WHERE id = %s",
+            (session_id,),
+        )
+        row = cur.fetchone()
+        if not row:
+            raise ValueError(f"session not found: {session_id}")
+        return row[0], row[1]
 
 
 def _download_chunk(client, key: str) -> bytes:
@@ -156,7 +154,7 @@ def _enqueue_metrics(session_id: str, school_id: str) -> None:
         "job_type": "talk_ratio",
         "session_id": session_id,
         "school_id": school_id,
-        "enqueued_at": datetime.now(timezone.utc).isoformat(),
+        "enqueued_at": datetime.now(UTC).isoformat(),
     }
     client.rpush(JOB_QUEUE_METRICS, json.dumps(payload))
 
