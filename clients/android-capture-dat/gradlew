@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+DIR="$HOME/.gradle/wrapper/dists/gradle-8.9-bin"
+if [ ! -d "$DIR" ]; then
+  mkdir -p "$DIR"
+  curl -L -s https://services.gradle.org/distributions/gradle-8.9-bin.zip -o /tmp/gradle-8.9.zip
+  unzip -q -d "$DIR" /tmp/gradle-8.9.zip
+fi
+"$DIR"/gradle-8.9/bin/gradle "$@"
