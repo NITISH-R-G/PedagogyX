@@ -2,9 +2,9 @@ name: Documentation Linting
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["**"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["**"]
 
 jobs:
   lint-docs:
@@ -15,10 +15,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Run Prettier check
-        run: npx --yes prettier --check 'docs/**/*.md'
+        run: npx --yes prettier --check "**/*.md"
 
       - name: Run Markdownlint
-        run: npx --yes markdownlint-cli 'docs/**/*.md'
+        run: npx --yes markdownlint-cli2 "**/*.md"

@@ -51,7 +51,7 @@ Estimate **founder-funded** monthly burn for free pilots — not school OPEX. Us
 | Cold batch (50 min lesson, full pipeline) | **16 lessons / night**   | All rooms if staggered upload       |
 | LLM report (Qwen2.5-7B Q4)                | **~1 report / 2–4 min**  | Queue after ASR completes           |
 
-**[ACTION S01-09]:** Replace placeholders with measured RTF from `bench_*.py` on 5070.
+**[ACTION S01-09]:** Run `benchmarks/bench_full_pipeline.sh` on RTX 5070 and update the table above with measured RTF values.
 
 ---
 
