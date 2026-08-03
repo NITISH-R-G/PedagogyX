@@ -27,3 +27,11 @@ __pycache__/
 .venv/
 venv/
 .coverage
+
+# Developer local venvs
+venv_asr/
+venv_metrics/
+venv_api/
+
+# TypeScript build artifacts
+*.tsbuildinfo
