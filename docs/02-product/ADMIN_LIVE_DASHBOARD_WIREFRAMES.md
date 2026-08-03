@@ -71,10 +71,10 @@ flowchart TB
 +------------------------------------------------------------------+
 | ← Back    LIVE · Room 4 · Ms. Sharma · Started 10:02 AM          |
 +------------------------------------------------------------------+
-| [ Video preview / placeholder ]  | PREVIEW METRICS (hot path)    |
+| [ Live video stream preview ]    | PREVIEW METRICS (hot path)    |
 |  (policy: admin view logged)     | Teacher talk: 71%             |
-|                                  | Activity proxy: moderate       |
-|                                  | Status: PRELIMINARY              |
+|                                  | Activity proxy: moderate      |
+|                                  | Status: PRELIMINARY           |
 +------------------------------------------------------------------+
 | Upload: ████████░░ 82%   | Edge: Connected | Cloud: Processing   |
 +------------------------------------------------------------------+

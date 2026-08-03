@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -92,7 +93,3 @@ def write_result(results_dir: Path, filename: str, result: dict) -> Path:
     out_path = results_dir / filename
     out_path.write_text(json.dumps(result, indent=2) + "\n")
     return out_path
-
-
-# Import json here to avoid circular dependency issues
-import json

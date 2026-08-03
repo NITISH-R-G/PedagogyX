@@ -47,7 +47,9 @@
 
 ---
 
-## Retro (placeholder)
+## Retrospective
+
+*To be completed at sprint end.*
 
 **What went well:**
 
