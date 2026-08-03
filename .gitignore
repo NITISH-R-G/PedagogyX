@@ -27,3 +27,7 @@ __pycache__/
 .venv/
 venv/
 .coverage
+
+venv_asr/
+venv_metrics/
+tsconfig.tsbuildinfo
