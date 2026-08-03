@@ -1,9 +1,10 @@
 import json
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 from uuid import uuid4
 
-from app.queue import enqueue_asr_job, enqueue_talk_ratio_job
 from app.config import settings
+from app.queue import enqueue_asr_job, enqueue_talk_ratio_job
+
 
 @patch("app.queue.get_redis")
 def test_enqueue_asr_job(mock_get_redis):
@@ -28,6 +29,7 @@ def test_enqueue_asr_job(mock_get_redis):
     assert payload["session_id"] == str(session_id)
     assert payload["school_id"] == school_id
     assert "enqueued_at" in payload
+
 
 @patch("app.queue.get_redis")
 def test_enqueue_talk_ratio_job(mock_get_redis):

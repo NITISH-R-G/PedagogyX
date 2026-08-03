@@ -1,6 +1,7 @@
-import os
 import json
+import os
 import re
+
 
 def get_frameworks(repo_root):
     frameworks = []
@@ -47,7 +48,7 @@ def extract_python_imports(filepath):
         with open(filepath, "r", encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
-                if line.startswith("import ") or line.startswith("from "):
+                if line.startswith(("import ", "from ")):
                     parts = line.split()
                     if len(parts) > 1:
                         imports.append(parts[1].split('.')[0])
