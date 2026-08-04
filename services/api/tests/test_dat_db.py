@@ -14,7 +14,6 @@ def test_get_conn_rollback_on_psycopg2_error(mock_connect, capsys):
     prints to stderr, and re-raises the exception.
     """
     import psycopg2
-
     mock_conn = MagicMock()
     mock_connect.return_value = mock_conn
 
@@ -143,7 +142,6 @@ def test_get_dat_session_not_found(mock_connect):
     mock_cur.execute.assert_called_once_with(
         "SELECT * FROM dat_sessions WHERE id = %s", (str(test_uuid),)
     )
-
 
 @patch("app.db_utils.psycopg2.connect")
 def test_get_dat_session_success(mock_connect):
