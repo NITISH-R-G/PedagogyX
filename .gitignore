@@ -27,3 +27,7 @@ __pycache__/
 .venv/
 venv/
 .coverage
+services/api/venv_api/
+venv_api/
+venv_asr/
+venv_metrics/

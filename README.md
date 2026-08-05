@@ -11,18 +11,16 @@ This repository is continuously analyzed, documented, and visualized automatical
 - React
 - Next.js
 
-## AI Generated Architecture Summary (Fallback)
+## Core Architecture
+PedagogyX is a distributed platform designed for educational data processing and analytics. It leverages a microservice architecture built on a modern, open-source stack.
 
-This repository is built using **FastAPI, React, Next.js**.
+### Key Components
 
-### Core Services
-
-- **worker-metrics**: Microservice part of the architecture.
-- **web**: Microservice part of the architecture.
-- **worker-asr**: Microservice part of the architecture.
-- **api**: Microservice part of the architecture.
-- **worker-cv**: Microservice part of the architecture.
-
+- **API Service (`api`)**: The central gateway powered by FastAPI, handling client requests and internal routing.
+- **Web Frontend (`web`)**: A high-performance user interface built with Next.js and React.
+- **ASR Worker (`worker-asr`)**: Dedicated microservice for Automatic Speech Recognition processing.
+- **Computer Vision Worker (`worker-cv`)**: Dedicated microservice for Computer Vision processing pipelines.
+- **Metrics Worker (`worker-metrics`)**: Analytics engine responsible for aggregating and processing educational metrics.
 
 ## Repository Structure
 - **[worker-metrics](services/worker-metrics)**
