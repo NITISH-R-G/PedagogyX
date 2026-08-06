@@ -27,4 +27,3 @@ __pycache__/
 .venv/
 venv/
 .coverage
-services/worker-metrics/venv_metrics/
