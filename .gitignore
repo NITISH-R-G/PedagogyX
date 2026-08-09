@@ -28,3 +28,4 @@ __pycache__/
 venv/
 .coverage
 venv_api/
+venv_metrics/
