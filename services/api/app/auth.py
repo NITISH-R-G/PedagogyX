@@ -1,8 +1,10 @@
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+
 from app.config import settings
 
 security = HTTPBearer()
+
 
 def verify_api_key(credentials: HTTPAuthorizationCredentials = Depends(security)):
     if credentials.scheme != "Bearer":
