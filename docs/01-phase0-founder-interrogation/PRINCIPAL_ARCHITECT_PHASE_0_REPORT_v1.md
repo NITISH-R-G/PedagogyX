@@ -1,0 +1,71 @@
+# Phase 0: Foundational Interrogation
+
+## Product Questions
+
+- Is this enterprise SaaS?
+- Is this B2B?
+- Is this for schools or universities?
+- Is this for governments?
+- Is this for teacher self-improvement?
+- Is this for surveillance?
+- Is this for instructional coaching?
+- Is this for online classes?
+- Is this for physical classrooms?
+- Is this for hybrid classrooms?
+- Is this real-time or post-processing?
+- Is this cloud-native?
+- Is this edge AI?
+- Is privacy-first architecture required?
+- Is offline mode required?
+- What countries are target markets?
+- Is China-style surveillance acceptable?
+- Is student facial analysis allowed?
+- Is biometric analysis allowed?
+- What legal jurisdictions matter?
+- Is FERPA compliance required?
+- Is GDPR compliance required?
+- Is India DPDP compliance required?
+- Is explainable AI mandatory?
+- Is human review mandatory?
+- Is teacher scoring public or private?
+- Are unions involved?
+- Can administrators see teacher analytics?
+- Should the AI score pedagogy?
+- Should the AI detect emotional tone?
+- Should the AI evaluate student engagement?
+- Is multilingual support required?
+- Is low-bandwidth mode required?
+- Is mobile-first required?
+
+## Technical Questions
+
+- Scalability: What is the expected number of concurrent classrooms to process?
+- Latency: What are the strict latency requirements for real-time edge processing vs. cloud analysis?
+- Inference Pipelines: How do we structure the multimodal (audio, video, presentation) inference pipeline?
+- GPU Requirements: What is the required hardware footprint for inference per classroom? Will RTX 5070 cards suffice?
+- Edge Deployment: How much logic resides on the edge device versus the central cloud?
+- Classroom Hardware: What exact hardware is being used (Meta Ray-Ban DAT mentioned, but are there ambient mics/cameras)?
+- Audio Quality: What are the expected signal-to-noise ratios in noisy classroom environments?
+- Microphone Arrays: Are we using distributed arrays or singular wearable mics?
+- Classroom Camera Topology: Are there fixed wide-angle cameras or just wearable DAT capture?
+- Synchronization Pipelines: How are video and audio streams time-synced at millisecond precision?
+- Multimodal Fusion: Where does the fusion of visual and acoustic features occur in the pipeline?
+- Storage Architecture: How do we securely store long-form classroom sessions while adhering to data compliance (India DPDP)?
+- Distributed Systems: What orchestration tool (K8s, Nomad) manages our microservices at scale?
+- Vector Databases: Which vector DB is best suited for longitudinal retrieval of teaching patterns?
+- Observability: How do we trace a single multi-modal request through edge capture to cloud insight generation?
+- Security: What is the encryption-at-rest and in-transit strategy for PII?
+- Role-Based Access: How granular are the RBAC requirements (teacher vs. admin vs. coach vs. system)?
+- ML Ops: What is the lifecycle for model deployment, versioning, and rollback?
+- Data Labeling: What tools and processes govern manual annotation for pedagogical validation?
+- Annotation Workflows: How are specialized educators integrated into the loop for quality control?
+- Synthetic Data Generation: Can we bootstrap edge cases using synthetic data?
+- Model Retraining: What is the cadence and trigger for fine-tuning our foundational models?
+- Privacy-Preserving ML: How do we train on sensitive classroom data without exposing PII (e.g., differential privacy)?
+- Federated Learning: Is federated learning required to keep data on local school servers?
+- Classroom Network Reliability: How does the system handle intermittent or low-bandwidth internet connectivity?
+- Live Transcription: What ASR models (e.g., Whisper, custom) provide the best accuracy in multilingual/noisy settings?
+- Temporal Event Modeling: How are time-series events (speaking, writing, walking) modeled and queried?
+- Multimodal Embeddings: How do we generate unified embeddings representing a segment of teaching?
+- Long-Context Memory: How does the system remember a teacher's performance from three months ago during a current session?
+- Streaming Pipelines: How do we efficiently stream 4K/1080p video data from edge to cloud?
