@@ -1,0 +1,12 @@
+COMPOSE_FILE=infra/compose.dev.yaml
+docker compose -f "$COMPOSE_FILE" up -d --build --wait
+for i in $(seq 1 30); do
+  if curl --retry 5 --retry-connrefused --retry-delay 2 -sf http://localhost:8080/health >/dev/null; then
+    echo "API is ready!"
+    break
+  fi
+  echo "Waiting for API... $i/30"
+  sleep 2
+done
+python3 tools/dat-session-sim/dat_session_cli.py run --api-url http://localhost:8080
+docker compose -f "$COMPOSE_FILE" down
