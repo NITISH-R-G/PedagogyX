@@ -7,11 +7,7 @@ from app import dat_db, db
 from app.dat_db import append_event, EventData
 from app.auth import verify_api_key
 
-router = APIRouter(
-    prefix="/v1/dat-sessions",
-    tags=["dat"],
-    dependencies=[Depends(verify_api_key)]
-)
+router = APIRouter(prefix="/v1/dat-sessions", tags=["dat"], dependencies=[Depends(verify_api_key)])
 
 
 class DatSessionCreate(BaseModel):
@@ -34,8 +30,7 @@ def create_dat_session(body: DatSessionCreate):
         body.school_id, body.room_id, body.teacher_id, body.device_label
     )
     append_event(
-        row["id"],
-        EventData("SESSION_CREATED", None, "IDLE", {"device_label": body.device_label})
+        row["id"], EventData("SESSION_CREATED", None, "IDLE", {"device_label": body.device_label})
     )
     return _serialize(row)
 
@@ -137,7 +132,7 @@ def _ensure_pedagogy_session(row: dict) -> dict:
     dat_db.link_pedagogy_session(row["id"], ped["id"])
     append_event(
         row["id"],
-        EventData("PEDAGOGY_SESSION_LINKED", None, None, {"pedagogy_session_id": str(ped["id"])})
+        EventData("PEDAGOGY_SESSION_LINKED", None, None, {"pedagogy_session_id": str(ped["id"])}),
     )
     return dat_db.get_dat_session(row["id"]) or row
 
@@ -151,11 +146,13 @@ def _serialize(row: dict) -> dict:
         "device_label": row.get("device_label"),
         "state": row["state"],
         "stream_state": row["stream_state"],
-        "pedagogy_session_id": str(row["pedagogy_session_id"])
-        if row.get("pedagogy_session_id")
-        else None,
-        "upload_session_url": f"/v1/sessions/{row['pedagogy_session_id']}/chunks/{{chunk_index}}"
-        if row.get("pedagogy_session_id")
-        else None,
+        "pedagogy_session_id": (
+            str(row["pedagogy_session_id"]) if row.get("pedagogy_session_id") else None
+        ),
+        "upload_session_url": (
+            f"/v1/sessions/{row['pedagogy_session_id']}/chunks/{{chunk_index}}"
+            if row.get("pedagogy_session_id")
+            else None
+        ),
         "updated_at": row["updated_at"].isoformat() if row.get("updated_at") else None,
     }
