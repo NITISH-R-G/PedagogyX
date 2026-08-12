@@ -37,10 +37,10 @@ def main():
     readme_content += "![CI Status](https://img.shields.io/github/actions/workflow/status/owner/repo/test.yml?branch=main&label=CI)\n"
     readme_content += "![Auto-Docs](https://img.shields.io/badge/Docs-Auto--Generated-blue)\n\n"
 
-    readme_content += "## Project Overview\n"
+    readme_content += "## Project Overview\n\n"
     readme_content += "This repository is continuously analyzed, documented, and visualized automatically.\n\n"
 
-    readme_content += "## Technology Stack\n"
+    readme_content += "## Technology Stack\n\n"
     for fw in graph.get("frameworks", []):
         readme_content += f"- {fw}\n"
     readme_content += "\n"
@@ -48,7 +48,7 @@ def main():
     if ai_summary_content:
         readme_content += ai_summary_content + "\n\n"
 
-    readme_content += "## Repository Structure\n"
+    readme_content += "## Repository Structure\n\n"
     for svc in graph.get("services", []):
         readme_content += f"- **[{svc['name']}]({svc['path']})**\n"
     readme_content += "\n"
@@ -56,18 +56,18 @@ def main():
     if diagrams_content:
         readme_content += diagrams_content + "\n\n"
 
-    readme_content += "## Setup Instructions\n"
+    readme_content += "## Setup Instructions\n\n"
     readme_content += "1. Install dependencies via `pip install -r services/api/requirements.txt` or Node/NPM.\n"
     readme_content += "2. Run locally via Docker: `docker compose -f infra/compose.dev.yaml up --build`\n\n"
 
-    readme_content += "## Environment Variables\n"
-    readme_content += "The following environment variables are detected in the codebase:\n"
+    readme_content += "## Environment Variables\n\n"
+    readme_content += "The following environment variables are detected in the codebase:\n\n"
     for env in graph.get("env_vars", []):
         readme_content += f"- `{env}`\n"
     readme_content += "\n"
 
-    readme_content += "## Contribution Guide\n"
-    readme_content += "Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.\n\n"
+    readme_content += "## Contribution Guide\n\n"
+    readme_content += "Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.\n"
 
     output_path = os.path.join(repo_root, "README.md")
     with open(output_path, "w") as f:
