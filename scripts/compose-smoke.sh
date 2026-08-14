@@ -34,7 +34,7 @@ SESSION_JSON=$(curl --retry 5 --retry-connrefused --retry-delay 2 -sf -X POST ht
   -H 'Content-Type: application/json' \
   -d '{"school_id":"smoke-test","room_id":"1","teacher_id":"t1"}')
 echo "$SESSION_JSON"
-SESSION_ID=$(echo "$SESSION_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)['session_id'])")
+SESSION_ID=$(echo "$SESSION_JSON" | grep -oP "\"session_id\"\\s*:\s*\"\K[^\"]+")
 
 echo "=== compose-smoke: upload chunk ==="
 CHUNK_FILE=$(mktemp)
