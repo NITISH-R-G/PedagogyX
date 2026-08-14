@@ -15,6 +15,7 @@ class EventData:
     to_state: str | None
     detail: dict | None = None
 
+
 # Allowed transitions (server-enforced subset)
 DAT_SESSION_TRANSITIONS: dict[str, set[str]] = {
     "IDLE": {"STARTING"},
@@ -98,7 +99,9 @@ def append_event(
             _append_event_with_cursor(cur, dat_id, event)
 
 
-def transition_session_state(dat_id: UUID, new_state: str, event_type: str, detail: dict | None) -> dict:
+def transition_session_state(
+    dat_id: UUID, new_state: str, event_type: str, detail: dict | None
+) -> dict:
     with get_conn() as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute("SELECT * FROM dat_sessions WHERE id = %s", (str(dat_id),))
@@ -118,11 +121,15 @@ def transition_session_state(dat_id: UUID, new_state: str, event_type: str, deta
                 (new_state, str(dat_id)),
             )
             updated = dict(cur.fetchone())
-            _append_event_with_cursor(cur, dat_id, EventData(event_type, current, new_state, detail))
+            _append_event_with_cursor(
+                cur, dat_id, EventData(event_type, current, new_state, detail)
+            )
             return updated
 
 
-def transition_stream_state(dat_id: UUID, new_state: str, event_type: str, detail: dict | None) -> dict:
+def transition_stream_state(
+    dat_id: UUID, new_state: str, event_type: str, detail: dict | None
+) -> dict:
     with get_conn() as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute("SELECT * FROM dat_sessions WHERE id = %s", (str(dat_id),))
@@ -130,7 +137,9 @@ def transition_stream_state(dat_id: UUID, new_state: str, event_type: str, detai
             if not row:
                 raise ValueError("dat session not found")
 
-            if row["state"] not in ("STARTED", "STREAMING", "PAUSED") and new_state not in ("STOPPED",):
+            if row["state"] not in ("STARTED", "STREAMING", "PAUSED") and new_state not in (
+                "STOPPED",
+            ):
                 raise ValueError("stream requires session STARTED (or STREAMING/PAUSED)")
             current = row["stream_state"]
             allowed = STREAM_TRANSITIONS.get(current, set())
@@ -151,7 +160,9 @@ def transition_stream_state(dat_id: UUID, new_state: str, event_type: str, detai
                 (new_state, session_state, str(dat_id)),
             )
             updated = dict(cur.fetchone())
-            _append_event_with_cursor(cur, dat_id, EventData(event_type, current, new_state, detail))
+            _append_event_with_cursor(
+                cur, dat_id, EventData(event_type, current, new_state, detail)
+            )
             return updated
 
 
