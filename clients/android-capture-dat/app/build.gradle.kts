@@ -1,3 +1,4 @@
+import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -17,7 +18,7 @@ android {
 
         // Emulator → host machine API (override in local.properties: pedagogyx.api.base.url)
         val localProps =
-            java.util.Properties().apply {
+            Properties().apply {
                 val f = rootProject.file("local.properties")
                 if (f.exists()) {
                     load(f.inputStream())
