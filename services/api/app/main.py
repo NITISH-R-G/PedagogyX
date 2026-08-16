@@ -48,11 +48,11 @@ def health():
 @app.post("/v1/sessions")
 def create_session(body: SessionCreateBody):
     row = db.insert_session(body.school_id, body.room_id, body.teacher_id)
-    sid = row["id"]
+    sid = row.get("id")
     return {
         "session_id": str(sid),
-        "status": row["status"],
-        "school_id": row["school_id"],
+        "status": row.get("status"),
+        "school_id": row.get("school_id"),
         "upload_url_template": f"/v1/sessions/{sid}/chunks/{{chunk_index}}",
     }
 
@@ -84,7 +84,7 @@ async def get_session(session_id: UUID):
     if metrics:
         payload["metrics"] = _serialize_metrics(metrics)
     if transcript:
-        payload["transcript_preview"] = (transcript["text"] or "")[:200]
+        payload["transcript_preview"] = (transcript.get("text", "") or "")[:200]
     return payload
 
 
@@ -99,7 +99,7 @@ def upload_chunk(
     row = db.get_session(session_id)
     if not row:
         raise HTTPException(status_code=404, detail="session not found")
-    if row["status"] not in ("active", "created"):
+    if row.get("status") not in ("active", "created"):
         raise HTTPException(status_code=409, detail="session not accepting uploads")
 
     body = file.file.read()
@@ -121,7 +121,7 @@ def complete_session(session_id: UUID):
     row = db.get_session(session_id)
     if not row:
         raise HTTPException(status_code=404, detail="session not found")
-    if row["status"] == "completed":
+    if row.get("status") == "completed":
         return {
             "session_id": str(session_id),
             "status": "completed",
@@ -135,10 +135,12 @@ def complete_session(session_id: UUID):
             detail="upload at least one chunk before completing",
         )
     row = db.complete_session(session_id)
-    queue.enqueue_asr_job(session_id, row["school_id"])
+    if not row:
+        raise HTTPException(status_code=404, detail="session not found")
+    queue.enqueue_asr_job(session_id, str(row.get("school_id", "")))
     return {
-        "session_id": str(row["id"]),
-        "status": row["status"],
+        "session_id": str(row.get("id")),
+        "status": row.get("status"),
         "chunks": n_chunks,
         "job_enqueued": "asr",
     }
@@ -154,19 +156,19 @@ def session_preview(session_id: UUID):
     if not metrics:
         return {
             "session_id": str(session_id),
-            "status": row["status"],
+            "status": row.get("status"),
             "preview_ready": False,
             "message": "metrics pending",
         }
     return {
         "session_id": str(session_id),
-        "status": row["status"],
+        "status": row.get("status"),
         "preview_ready": metrics.get("preview_ready_at") is not None,
         "teacher_talk_ratio": metrics.get("teacher_talk_ratio"),
         "student_talk_ratio": metrics.get("student_talk_ratio"),
         "metric_confidence": metrics.get("metric_confidence"),
         "insight_latency_sec": metrics.get("insight_latency_sec"),
-        "transcript_excerpt": (transcript["text"][:300] if transcript else None),
+        "transcript_excerpt": (transcript.get("text", "")[:300] if transcript else None),
     }
 
 
@@ -177,11 +179,11 @@ def school_overview(school_id: str):
 
 def _serialize_session(row: dict) -> dict:
     return {
-        "session_id": str(row["id"]),
-        "school_id": row["school_id"],
+        "session_id": str(row.get("id")),
+        "school_id": row.get("school_id"),
         "room_id": row["room_id"],
         "teacher_id": row["teacher_id"],
-        "status": row["status"],
+        "status": row.get("status"),
         "created_at": row["created_at"].isoformat() if row.get("created_at") else None,
         "completed_at": row["completed_at"].isoformat() if row.get("completed_at") else None,
     }
