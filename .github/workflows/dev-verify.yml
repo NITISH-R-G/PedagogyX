@@ -11,13 +11,12 @@ jobs:
   docs-verify:
     runs-on: ubuntu-latest
     env:
-      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: "22"
 
       - name: Docs lint and format
         run: ./scripts/dev-verify.sh --docs-only
