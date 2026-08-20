@@ -50,6 +50,7 @@ jobs:
           # Allow formatting to rewrite, fail if it still fails check, same for ruff
           black services tools packages scripts
           black --check services tools packages scripts
+          ruff check services tools packages scripts --fix --unsafe-fixes
           ruff check services tools packages scripts --output-file ruff_report.txt
 
       - name: Run ESLint & Prettier (Node)
