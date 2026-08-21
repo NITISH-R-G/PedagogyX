@@ -72,7 +72,7 @@ def _download_chunks(session_id: str, chunks: list[tuple[int, str]]) -> str:
 
     try:
         with open(path, "wb") as f:
-            for idx, key in chunks:
+            for _idx, key in chunks:
                 resp = client.get_object(Bucket=S3_BUCKET_NAME, Key=key)
                 f.write(resp["Body"].read())
         return path
