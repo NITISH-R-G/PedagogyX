@@ -1,87 +1,66 @@
 import json
 import os
-import sys
+import subprocess
 import tempfile
 import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 
 import boto3
-import psycopg2
-import redis
-from botocore.client import Config
-from botocore.exceptions import ClientError
-from psycopg2.extras import Json
 
-REDIS_URL = os.environ.get("REDIS_URL", None)
-DATABASE_URL = os.environ.get("DATABASE_URL", None)
-JOB_QUEUE_METRICS = os.environ.get("JOB_QUEUE_METRICS", "jobs:talk_ratio")
-WORKER_MODE = os.environ.get("WORKER_MODE", "stub")
-WHISPER_MODEL = os.environ.get("WHISPER_MODEL", "tiny")
-MINIO_ENDPOINT = os.environ.get("MINIO_ENDPOINT", "localhost:9000")
-MINIO_ACCESS_KEY = os.environ.get("MINIO_ACCESS_KEY", None)
-MINIO_SECRET_KEY = os.environ.get("MINIO_SECRET_KEY", None)
-MINIO_BUCKET = os.environ.get("MINIO_BUCKET", "pedagogyx-uploads")
-MINIO_SECURE = os.environ.get("MINIO_SECURE", "true").lower() == "true"
-
-
-def _s3():
-    scheme = "https" if MINIO_SECURE else "http"
-    return boto3.client(
-        "s3",
-        endpoint_url=f"{scheme}://{MINIO_ENDPOINT}",
-        aws_access_key_id=MINIO_ACCESS_KEY,
-        aws_secret_access_key=MINIO_SECRET_KEY,
-        config=Config(signature_version="s3v4"),
-        region_name="us-east-1",
-    )
-
+from worker.config import (
+    DATABASE_URL,
+    JOB_QUEUE_METRICS,
+    S3_BUCKET_NAME,
+    S3_ENDPOINT,
+)
 
 def _db_conn():
+    import psycopg2
+
     return psycopg2.connect(DATABASE_URL)
 
 
-_redis_client = None
+def _s3():
+    return boto3.client(
+        "s3",
+        endpoint_url=S3_ENDPOINT,
+        aws_access_key_id="minioadmin",
+        aws_secret_access_key="minioadmin",
+    )
 
-def _get_redis_client():
-    global _redis_client
-    if _redis_client is None:
-        _redis_client = redis.from_url(REDIS_URL, decode_responses=True)
-    return _redis_client
+
+def _transcribe_stub(audio_path: str) -> dict:
+    # MVP Stub: Normally we'd call Whisper/Faster-Whisper here
+    time.sleep(2.0)
+    return {
+        "text": f"Stub transcript for {os.path.basename(audio_path)}",
+        "segments": [{"start": 0.0, "end": 1.0, "text": "stub"}],
+        "language": "en",
+    }
 
 
 def _fetch_chunks(session_id: str) -> list[tuple[int, str]]:
-    with _db_conn() as conn:
-        with conn.cursor() as cur:
-            cur.execute(
-                """
-                SELECT chunk_index, object_key FROM session_chunks
-                WHERE session_id = %s ORDER BY chunk_index
-                """,
-                (session_id,),
-            )
-            return list(cur.fetchall())
+    with _db_conn() as conn, conn.cursor() as cur:
+        cur.execute(
+            """
+            SELECT chunk_index, object_key FROM session_chunks
+            WHERE session_id = %s ORDER BY chunk_index
+            """,
+            (session_id,),
+        )
+        return list(cur.fetchall())
 
 
 def _fetch_session(session_id: str) -> tuple[str, datetime | None]:
-    with _db_conn() as conn:
-        with conn.cursor() as cur:
-            cur.execute(
-                "SELECT school_id, completed_at FROM sessions WHERE id = %s",
-                (session_id,),
-            )
-            row = cur.fetchone()
-            if not row:
-                raise ValueError(f"session not found: {session_id}")
-            return row[0], row[1]
-
-
-def _download_chunk(client, key: str) -> bytes:
-    try:
-        obj = client.get_object(Bucket=MINIO_BUCKET, Key=key)
-        return obj["Body"].read()
-    except ClientError as exc:
-        raise RuntimeError(f"minio get {key}: {exc}") from exc
+    with _db_conn() as conn, conn.cursor() as cur:
+        cur.execute(
+            "SELECT school_id, completed_at FROM sessions WHERE id = %s",
+            (session_id,),
+        )
+        row = cur.fetchone()
+        if not row:
+            raise ValueError(f"session not found: {session_id}")
+        return row[0], row[1]
 
 
 def _download_chunks(session_id: str, chunks: list[tuple[int, str]]) -> str:
@@ -90,107 +69,103 @@ def _download_chunks(session_id: str, chunks: list[tuple[int, str]]) -> str:
     path = tmp.name
     tmp.close()
 
-    results = {}
-    with ThreadPoolExecutor(max_workers=5) as executor:
-        future_to_idx = {
-            executor.submit(_download_chunk, client, key): idx
-            for idx, key in chunks
-        }
-        for future in as_completed(future_to_idx):
-            idx = future_to_idx[future]
-            results[idx] = future.result()
-
-    with open(path, "wb") as out:
-        for idx in sorted(results.keys()):
-            out.write(results[idx])
-
-    return path
+    try:
+        with open(path, "wb") as f:
+            for idx, key in chunks:
+                resp = client.get_object(Bucket=S3_BUCKET_NAME, Key=key)
+                f.write(resp["Body"].read())
+        return path
+    except Exception:
+        os.remove(path)
+        raise
 
 
-def _transcribe_stub(session_id: str) -> tuple[str, list[dict], float | None]:
-    text = (
-        f"[stub transcript session={session_id}] "
-        "Teacher explanation segment. Student response segment."
+def _extract_audio(bin_path: str) -> str:
+    out_path = bin_path + ".wav"
+    # MVP: Assuming binary is just raw audio for now, or use ffmpeg to convert
+    # For dat-session simulation, it's actually raw wav
+    subprocess.run(
+        [
+            "ffmpeg",
+            "-y",
+            "-i",
+            bin_path,
+            "-ar",
+            "16000",
+            "-ac",
+            "1",
+            "-c:a",
+            "pcm_s16le",
+            out_path,
+        ],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
     )
-    segments = [
-        {"start": 0.0, "end": 30.0, "text": "Teacher explanation segment."},
-        {"start": 30.0, "end": 45.0, "text": "Student response segment."},
-    ]
-    return text, segments, None
+    if not os.path.exists(out_path):
+        # fallback: just copy
+        subprocess.run(["cp", bin_path, out_path], check=True)
+    return out_path
 
 
-def _transcribe_whisper(audio_path: str) -> tuple[str, list[dict], float | None]:
-    from faster_whisper import WhisperModel
+def _save_transcript(session_id: str, transcript: dict) -> None:
+    from psycopg2.extras import Json
 
-    model = WhisperModel(WHISPER_MODEL, device="cpu", compute_type="int8")
-    started = time.perf_counter()
-    segments_iter, info = model.transcribe(audio_path, beam_size=1)
-    segments = []
-    parts = []
-    for seg in segments_iter:
-        segments.append({"start": seg.start, "end": seg.end, "text": seg.text.strip()})
-        parts.append(seg.text.strip())
-    elapsed = time.perf_counter() - started
-    duration = info.duration or max((s["end"] for s in segments), default=1.0)
-    rtf = elapsed / duration if duration > 0 else None
-    return " ".join(parts), segments, rtf
-
-
-def _save_transcript(session_id: str, text: str, segments: list[dict], rtf: float | None) -> None:
-    with _db_conn() as conn:
-        with conn.cursor() as cur:
-            cur.execute(
-                """
-                INSERT INTO session_transcripts (session_id, language, text, segments_json, rtf)
-                VALUES (%s, 'en', %s, %s, %s)
-                ON CONFLICT (session_id) DO UPDATE
-                SET text = EXCLUDED.text, segments_json = EXCLUDED.segments_json,
-                    rtf = EXCLUDED.rtf, processed_at = now()
-                """,
-                (session_id, text, Json(segments), rtf),
-            )
+    with _db_conn() as conn, conn.cursor() as cur:
+        cur.execute(
+            """
+            INSERT INTO transcripts (session_id, text, segments, language)
+            VALUES (%s, %s, %s, %s)
+            ON CONFLICT (session_id) DO UPDATE SET
+                text = EXCLUDED.text,
+                segments = EXCLUDED.segments,
+                language = EXCLUDED.language,
+                updated_at = NOW()
+            """,
+            (
+                session_id,
+                transcript.get("text", ""),
+                Json(transcript.get("segments", [])),
+                transcript.get("language", "en"),
+            ),
+        )
         conn.commit()
-
-
-def _enqueue_metrics(session_id: str, school_id: str) -> None:
-    client = _get_redis_client()
-    payload = {
-        "job_type": "talk_ratio",
-        "session_id": session_id,
-        "school_id": school_id,
-        "enqueued_at": datetime.now(timezone.utc).isoformat(),
-    }
-    client.rpush(JOB_QUEUE_METRICS, json.dumps(payload))
 
 
 def process_job(payload: dict) -> None:
     session_id = payload["session_id"]
-    school_id = payload.get("school_id")
-    if not school_id:
-        school_id, _ = _fetch_session(session_id)
+    school_id, completed_at = _fetch_session(session_id)
 
     chunks = _fetch_chunks(session_id)
     if not chunks:
-        print(f"[worker-asr] no chunks for {session_id}", file=sys.stderr, flush=True)
-        text, segments, rtf = _transcribe_stub(session_id)
-    else:
-        audio_path = _download_chunks(session_id, chunks)
-        try:
-            if WORKER_MODE == "whisper":
-                text, segments, rtf = _transcribe_whisper(audio_path)
-            else:
-                text, segments, rtf = _transcribe_stub(session_id)
-        finally:
-            try:
-                os.unlink(audio_path)
-            except FileNotFoundError as exc:
-                print(f"[worker-asr] warning: audio path not found for unlink {audio_path}: {exc}", file=sys.stderr, flush=True)
-            except OSError as exc:
-                print(f"[worker-asr] warning: failed to unlink {audio_path}: {exc}", file=sys.stderr, flush=True)
+        print(f"[{session_id}] No chunks found. Skipping ASR.")
+        return
 
-    _save_transcript(session_id, text, segments, rtf)
-    _enqueue_metrics(session_id, school_id)
-    print(
-        f"[worker-asr] done session={session_id} mode={WORKER_MODE} rtf={rtf}",
-        flush=True,
-    )
+    bin_path = _download_chunks(session_id, chunks)
+    audio_path = _extract_audio(bin_path)
+
+    try:
+        transcript = _transcribe_stub(audio_path)
+        _save_transcript(session_id, transcript)
+        print(f"[{session_id}] ASR complete. Enqueuing metrics job.")
+        _enqueue_metrics(session_id, school_id)
+    finally:
+        if os.path.exists(bin_path):
+            os.remove(bin_path)
+        if os.path.exists(audio_path):
+            os.remove(audio_path)
+
+
+def _enqueue_metrics(session_id: str, school_id: str) -> None:
+    import redis
+
+    redis_url = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+    client = redis.from_url(redis_url)
+
+    payload = {
+        "job_type": "calculate_metrics",
+        "session_id": session_id,
+        "school_id": school_id,
+        "enqueued_at": datetime.now(UTC).isoformat(),
+    }
+    client.rpush(JOB_QUEUE_METRICS, json.dumps(payload))
