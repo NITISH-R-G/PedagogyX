@@ -66,7 +66,7 @@ def build_knowledge_graph(repo_root):
 
     # Walk repo to find Python files and extract basic deps
     for root, _, files in os.walk(repo_root):
-        if ".git" in root or ".venv" in root or "__pycache__" in root or "node_modules" in root:
+        if ".git" in root or "venv" in root or "__pycache__" in root or "node_modules" in root:
             continue
 
         for file in files:
