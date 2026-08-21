@@ -3,7 +3,7 @@ import os
 import subprocess
 import tempfile
 import time
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
 import boto3
 
@@ -13,6 +13,7 @@ from worker.config import (
     S3_BUCKET_NAME,
     S3_ENDPOINT,
 )
+
 
 def _db_conn():
     import psycopg2
@@ -75,9 +76,10 @@ def _download_chunks(session_id: str, chunks: list[tuple[int, str]]) -> str:
                 resp = client.get_object(Bucket=S3_BUCKET_NAME, Key=key)
                 f.write(resp["Body"].read())
         return path
-    except Exception:
-        os.remove(path)
-        raise
+    except Exception as exc:
+        if os.path.exists(path):
+            os.remove(path)
+        raise RuntimeError(f"Failed to download chunks: {exc}") from exc
 
 
 def _extract_audio(bin_path: str) -> str:
@@ -134,7 +136,7 @@ def _save_transcript(session_id: str, transcript: dict) -> None:
 
 def process_job(payload: dict) -> None:
     session_id = payload["session_id"]
-    school_id, completed_at = _fetch_session(session_id)
+    school_id, _completed_at = _fetch_session(session_id)
 
     chunks = _fetch_chunks(session_id)
     if not chunks:
