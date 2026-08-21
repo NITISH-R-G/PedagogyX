@@ -135,7 +135,9 @@ def _save_transcript(session_id: str, transcript: dict) -> None:
 
 
 def process_job(payload: dict) -> None:
-    session_id = payload["session_id"]
+    session_id = payload.get("session_id")
+    if not session_id:
+        return
     school_id, _completed_at = _fetch_session(session_id)
 
     chunks = _fetch_chunks(session_id)
