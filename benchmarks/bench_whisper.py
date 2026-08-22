@@ -6,7 +6,7 @@ import json
 import sys
 import time
 import wave
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 RESULTS_DIR = Path(__file__).resolve().parent / "results"
@@ -72,7 +72,7 @@ def main() -> int:
     rtf = elapsed / audio_duration if audio_duration else 0.0
 
     result = {
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
         "script": "bench_whisper.py",
         "model": args.model,
         "device": device,
