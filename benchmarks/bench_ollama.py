@@ -6,7 +6,7 @@ import json
 import os
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import requests
@@ -55,7 +55,7 @@ def main() -> int:
     tps = eval_count / elapsed if elapsed > 0 else 0.0
 
     result = {
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
         "script": "bench_ollama.py",
         "model": args.model,
         "wall_sec": round(elapsed, 3),

@@ -1,6 +1,8 @@
 import unittest
 from unittest.mock import patch
-from worker.processor import process_job, _transcribe_stub
+
+from worker.processor import _transcribe_stub, process_job
+
 
 class TestProcessor(unittest.TestCase):
     def test_transcribe_stub(self):
