@@ -1,16 +1,8 @@
 import uuid
 from unittest.mock import patch
-from fastapi.testclient import TestClient
-from app.main import app
-
-client = TestClient(app)
-
-
-client.headers.update({"Authorization": "Bearer dev_api_key_placeholder"})
-
 
 @patch("app.dat_routes.dat_db.get_dat_session")
-def test_stop_dat_session_not_found(mock_get_dat_session):
+def test_stop_dat_session_not_found(mock_get_dat_session, client):
     # Mock dat_db.get_dat_session to return None
     mock_get_dat_session.return_value = None
 
@@ -20,7 +12,6 @@ def test_stop_dat_session_not_found(mock_get_dat_session):
     # Call the endpoint
     response = client.post(
         f"/v1/dat-sessions/{session_id}/stop",
-        headers={"Authorization": "Bearer dev_api_key_placeholder"},
     )
 
     # Assert the response status code is 404
