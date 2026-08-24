@@ -14,6 +14,7 @@ def test_get_conn_rollback_on_psycopg2_error(mock_connect, capsys):
     prints to stderr, and re-raises the exception.
     """
     import psycopg2
+
     mock_conn = MagicMock()
     mock_connect.return_value = mock_conn
 
@@ -39,9 +40,9 @@ def test_get_conn_rollback_on_error(mock_connect, capsys):
     mock_conn = MagicMock()
     mock_connect.return_value = mock_conn
 
-    with pytest.raises(Exception, match="DB error"):
+    with pytest.raises(RuntimeError, match="DB error"):
         with get_conn():
-            raise Exception("DB error")
+            raise RuntimeError("DB error")
 
     mock_conn.rollback.assert_called_once()
     mock_conn.close.assert_called_once()
@@ -68,9 +69,9 @@ def test_create_dat_session_rollback_on_error(mock_connect):
     mock_cursor_ctx.__enter__.return_value = mock_cur
 
     # Force an exception when cur.execute is called
-    mock_cur.execute.side_effect = Exception("DB execute error")
+    mock_cur.execute.side_effect = RuntimeError("DB execute error")
 
-    with pytest.raises(Exception, match="DB execute error"):
+    with pytest.raises(RuntimeError, match="DB execute error"):
         create_dat_session("school_1", "room_1", "teacher_1", "device_1")
 
     # Assert rollback and close were called, but not commit
@@ -142,6 +143,7 @@ def test_get_dat_session_not_found(mock_connect):
     mock_cur.execute.assert_called_once_with(
         "SELECT * FROM dat_sessions WHERE id = %s", (str(test_uuid),)
     )
+
 
 @patch("app.db_utils.psycopg2.connect")
 def test_get_dat_session_success(mock_connect):

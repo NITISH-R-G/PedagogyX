@@ -41,9 +41,8 @@ async def create_session(
 async def upload_chunk(
     client: httpx.AsyncClient, base: str, session_id: str, chunk_index: int, audio_path: Path
 ) -> None:
-    with open(audio_path, "rb") as f:
-        # We need to read the file so it can be passed to httpx without issues with async
-        file_content = f.read()
+    # We need to read the file so it can be passed to httpx without issues with async
+    file_content = audio_path.read_bytes()
 
     upload = await client.post(
         f"{base}/v1/sessions/{session_id}/chunks/{chunk_index}",
