@@ -42,7 +42,7 @@ async def upload_chunk(
     client: httpx.AsyncClient, base: str, session_id: str, chunk_index: int, audio_path: Path
 ) -> None:
     # We need to read the file so it can be passed to httpx without issues with async
-    file_content = audio_path.read_bytes()
+    file_content = await asyncio.to_thread(audio_path.read_bytes)
 
     upload = await client.post(
         f"{base}/v1/sessions/{session_id}/chunks/{chunk_index}",

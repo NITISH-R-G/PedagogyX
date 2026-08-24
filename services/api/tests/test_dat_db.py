@@ -40,9 +40,9 @@ def test_get_conn_rollback_on_error(mock_connect, capsys):
     mock_conn = MagicMock()
     mock_connect.return_value = mock_conn
 
-    with pytest.raises(RuntimeError, match="DB error"):
+    with pytest.raises(ValueError, match="DB error"):
         with get_conn():
-            raise RuntimeError("DB error")
+            raise ValueError("DB error")
 
     mock_conn.rollback.assert_called_once()
     mock_conn.close.assert_called_once()
@@ -69,9 +69,9 @@ def test_create_dat_session_rollback_on_error(mock_connect):
     mock_cursor_ctx.__enter__.return_value = mock_cur
 
     # Force an exception when cur.execute is called
-    mock_cur.execute.side_effect = RuntimeError("DB execute error")
+    mock_cur.execute.side_effect = ValueError("DB execute error")
 
-    with pytest.raises(RuntimeError, match="DB execute error"):
+    with pytest.raises(ValueError, match="DB execute error"):
         create_dat_session("school_1", "room_1", "teacher_1", "device_1")
 
     # Assert rollback and close were called, but not commit
