@@ -1,6 +1,7 @@
-import os
 import json
+import os
 import re
+
 
 def get_frameworks(repo_root):
     frameworks = []
@@ -12,8 +13,8 @@ def get_frameworks(repo_root):
                 content = f.read()
                 if "fastapi" in content.lower():
                     frameworks.append("FastAPI")
-        except Exception:
-            pass
+        except Exception as _e:
+            print(f"Ignored error: {_e}")
 
     # Check for React / Node
     if os.path.exists(os.path.join(repo_root, "services/web/package.json")):
@@ -24,8 +25,8 @@ def get_frameworks(repo_root):
                     frameworks.append("React")
                 if "next" in content.lower():
                     frameworks.append("Next.js")
-        except Exception:
-            pass
+        except Exception as _e:
+            print(f"Ignored error: {_e}")
 
     return frameworks
 
@@ -47,12 +48,12 @@ def extract_python_imports(filepath):
         with open(filepath, "r", encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
-                if line.startswith("import ") or line.startswith("from "):
+                if line.startswith(("import ", "from ")):
                     parts = line.split()
                     if len(parts) > 1:
                         imports.append(parts[1].split('.')[0])
-    except Exception:
-        pass
+    except Exception as _e:
+        print(f"Ignored error: {_e}")
     return list(set(imports))
 
 def build_knowledge_graph(repo_root):
@@ -85,8 +86,8 @@ def build_knowledge_graph(repo_root):
                         env_matches += re.findall(r'os\.getenv\([\'"]([A-Z0-9_]+)[\'"]\)', content)
                         for match in env_matches:
                             graph["env_vars"].add(match)
-                except Exception:
-                    pass
+                except Exception as _e:
+                    print(f"Ignored error: {_e}")
 
             elif file == "docker-compose.yml" or file.endswith(".yaml"):
                 # Try to extract env vars from compose files
@@ -96,8 +97,8 @@ def build_knowledge_graph(repo_root):
                         env_matches = re.findall(r'- ([A-Z0-9_]+)=', content)
                         for match in env_matches:
                             graph["env_vars"].add(match)
-                except Exception:
-                    pass
+                except Exception as _e:
+                    print(f"Ignored error: {_e}")
 
     graph["env_vars"] = list(graph["env_vars"])
 
