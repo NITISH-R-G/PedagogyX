@@ -1,10 +1,9 @@
 import uuid
+from datetime import UTC, datetime
 from unittest.mock import patch
-from datetime import datetime
-
-from fastapi.testclient import TestClient
 
 from app.main import app
+from fastapi.testclient import TestClient
 
 client = TestClient(app)
 
@@ -22,7 +21,7 @@ def test_create_dat_session():
         "state": "IDLE",
         "stream_state": "STOPPED",
         "pedagogy_session_id": None,
-        "updated_at": datetime.now(),
+        "updated_at": datetime.now(UTC),
     }
     with patch("app.dat_routes.dat_db.create_dat_session") as mock_create, patch(
         "app.dat_routes.append_event"
@@ -68,7 +67,7 @@ def test_get_dat_session_success():
         "state": "STARTED",
         "stream_state": "STREAMING",
         "pedagogy_session_id": uuid.uuid4(),
-        "updated_at": datetime.now(),
+        "updated_at": datetime.now(UTC),
     }
     mock_events = [
         {
@@ -76,7 +75,7 @@ def test_get_dat_session_success():
             "from_state": "IDLE",
             "to_state": "IDLE",
             "detail": {},
-            "created_at": datetime.now(),
+            "created_at": datetime.now(UTC),
         }
     ]
     with patch("app.dat_routes.dat_db.get_dat_session") as mock_get, patch(
@@ -104,7 +103,7 @@ def test_post_lifecycle_session():
         "state": "STARTED",
         "stream_state": "STOPPED",
         "pedagogy_session_id": None,
-        "updated_at": datetime.now(),
+        "updated_at": datetime.now(UTC),
     }
     with patch("app.dat_routes.dat_db.transition_session_state") as mock_transition:
         mock_transition.return_value = mock_row
@@ -132,7 +131,7 @@ def test_post_lifecycle_stream_with_pedagogy_link():
         "state": "STARTED",
         "stream_state": "STREAMING",
         "pedagogy_session_id": None,
-        "updated_at": datetime.now(),
+        "updated_at": datetime.now(UTC),
     }
     pedagogy_id = uuid.uuid4()
     mock_pedagogy = {
@@ -175,7 +174,7 @@ def test_start_dat_session():
         "state": "STARTED",
         "stream_state": "STOPPED",
         "pedagogy_session_id": None,
-        "updated_at": datetime.now(),
+        "updated_at": datetime.now(UTC),
     }
     with patch("app.dat_routes.dat_db.transition_session_state") as mock_transition:
         mock_transition.side_effect = [None, mock_row]
@@ -196,7 +195,7 @@ def test_start_stream():
         "state": "STARTED",
         "stream_state": "STREAMING",
         "pedagogy_session_id": uuid.uuid4(),
-        "updated_at": datetime.now(),
+        "updated_at": datetime.now(UTC),
     }
     with patch("app.dat_routes.dat_db.get_dat_session") as mock_get, patch(
         "app.dat_routes.dat_db.transition_stream_state"
