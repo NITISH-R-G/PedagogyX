@@ -102,7 +102,7 @@ def main() -> None:
             continue
         try:
             process_job(payload)
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
             print(f"[worker-metrics] job failed: {exc}", file=sys.stderr, flush=True)
             traceback.print_exc(file=sys.stderr)
             client.rpush(JOB_QUEUE_DLQ, raw)
