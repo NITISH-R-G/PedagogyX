@@ -1,8 +1,8 @@
-import pytest
 from unittest.mock import MagicMock, patch
 from uuid import uuid4
 
-from app.dat_db import create_dat_session, get_dat_session
+import pytest
+from app.dat_db import create_dat_session, get_dat_session, list_events
 from app.db_utils import get_conn
 
 
@@ -14,12 +14,12 @@ def test_get_conn_rollback_on_psycopg2_error(mock_connect, capsys):
     prints to stderr, and re-raises the exception.
     """
     import psycopg2
+
     mock_conn = MagicMock()
     mock_connect.return_value = mock_conn
 
-    with pytest.raises(psycopg2.Error, match="DB psycopg2 error"):
-        with get_conn():
-            raise psycopg2.Error("DB psycopg2 error")
+    with pytest.raises(psycopg2.Error, match="DB psycopg2 error"), get_conn():
+        raise psycopg2.Error("DB psycopg2 error")
 
     mock_conn.rollback.assert_called_once()
     mock_conn.close.assert_called_once()
@@ -39,9 +39,8 @@ def test_get_conn_rollback_on_error(mock_connect, capsys):
     mock_conn = MagicMock()
     mock_connect.return_value = mock_conn
 
-    with pytest.raises(Exception, match="DB error"):
-        with get_conn():
-            raise Exception("DB error")
+    with pytest.raises(RuntimeError, match="DB error"), get_conn():
+        raise RuntimeError("DB error")
 
     mock_conn.rollback.assert_called_once()
     mock_conn.close.assert_called_once()
@@ -142,6 +141,129 @@ def test_get_dat_session_not_found(mock_connect):
     mock_cur.execute.assert_called_once_with(
         "SELECT * FROM dat_sessions WHERE id = %s", (str(test_uuid),)
     )
+
+
+@patch("app.db_utils.psycopg2.connect")
+def test_list_events_success_default_limit(mock_connect):
+    """
+    Test that list_events fetches and returns event dicts with the default limit of 50.
+    """
+    mock_conn = MagicMock()
+    mock_connect.return_value = mock_conn
+
+    mock_cursor_ctx = MagicMock()
+    mock_conn.cursor.return_value = mock_cursor_ctx
+
+    mock_cur = MagicMock()
+    mock_cursor_ctx.__enter__.return_value = mock_cur
+
+    expected_rows = [
+        {
+            "event_type": "SESSION_CREATED",
+            "from_state": "IDLE",
+            "to_state": "STARTING",
+            "detail": {"device": "lens_1"},
+            "created_at": "2025-01-01T10:00:00Z",
+        },
+        {
+            "event_type": "SESSION_STARTED",
+            "from_state": "STARTING",
+            "to_state": "STARTED",
+            "detail": {},
+            "created_at": "2025-01-01T10:01:00Z",
+        },
+    ]
+    mock_cur.fetchall.return_value = expected_rows
+
+    test_uuid = uuid4()
+    result = list_events(test_uuid)
+
+    assert result == expected_rows
+    mock_cur.execute.assert_called_once()
+    args, _ = mock_cur.execute.call_args
+    assert args[1] == (str(test_uuid), 50)
+
+
+@patch("app.db_utils.psycopg2.connect")
+def test_list_events_custom_limit(mock_connect):
+    """
+    Test that list_events respects a custom limit parameter.
+    """
+    mock_conn = MagicMock()
+    mock_connect.return_value = mock_conn
+
+    mock_cursor_ctx = MagicMock()
+    mock_conn.cursor.return_value = mock_cursor_ctx
+
+    mock_cur = MagicMock()
+    mock_cursor_ctx.__enter__.return_value = mock_cur
+
+    expected_rows = [
+        {
+            "event_type": "SESSION_CREATED",
+            "from_state": "IDLE",
+            "to_state": "STARTING",
+            "detail": {},
+            "created_at": "2025-01-01T10:00:00Z",
+        }
+    ]
+    mock_cur.fetchall.return_value = expected_rows
+
+    test_uuid = uuid4()
+    result = list_events(test_uuid, limit=10)
+
+    assert result == expected_rows
+    mock_cur.execute.assert_called_once()
+    args, _ = mock_cur.execute.call_args
+    assert args[1] == (str(test_uuid), 10)
+
+
+@patch("app.db_utils.psycopg2.connect")
+def test_list_events_empty(mock_connect):
+    """
+    Test that list_events returns an empty list when no events are found.
+    """
+    mock_conn = MagicMock()
+    mock_connect.return_value = mock_conn
+
+    mock_cursor_ctx = MagicMock()
+    mock_conn.cursor.return_value = mock_cursor_ctx
+
+    mock_cur = MagicMock()
+    mock_cursor_ctx.__enter__.return_value = mock_cur
+
+    mock_cur.fetchall.return_value = []
+
+    test_uuid = uuid4()
+    result = list_events(test_uuid)
+
+    assert result == []
+    mock_cur.execute.assert_called_once()
+
+
+@patch("app.db_utils.psycopg2.connect")
+def test_list_events_db_error(mock_connect):
+    """
+    Test that list_events handles database exceptions by rolling back and re-raising.
+    """
+    mock_conn = MagicMock()
+    mock_connect.return_value = mock_conn
+
+    mock_cursor_ctx = MagicMock()
+    mock_conn.cursor.return_value = mock_cursor_ctx
+
+    mock_cur = MagicMock()
+    mock_cursor_ctx.__enter__.return_value = mock_cur
+
+    mock_cur.execute.side_effect = Exception("DB error in list_events")
+
+    test_uuid = uuid4()
+    with pytest.raises(Exception, match="DB error in list_events"):
+        list_events(test_uuid)
+
+    mock_conn.rollback.assert_called_once()
+    mock_conn.close.assert_called_once()
+
 
 @patch("app.db_utils.psycopg2.connect")
 def test_get_dat_session_success(mock_connect):
