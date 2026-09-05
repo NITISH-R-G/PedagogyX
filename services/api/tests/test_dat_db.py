@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import MagicMock, patch
 from uuid import uuid4
 
-from app.dat_db import create_dat_session, get_dat_session
+from app.dat_db import create_dat_session, get_dat_session, link_pedagogy_session
 from app.db_utils import get_conn
 
 
@@ -142,6 +142,67 @@ def test_get_dat_session_not_found(mock_connect):
     mock_cur.execute.assert_called_once_with(
         "SELECT * FROM dat_sessions WHERE id = %s", (str(test_uuid),)
     )
+
+
+@patch("app.db_utils.psycopg2.connect")
+def test_link_pedagogy_session_success(mock_connect):
+    """
+    Test the happy path of link_pedagogy_session to ensure it executes the update query
+    with pedagogy_session_id and dat_id formatted as strings.
+    """
+    mock_conn = MagicMock()
+    mock_connect.return_value = mock_conn
+
+    mock_cursor_ctx = MagicMock()
+    mock_conn.cursor.return_value = mock_cursor_ctx
+
+    mock_cur = MagicMock()
+    mock_cursor_ctx.__enter__.return_value = mock_cur
+
+    dat_id = uuid4()
+    pedagogy_session_id = uuid4()
+
+    link_pedagogy_session(dat_id, pedagogy_session_id)
+
+    # Assert commit and close were called, but not rollback
+    mock_conn.commit.assert_called_once()
+    mock_conn.close.assert_called_once()
+    mock_conn.rollback.assert_not_called()
+    mock_cur.execute.assert_called_once()
+
+    args, kwargs = mock_cur.execute.call_args
+    sql, params = args
+    assert "UPDATE dat_sessions" in sql
+    assert "SET pedagogy_session_id = %s" in sql
+    assert params == (str(pedagogy_session_id), str(dat_id))
+
+
+@patch("app.db_utils.psycopg2.connect")
+def test_link_pedagogy_session_error(mock_connect):
+    """
+    Test that if an exception occurs during link_pedagogy_session,
+    the transaction rolls back and the exception is re-raised.
+    """
+    mock_conn = MagicMock()
+    mock_connect.return_value = mock_conn
+
+    mock_cursor_ctx = MagicMock()
+    mock_conn.cursor.return_value = mock_cursor_ctx
+
+    mock_cur = MagicMock()
+    mock_cursor_ctx.__enter__.return_value = mock_cur
+
+    mock_cur.execute.side_effect = Exception("DB update error")
+
+    dat_id = uuid4()
+    pedagogy_session_id = uuid4()
+
+    with pytest.raises(Exception, match="DB update error"):
+        link_pedagogy_session(dat_id, pedagogy_session_id)
+
+    mock_conn.rollback.assert_called_once()
+    mock_conn.close.assert_called_once()
+    mock_conn.commit.assert_not_called()
 
 @patch("app.db_utils.psycopg2.connect")
 def test_get_dat_session_success(mock_connect):
