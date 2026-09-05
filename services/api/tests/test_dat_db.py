@@ -170,7 +170,7 @@ def test_link_pedagogy_session_success(mock_connect):
     mock_conn.rollback.assert_not_called()
     mock_cur.execute.assert_called_once()
 
-    args, kwargs = mock_cur.execute.call_args
+    args, _ = mock_cur.execute.call_args
     sql, params = args
     assert "UPDATE dat_sessions" in sql
     assert "SET pedagogy_session_id = %s" in sql
