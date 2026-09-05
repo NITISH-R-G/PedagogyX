@@ -1,6 +1,7 @@
-import pytest
 from unittest.mock import MagicMock, patch
 from uuid import uuid4
+
+import pytest
 
 from app.dat_db import create_dat_session, get_dat_session, list_events
 from app.db_utils import get_conn
