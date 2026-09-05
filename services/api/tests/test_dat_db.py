@@ -14,6 +14,7 @@ def test_get_conn_rollback_on_psycopg2_error(mock_connect, capsys):
     prints to stderr, and re-raises the exception.
     """
     import psycopg2
+
     mock_conn = MagicMock()
     mock_connect.return_value = mock_conn
 
@@ -264,6 +265,7 @@ def test_list_events_db_error(mock_connect):
 
     mock_conn.rollback.assert_called_once()
     mock_conn.close.assert_called_once()
+
 
 @patch("app.db_utils.psycopg2.connect")
 def test_get_dat_session_success(mock_connect):
