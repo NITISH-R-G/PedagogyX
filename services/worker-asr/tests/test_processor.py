@@ -1,8 +1,7 @@
 import unittest
 from unittest.mock import MagicMock, patch
-
 from botocore.exceptions import ClientError
-from worker.processor import _download_chunk, _transcribe_stub, process_job
+from worker.processor import process_job, _transcribe_stub, _download_chunk
 
 
 class TestProcessor(unittest.TestCase):

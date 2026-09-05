@@ -1,7 +1,6 @@
-import json
 import os
+import json
 import re
-
 
 def get_frameworks(repo_root):
     frameworks = []

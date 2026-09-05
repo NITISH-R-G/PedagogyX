@@ -1,11 +1,10 @@
-import uuid
 from unittest.mock import patch
+from fastapi.testclient import TestClient
+import uuid
 
 from app.main import app
-from fastapi.testclient import TestClient
 
 client = TestClient(app)
-
 
 @patch("app.main.db.insert_session")
 def test_create_session(mock_insert_session):
@@ -15,13 +14,14 @@ def test_create_session(mock_insert_session):
         "school_id": "school_123",
         "room_id": "room_abc",
         "teacher_id": "teacher_xyz",
-        "status": "active",
+        "status": "active"
     }
 
-    response = client.post(
-        "/v1/sessions",
-        json={"school_id": "school_123", "room_id": "room_abc", "teacher_id": "teacher_xyz"},
-    )
+    response = client.post("/v1/sessions", json={
+        "school_id": "school_123",
+        "room_id": "room_abc",
+        "teacher_id": "teacher_xyz"
+    })
 
     assert response.status_code == 200
     data = response.json()
@@ -39,10 +39,12 @@ def test_create_session_minimal(mock_insert_session):
         "school_id": "school_123",
         "room_id": None,
         "teacher_id": None,
-        "status": "active",
+        "status": "active"
     }
 
-    response = client.post("/v1/sessions", json={"school_id": "school_123"})
+    response = client.post("/v1/sessions", json={
+        "school_id": "school_123"
+    })
 
     assert response.status_code == 200
     data = response.json()
@@ -53,9 +55,10 @@ def test_create_session_minimal(mock_insert_session):
 
 
 def test_create_session_missing_school_id():
-    response = client.post(
-        "/v1/sessions", json={"room_id": "room_abc", "teacher_id": "teacher_xyz"}
-    )
+    response = client.post("/v1/sessions", json={
+        "room_id": "room_abc",
+        "teacher_id": "teacher_xyz"
+    })
 
     assert response.status_code == 422
     data = response.json()
@@ -65,9 +68,11 @@ def test_create_session_missing_school_id():
 
 
 def test_create_session_empty_school_id():
-    response = client.post(
-        "/v1/sessions", json={"school_id": "", "room_id": "room_abc", "teacher_id": "teacher_xyz"}
-    )
+    response = client.post("/v1/sessions", json={
+        "school_id": "",
+        "room_id": "room_abc",
+        "teacher_id": "teacher_xyz"
+    })
 
     assert response.status_code == 422
     data = response.json()
@@ -86,18 +91,18 @@ def test_upload_chunk_success(mock_insert_chunk, mock_put_chunk, mock_get_sessio
         "school_id": "school_123",
         "room_id": "room_abc",
         "teacher_id": "teacher_xyz",
-        "status": "active",
+        "status": "active"
     }
     mock_put_chunk.return_value = "s3_key_abc"
     mock_insert_chunk.return_value = {
         "chunk_index": 1,
         "object_key": "s3_key_abc",
-        "size_bytes": 10,
+        "size_bytes": 10
     }
 
     response = client.post(
         f"/v1/sessions/{mock_id}/chunks/1",
-        files={"file": ("test.txt", b"hello test", "text/plain")},
+        files={"file": ("test.txt", b"hello test", "text/plain")}
     )
 
     assert response.status_code == 200
@@ -116,14 +121,14 @@ def test_upload_chunk_invalid_index():
     mock_id = uuid.uuid4()
     response = client.post(
         f"/v1/sessions/{mock_id}/chunks/10000",
-        files={"file": ("test.txt", b"hello test", "text/plain")},
+        files={"file": ("test.txt", b"hello test", "text/plain")}
     )
     assert response.status_code == 400
     assert response.json()["detail"] == "invalid chunk_index"
 
     response = client.post(
         f"/v1/sessions/{mock_id}/chunks/-1",
-        files={"file": ("test.txt", b"hello test", "text/plain")},
+        files={"file": ("test.txt", b"hello test", "text/plain")}
     )
     assert response.status_code == 400
     assert response.json()["detail"] == "invalid chunk_index"
@@ -136,7 +141,7 @@ def test_upload_chunk_session_not_found(mock_get_session):
 
     response = client.post(
         f"/v1/sessions/{mock_id}/chunks/1",
-        files={"file": ("test.txt", b"hello test", "text/plain")},
+        files={"file": ("test.txt", b"hello test", "text/plain")}
     )
     assert response.status_code == 404
     assert response.json()["detail"] == "session not found"
@@ -150,12 +155,12 @@ def test_upload_chunk_invalid_status(mock_get_session):
         "school_id": "school_123",
         "room_id": "room_abc",
         "teacher_id": "teacher_xyz",
-        "status": "completed",
+        "status": "completed"
     }
 
     response = client.post(
         f"/v1/sessions/{mock_id}/chunks/1",
-        files={"file": ("test.txt", b"hello test", "text/plain")},
+        files={"file": ("test.txt", b"hello test", "text/plain")}
     )
     assert response.status_code == 409
     assert response.json()["detail"] == "session not accepting uploads"
@@ -170,13 +175,13 @@ def test_upload_chunk_file_too_large(mock_settings, mock_get_session):
         "school_id": "school_123",
         "room_id": "room_abc",
         "teacher_id": "teacher_xyz",
-        "status": "active",
+        "status": "active"
     }
     mock_settings.max_upload_bytes = 5
 
     response = client.post(
         f"/v1/sessions/{mock_id}/chunks/1",
-        files={"file": ("test.txt", b"hello test", "text/plain")},
+        files={"file": ("test.txt", b"hello test", "text/plain")}
     )
     assert response.status_code == 413
     assert response.json()["detail"] == "chunk exceeds max size"

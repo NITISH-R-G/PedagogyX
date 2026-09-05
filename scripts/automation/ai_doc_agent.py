@@ -1,6 +1,6 @@
-import argparse
 import json
 import os
+import argparse
 
 # In a real environment, this would call the OpenAI API (e.g., openai.ChatCompletion.create)
 # For this script, we'll simulate the AI summarization based on the knowledge graph.

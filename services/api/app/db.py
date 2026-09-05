@@ -1,45 +1,48 @@
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from uuid import UUID
 
-from psycopg2.extras import Json, RealDictCursor
+from psycopg2.extras import RealDictCursor, Json
 
 from app.config import settings
 from app.db_utils import get_conn
 
 
 def insert_session(school_id: str, room_id: str | None, teacher_id: str | None) -> dict:
-    with get_conn() as conn, conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute(
-            """
+    with get_conn() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute(
+                """
                 INSERT INTO sessions (school_id, room_id, teacher_id, status)
                 VALUES (%s, %s, %s, 'active')
                 RETURNING id, school_id, room_id, teacher_id, status, created_at
                 """,
-            (school_id, room_id, teacher_id),
-        )
-        return dict(cur.fetchone())
+                (school_id, room_id, teacher_id),
+            )
+            return dict(cur.fetchone())
 
 
 def complete_session(session_id: UUID) -> dict | None:
-    with get_conn() as conn, conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute(
-            """
+    with get_conn() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute(
+                """
                 UPDATE sessions
                 SET status = 'completed', completed_at = now()
                 WHERE id = %s
                 RETURNING id, school_id, room_id, teacher_id, status, created_at, completed_at
                 """,
-            (str(session_id),),
-        )
-        row = cur.fetchone()
-        return dict(row) if row else None
+                (str(session_id),),
+            )
+            row = cur.fetchone()
+            return dict(row) if row else None
 
 
 def get_session(session_id: UUID) -> dict | None:
-    with get_conn() as conn, conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute("SELECT * FROM sessions WHERE id = %s", (str(session_id),))
-        row = cur.fetchone()
-        return dict(row) if row else None
+    with get_conn() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute("SELECT * FROM sessions WHERE id = %s", (str(session_id),))
+            row = cur.fetchone()
+            return dict(row) if row else None
 
 
 def insert_chunk(
@@ -64,24 +67,26 @@ def insert_chunk(
 
 
 def list_chunks(session_id: UUID) -> list[dict]:
-    with get_conn() as conn, conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute(
-            """
+    with get_conn() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute(
+                """
                 SELECT chunk_index, object_key, size_bytes, content_type, uploaded_at
                 FROM session_chunks WHERE session_id = %s ORDER BY chunk_index
                 """,
-            (str(session_id),),
-        )
-        return [dict(r) for r in cur.fetchall()]
+                (str(session_id),),
+            )
+            return [dict(r) for r in cur.fetchall()]
 
 
 def count_chunks(session_id: UUID) -> int:
-    with get_conn() as conn, conn.cursor() as cur:
-        cur.execute(
-            "SELECT COUNT(*) FROM session_chunks WHERE session_id = %s",
-            (str(session_id),),
-        )
-        return int(cur.fetchone()[0])
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT COUNT(*) FROM session_chunks WHERE session_id = %s",
+                (str(session_id),),
+            )
+            return int(cur.fetchone()[0])
 
 
 def save_transcript(
@@ -91,9 +96,10 @@ def save_transcript(
     rtf: float | None,
     language: str = "en",
 ) -> None:
-    with get_conn() as conn, conn.cursor() as cur:
-        cur.execute(
-            """
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
                 INSERT INTO session_transcripts (session_id, language, text, segments_json, rtf)
                 VALUES (%s, %s, %s, %s, %s)
                 ON CONFLICT (session_id) DO UPDATE
@@ -102,18 +108,19 @@ def save_transcript(
                     rtf = EXCLUDED.rtf,
                     processed_at = now()
                 """,
-            (str(session_id), language, text, Json(segments), rtf),
-        )
+                (str(session_id), language, text, Json(segments), rtf),
+            )
 
 
 def get_transcript(session_id: UUID) -> dict | None:
-    with get_conn() as conn, conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute(
-            "SELECT * FROM session_transcripts WHERE session_id = %s",
-            (str(session_id),),
-        )
-        row = cur.fetchone()
-        return dict(row) if row else None
+    with get_conn() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute(
+                "SELECT * FROM session_transcripts WHERE session_id = %s",
+                (str(session_id),),
+            )
+            row = cur.fetchone()
+            return dict(row) if row else None
 
 
 def save_metrics(
@@ -123,10 +130,11 @@ def save_metrics(
     confidence: str,
     insight_latency_sec: float | None,
 ) -> None:
-    now = datetime.now(UTC)
-    with get_conn() as conn, conn.cursor() as cur:
-        cur.execute(
-            """
+    now = datetime.now(timezone.utc)
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
                 INSERT INTO session_metrics (
                     session_id, teacher_talk_ratio, student_talk_ratio,
                     metric_confidence, preview_ready_at, insight_latency_sec, updated_at
@@ -140,26 +148,27 @@ def save_metrics(
                     insight_latency_sec = EXCLUDED.insight_latency_sec,
                     updated_at = EXCLUDED.updated_at
                 """,
-            (
-                str(session_id),
-                teacher_ratio,
-                student_ratio,
-                confidence,
-                now,
-                insight_latency_sec,
-                now,
-            ),
-        )
+                (
+                    str(session_id),
+                    teacher_ratio,
+                    student_ratio,
+                    confidence,
+                    now,
+                    insight_latency_sec,
+                    now,
+                ),
+            )
 
 
 def get_metrics(session_id: UUID) -> dict | None:
-    with get_conn() as conn, conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute(
-            "SELECT * FROM session_metrics WHERE session_id = %s",
-            (str(session_id),),
-        )
-        row = cur.fetchone()
-        return dict(row) if row else None
+    with get_conn() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute(
+                "SELECT * FROM session_metrics WHERE session_id = %s",
+                (str(session_id),),
+            )
+            row = cur.fetchone()
+            return dict(row) if row else None
 
 
 def _get_school_counts(cur, school_id: str) -> dict:
@@ -210,10 +219,11 @@ def _get_median_latency(cur, school_id: str) -> float | None:
 
 
 def school_overview(school_id: str) -> dict:
-    with get_conn() as conn, conn.cursor(cursor_factory=RealDictCursor) as cur:
-        counts = _get_school_counts(cur, school_id)
-        recent = _get_recent_sessions(cur, school_id)
-        median_latency = _get_median_latency(cur, school_id)
+    with get_conn() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            counts = _get_school_counts(cur, school_id)
+            recent = _get_recent_sessions(cur, school_id)
+            median_latency = _get_median_latency(cur, school_id)
 
     rooms_target = int(settings.overview_rooms_target)
     rooms_observed = int(counts["rooms_observed"] or 0)

@@ -1,7 +1,6 @@
 import contextlib
 import sys
-from collections.abc import Generator
-from typing import Any
+from typing import Any, Generator
 
 import psycopg2
 
