@@ -41,7 +41,7 @@ def test_get_conn_rollback_on_error(mock_connect, capsys):
     mock_connect.return_value = mock_conn
 
     with pytest.raises(Exception, match="DB error"), get_conn():
-        raise Exception("DB error")
+        raise Exception("DB error")  # noqa: TRY002
 
     mock_conn.rollback.assert_called_once()
     mock_conn.close.assert_called_once()
