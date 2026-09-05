@@ -2,7 +2,9 @@ import pytest
 from unittest.mock import MagicMock, patch
 from uuid import uuid4
 
-from app.dat_db import create_dat_session, get_dat_session
+from psycopg2.extras import Json
+
+from app.dat_db import EventData, append_event, create_dat_session, get_dat_session
 from app.db_utils import get_conn
 
 
@@ -142,6 +144,105 @@ def test_get_dat_session_not_found(mock_connect):
     mock_cur.execute.assert_called_once_with(
         "SELECT * FROM dat_sessions WHERE id = %s", (str(test_uuid),)
     )
+
+
+@patch("app.db_utils.psycopg2.connect")
+def test_append_event_success_with_detail(mock_connect):
+    """
+    Test append_event successfully inserts event data into dat_session_events.
+    """
+    mock_conn = MagicMock()
+    mock_connect.return_value = mock_conn
+
+    mock_cursor_ctx = MagicMock()
+    mock_conn.cursor.return_value = mock_cursor_ctx
+
+    mock_cur = MagicMock()
+    mock_cursor_ctx.__enter__.return_value = mock_cur
+
+    test_uuid = uuid4()
+    event = EventData(
+        event_type="SESSION_START",
+        from_state="IDLE",
+        to_state="STARTED",
+        detail={"reason": "user_initiated"},
+    )
+
+    append_event(test_uuid, event)
+
+    mock_cur.execute.assert_called_once()
+    args, _ = mock_cur.execute.call_args
+    assert "INSERT INTO dat_session_events" in args[0]
+    assert args[1][0] == str(test_uuid)
+    assert args[1][1] == "SESSION_START"
+    assert args[1][2] == "IDLE"
+    assert args[1][3] == "STARTED"
+    assert isinstance(args[1][4], Json)
+    assert args[1][4].adapted == {"reason": "user_initiated"}
+
+    mock_conn.commit.assert_called_once()
+    mock_conn.close.assert_called_once()
+    mock_conn.rollback.assert_not_called()
+
+
+@patch("app.db_utils.psycopg2.connect")
+def test_append_event_success_default_detail(mock_connect):
+    """
+    Test append_event defaults detail to empty dict when detail is None.
+    """
+    mock_conn = MagicMock()
+    mock_connect.return_value = mock_conn
+
+    mock_cursor_ctx = MagicMock()
+    mock_conn.cursor.return_value = mock_cursor_ctx
+
+    mock_cur = MagicMock()
+    mock_cursor_ctx.__enter__.return_value = mock_cur
+
+    test_uuid = uuid4()
+    event = EventData(
+        event_type="SESSION_STOP",
+        from_state="STARTED",
+        to_state="STOPPED",
+        detail=None,
+    )
+
+    append_event(test_uuid, event)
+
+    mock_cur.execute.assert_called_once()
+    args, _ = mock_cur.execute.call_args
+    assert isinstance(args[1][4], Json)
+    assert args[1][4].adapted == {}
+
+    mock_conn.commit.assert_called_once()
+    mock_conn.close.assert_called_once()
+
+
+@patch("app.db_utils.psycopg2.connect")
+def test_append_event_rollback_on_error(mock_connect):
+    """
+    Test append_event rolls back transaction and closes connection on error.
+    """
+    mock_conn = MagicMock()
+    mock_connect.return_value = mock_conn
+
+    mock_cursor_ctx = MagicMock()
+    mock_conn.cursor.return_value = mock_cursor_ctx
+
+    mock_cur = MagicMock()
+    mock_cursor_ctx.__enter__.return_value = mock_cur
+
+    mock_cur.execute.side_effect = Exception("Database insert error")
+
+    test_uuid = uuid4()
+    event = EventData("SESSION_START", "IDLE", "STARTED")
+
+    with pytest.raises(Exception, match="Database insert error"):
+        append_event(test_uuid, event)
+
+    mock_conn.rollback.assert_called_once()
+    mock_conn.close.assert_called_once()
+    mock_conn.commit.assert_not_called()
 
 @patch("app.db_utils.psycopg2.connect")
 def test_get_dat_session_success(mock_connect):
