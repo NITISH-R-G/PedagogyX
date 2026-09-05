@@ -1,8 +1,19 @@
 import unittest
-from unittest.mock import patch
-from worker.processor import process_job, _transcribe_stub
+from unittest.mock import MagicMock, patch
+from botocore.exceptions import ClientError
+from worker.processor import process_job, _transcribe_stub, _download_chunk
 
 class TestProcessor(unittest.TestCase):
+    def test_download_chunk_client_error(self):
+        mock_client = MagicMock()
+        error_response = {"Error": {"Code": "NoSuchKey", "Message": "The specified key does not exist."}}
+        mock_client.get_object.side_effect = ClientError(error_response, "GetObject")
+
+        with self.assertRaises(RuntimeError) as ctx:
+            _download_chunk(mock_client, "test-key-123")
+
+        self.assertIn("minio get test-key-123", str(ctx.exception))
+
     def test_transcribe_stub(self):
         text, segments, rtf = _transcribe_stub("test-session-123")
 
