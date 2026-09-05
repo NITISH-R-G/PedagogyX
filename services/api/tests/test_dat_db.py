@@ -1,11 +1,10 @@
-import pytest
 from unittest.mock import MagicMock, patch
 from uuid import uuid4
 
-from psycopg2.extras import Json
-
+import pytest
 from app.dat_db import EventData, append_event, create_dat_session, get_dat_session
 from app.db_utils import get_conn
+from psycopg2.extras import Json
 
 
 @patch("app.db_utils.psycopg2.connect")
@@ -16,12 +15,12 @@ def test_get_conn_rollback_on_psycopg2_error(mock_connect, capsys):
     prints to stderr, and re-raises the exception.
     """
     import psycopg2
+
     mock_conn = MagicMock()
     mock_connect.return_value = mock_conn
 
-    with pytest.raises(psycopg2.Error, match="DB psycopg2 error"):
-        with get_conn():
-            raise psycopg2.Error("DB psycopg2 error")
+    with pytest.raises(psycopg2.Error, match="DB psycopg2 error"), get_conn():
+        raise psycopg2.Error("DB psycopg2 error")
 
     mock_conn.rollback.assert_called_once()
     mock_conn.close.assert_called_once()
@@ -41,9 +40,8 @@ def test_get_conn_rollback_on_error(mock_connect, capsys):
     mock_conn = MagicMock()
     mock_connect.return_value = mock_conn
 
-    with pytest.raises(Exception, match="DB error"):
-        with get_conn():
-            raise Exception("DB error")
+    with pytest.raises(Exception, match="DB error"), get_conn():
+        raise Exception("DB error")
 
     mock_conn.rollback.assert_called_once()
     mock_conn.close.assert_called_once()
@@ -243,6 +241,7 @@ def test_append_event_rollback_on_error(mock_connect):
     mock_conn.rollback.assert_called_once()
     mock_conn.close.assert_called_once()
     mock_conn.commit.assert_not_called()
+
 
 @patch("app.db_utils.psycopg2.connect")
 def test_get_dat_session_success(mock_connect):
