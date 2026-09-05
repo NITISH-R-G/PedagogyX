@@ -35,8 +35,7 @@ def optimized_loop(segments):
 
 def run_benchmark():
     segments = [
-        {"start": float(i), "end": float(i + 1.5), "text": f"segment {i}"}
-        for i in range(1000)
+        {"start": float(i), "end": float(i + 1.5), "text": f"segment {i}"} for i in range(1000)
     ]
     iterations = 10000
 
