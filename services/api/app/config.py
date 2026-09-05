@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     overview_rooms_target: int = 20
     max_upload_bytes: int = 52_428_800  # 50 MiB
     api_key: str | None = None
+    cors_origins: list[str] = ["*"]
 
 
 settings = Settings()
