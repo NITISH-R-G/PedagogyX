@@ -1,4 +1,4 @@
-from datetime import timezone
+from datetime import UTC
 from uuid import uuid4
 
 from pedagogyx_core.models import JobEnvelope
@@ -11,4 +11,4 @@ def test_job_envelope_enqueued_at_default():
     assert job.school_id == "school-123"
     assert job.job_type == "asr"
     assert job.enqueued_at is not None
-    assert job.enqueued_at.tzinfo == timezone.utc
+    assert job.enqueued_at.tzinfo == UTC

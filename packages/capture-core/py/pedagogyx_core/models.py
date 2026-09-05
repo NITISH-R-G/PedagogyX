@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Literal
 from uuid import UUID
 
@@ -19,4 +19,4 @@ class JobEnvelope(BaseModel):
     job_type: Literal["asr", "talk_ratio"] = "asr"
     session_id: UUID
     school_id: str
-    enqueued_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    enqueued_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
