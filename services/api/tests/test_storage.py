@@ -1,7 +1,8 @@
 import uuid
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
-from app.storage import s3_client, chunk_object_key, put_chunk
+from app.storage import chunk_object_key, put_chunk, s3_client
+
 
 def test_chunk_object_key():
     session_id = uuid.uuid4()
