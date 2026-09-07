@@ -20,8 +20,8 @@ docker compose -f infra/compose.dev.yaml down -v && docker compose -f infra/comp
 ## Run
 
 ```bash
-python tools/dat-session-sim/dat_session_cli.py run
-python tools/dat-session-sim/dat_session_cli.py run --no-camera --frames 5
+API_KEY=your_api_key python tools/dat-session-sim/dat_session_cli.py run
+python tools/dat-session-sim/dat_session_cli.py run --api-key your_api_key --no-camera --frames 5
 ```
 
 ## API (manual)
