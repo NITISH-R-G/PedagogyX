@@ -1,4 +1,5 @@
 import unittest
+from datetime import UTC
 from unittest.mock import MagicMock, patch
 
 
@@ -91,8 +92,8 @@ class TestProcessJob(unittest.TestCase):
         mock_connect.return_value.__enter__.return_value = mock_conn
         mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
 
-        from datetime import datetime, timezone
-        mock_cursor.fetchone.return_value = [datetime(2023, 1, 1, tzinfo=timezone.utc)]
+        from datetime import datetime
+        mock_cursor.fetchone.return_value = [datetime(2023, 1, 1, tzinfo=UTC)]
 
         from worker.main import process_job
         payload = {"session_id": "session123"}
