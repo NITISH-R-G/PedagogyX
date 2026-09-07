@@ -18,3 +18,17 @@ async def test_lifespan_exception(capsys):
 
     captured = capsys.readouterr()
     assert "WARN: MinIO bucket init skipped: Test Error" in captured.err
+
+def test_app_configuration():
+    from app.main import app
+    assert app.title == "PedagogyX API"
+    assert app.version == "0.2.1-dat"
+
+def test_router_initialization():
+    from app.main import app
+    routes = [route.path for route in app.routes]
+
+    assert "/health" in routes
+    assert "/v1/sessions" in routes
+    assert "/v1/sessions/{session_id}" in routes
+    assert "/v1/sessions/{session_id}/complete" in routes
