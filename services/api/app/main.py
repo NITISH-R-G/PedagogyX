@@ -74,17 +74,17 @@ async def get_session(session_id: UUID):
 
     payload["chunks"] = [
         {
-            "chunk_index": c["chunk_index"],
-            "size_bytes": c["size_bytes"],
-            "content_type": c["content_type"],
-            "uploaded_at": c["uploaded_at"].isoformat() if c.get("uploaded_at") else None,
+            "chunk_index": c.get("chunk_index") if c is not None else None,
+            "size_bytes": c.get("size_bytes") if c is not None else None,
+            "content_type": c.get("content_type") if c is not None else None,
+            "uploaded_at": c.get("uploaded_at").isoformat() if c is not None and c.get("uploaded_at") else None,
         }
         for c in chunks_data
     ]
     if metrics:
         payload["metrics"] = _serialize_metrics(metrics)
     if transcript:
-        payload["transcript_preview"] = (transcript["text"] or "")[:200]
+        payload["transcript_preview"] = (transcript.get("text", "") or "")[:200]
     return payload
 
 
@@ -166,7 +166,7 @@ def session_preview(session_id: UUID):
         "student_talk_ratio": metrics.get("student_talk_ratio"),
         "metric_confidence": metrics.get("metric_confidence"),
         "insight_latency_sec": metrics.get("insight_latency_sec"),
-        "transcript_excerpt": (transcript["text"][:300] if transcript else None),
+        "transcript_excerpt": (transcript.get("text", "")[:300] if transcript else None),
     }
 
 
@@ -192,8 +192,6 @@ def _serialize_metrics(metrics: dict) -> dict:
         "teacher_talk_ratio": metrics.get("teacher_talk_ratio"),
         "student_talk_ratio": metrics.get("student_talk_ratio"),
         "metric_confidence": metrics.get("metric_confidence"),
-        "preview_ready_at": metrics["preview_ready_at"].isoformat()
-        if metrics.get("preview_ready_at")
-        else None,
+        "preview_ready_at": metrics["preview_ready_at"].isoformat() if metrics.get("preview_ready_at") else None,
         "insight_latency_sec": metrics.get("insight_latency_sec"),
     }
