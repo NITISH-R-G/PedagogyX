@@ -37,6 +37,7 @@ def test_create_dat_session():
                 "teacher_id": "teacher_1",
                 "device_label": "device_1",
             },
+            headers={"Authorization": "Bearer dev_api_key_placeholder"},
         )
 
         assert response.status_code == 200
@@ -52,7 +53,8 @@ def test_get_dat_session_not_found():
     with patch("app.dat_routes.dat_db.get_dat_session") as mock_get:
         mock_get.return_value = None
 
-        response = client.get(f"/v1/dat-sessions/{dat_session_id}")
+        response = client.get(f"/v1/dat-sessions/{dat_session_id}", headers={"Authorization": "Bearer dev_api_key_placeholder"})
+        response = client.get(f"/v1/dat-sessions/{dat_session_id}", headers={"Authorization": "Bearer dev_api_key_placeholder"})
         assert response.status_code == 404
         assert response.json()["detail"] == "dat session not found"
 
@@ -116,6 +118,7 @@ def test_post_lifecycle_session():
                 "target": "session",
                 "to_state": "STARTED",
             },
+            headers={"Authorization": "Bearer dev_api_key_placeholder"},
         )
         assert response.status_code == 200
         assert response.json()["state"] == "STARTED"
@@ -157,6 +160,7 @@ def test_post_lifecycle_stream_with_pedagogy_link():
                 "target": "stream",
                 "to_state": "STREAMING",
             },
+            headers={"Authorization": "Bearer dev_api_key_placeholder"},
         )
         assert response.status_code == 200
         data = response.json()
@@ -180,7 +184,7 @@ def test_start_dat_session():
     with patch("app.dat_routes.dat_db.transition_session_state") as mock_transition:
         mock_transition.side_effect = [None, mock_row]
 
-        response = client.post(f"/v1/dat-sessions/{dat_session_id}/start")
+        response = client.post(f"/v1/dat-sessions/{dat_session_id}/start", headers={"Authorization": "Bearer dev_api_key_placeholder"})
         assert response.status_code == 200
         assert response.json()["state"] == "STARTED"
 
@@ -204,6 +208,6 @@ def test_start_stream():
         mock_get.return_value = mock_row
         mock_transition.side_effect = [None, mock_row]
 
-        response = client.post(f"/v1/dat-sessions/{dat_session_id}/stream/start")
+        response = client.post(f"/v1/dat-sessions/{dat_session_id}/stream/start", headers={"Authorization": "Bearer dev_api_key_placeholder"})
         assert response.status_code == 200
         assert response.json()["stream_state"] == "STREAMING"
