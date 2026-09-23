@@ -2,10 +2,13 @@ import os
 import json
 from datetime import datetime, timezone
 import subprocess
+import shlex
 
 def run_command(cmd, cwd=None):
     try:
-        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, cwd=cwd)
+        if isinstance(cmd, str):
+            cmd = shlex.split(cmd)
+        result = subprocess.run(cmd, capture_output=True, text=True, cwd=cwd)
         return result.stdout.strip(), result.returncode
     except Exception as e:
         return str(e), 1
@@ -16,7 +19,7 @@ def call_ai_for_insights(repo_root):
     if os.path.exists(ai_script):
         # We invoke the dry-run of the existing ai script as a proxy to get an actual AI summary
         # (or its configured fallback mechanism)
-        out, rc = run_command(f"python3 {ai_script} --dry-run")
+        out, rc = run_command(["python3", ai_script, "--dry-run"])
         if rc == 0 and out:
             # Simple parsing of the dry-run output
             lines = [line for line in out.split('\n') if line and 'DRY RUN' not in line]
@@ -54,14 +57,14 @@ def gather_real_metrics():
     # 2. Issues and PRs
     open_issues = 0
     open_prs = 0
-    out, rc = run_command("gh issue list --state open --json number", cwd=repo_root)
+    out, rc = run_command(["gh", "issue", "list", "--state", "open", "--json", "number"], cwd=repo_root)
     if rc == 0:
         try:
             open_issues = len(json.loads(out))
         except Exception:
             pass
 
-    out, rc = run_command("gh pr list --state open --json number", cwd=repo_root)
+    out, rc = run_command(["gh", "pr", "list", "--state", "open", "--json", "number"], cwd=repo_root)
     if rc == 0:
         try:
             open_prs = len(json.loads(out))
@@ -71,22 +74,29 @@ def gather_real_metrics():
     # 3. Test Coverage
     unit_test_coverage = 0.0
     if os.path.exists(os.path.join(repo_root, "services/api/.coverage")):
-         out, rc = run_command("python3 -m coverage report | tail -n 1 | awk '{print $NF}' | sed 's/%//'", cwd=os.path.join(repo_root, "services/api"))
-         if rc == 0 and out.replace('.', '', 1).isdigit():
-             unit_test_coverage = float(out)
+        out, rc = run_command(["python3", "-m", "coverage", "report"], cwd=os.path.join(repo_root, "services/api"))
+        if rc == 0 and out:
+            lines = out.strip().splitlines()
+            if lines:
+                parts = lines[-1].split()
+                if parts:
+                    pct_str = parts[-1].rstrip('%')
+                    if pct_str.replace('.', '', 1).isdigit():
+                        unit_test_coverage = float(pct_str)
 
     # 4. Activity
-    commit_count_out, _ = run_command("git rev-list --count HEAD", cwd=repo_root)
+    commit_count_out, _ = run_command(["git", "rev-list", "--count", "HEAD"], cwd=repo_root)
     commit_count = int(commit_count_out) if commit_count_out.isdigit() else 0
 
-    contributors_out, _ = run_command("git shortlog -sn --all", cwd=repo_root)
+    contributors_out, _ = run_command(["git", "shortlog", "-sn", "--all"], cwd=repo_root)
     active_contributors = len([c for c in contributors_out.split('\n') if c.strip()])
 
     # 5. Linting / Complexity (Ruff)
     linting_violations = 0
-    out, rc = run_command("ruff check . | wc -l", cwd=repo_root)
-    if rc == 0 and out.isdigit():
-        linting_violations = max(0, int(out) - 2) # rough estimate discounting output headers
+    out, _ = run_command(["ruff", "check", "."], cwd=repo_root)
+    if out:
+        lines = [line for line in out.splitlines() if line.strip()]
+        linting_violations = max(0, len(lines) - 2) # rough estimate discounting output headers
 
     # Base Data structure with real and mock data
     data = {
