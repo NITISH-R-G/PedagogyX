@@ -12,3 +12,15 @@ skip_glob = ["benchmarks/.venv/**"]
 line-length = 100
 target-version = "py312"
 src = ["services", "tools", "packages/capture-core/py"]
+
+[tool.ruff.lint]
+ignore = [
+    "B008",     # Do not perform function call in argument defaults (FastAPI Depends/File)
+    "BLE001",   # Do not catch blind exception Exception
+    "SIM117",   # Use a single with statement with multiple contexts
+    "SIM115",   # Use a context manager for opening files
+    "TRY002",   # Create your own exception
+    "DTZ005",   # datetime.now() called without a tz argument
+    "ASYNC230", # Async functions should not open files with blocking methods
+    "RUF059",   # Unpacked variable is never used
+]

@@ -1,20 +1,22 @@
-from unittest.mock import patch, MagicMock
+from datetime import UTC, datetime
+from unittest.mock import MagicMock, patch
 from uuid import uuid4
-from datetime import datetime, timezone
-from psycopg2.extras import Json
+
 from app.db import (
-    get_transcript,
-    insert_session,
     complete_session,
-    get_session,
-    insert_chunk,
-    list_chunks,
     count_chunks,
-    save_transcript,
-    save_metrics,
     get_metrics,
+    get_session,
+    get_transcript,
+    insert_chunk,
+    insert_session,
+    list_chunks,
+    save_metrics,
+    save_transcript,
     school_overview,
 )
+from psycopg2.extras import Json
+
 
 def test_get_transcript_found():
     session_id = uuid4()
@@ -184,7 +186,7 @@ def test_count_chunks():
 @patch('app.db.datetime')
 def test_save_transcript(mock_datetime):
     session_id = uuid4()
-    mock_now = datetime(2023, 1, 1, tzinfo=timezone.utc)
+    mock_now = datetime(2023, 1, 1, tzinfo=UTC)
     mock_datetime.now.return_value = mock_now
 
     with patch("app.db.get_conn") as mock_get_conn:
@@ -204,7 +206,7 @@ def test_save_transcript(mock_datetime):
 @patch('app.db.datetime')
 def test_save_metrics(mock_datetime):
     session_id = uuid4()
-    mock_now = datetime(2023, 1, 1, tzinfo=timezone.utc)
+    mock_now = datetime(2023, 1, 1, tzinfo=UTC)
     mock_datetime.now.return_value = mock_now
 
     with patch("app.db.get_conn") as mock_get_conn:
@@ -264,11 +266,11 @@ def test_school_overview(mock_settings):
             "room_id": "room_1",
             "teacher_id": "teacher_1",
             "status": "completed",
-            "created_at": datetime(2023, 1, 1, tzinfo=timezone.utc),
-            "completed_at": datetime(2023, 1, 1, tzinfo=timezone.utc),
+            "created_at": datetime(2023, 1, 1, tzinfo=UTC),
+            "completed_at": datetime(2023, 1, 1, tzinfo=UTC),
             "teacher_talk_ratio": 0.6,
             "student_talk_ratio": 0.4,
-            "preview_ready_at": datetime(2023, 1, 1, tzinfo=timezone.utc),
+            "preview_ready_at": datetime(2023, 1, 1, tzinfo=UTC),
             "insight_latency_sec": 5.0,
             "metric_confidence": "high"
         }
