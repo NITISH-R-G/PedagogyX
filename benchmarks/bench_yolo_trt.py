@@ -5,7 +5,7 @@ import argparse
 import json
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import numpy as np
@@ -59,7 +59,7 @@ def main() -> int:
     fps = args.frames / elapsed if elapsed > 0 else 0.0
 
     result = {
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
         "script": "bench_yolo_trt.py",
         "model": args.model,
         "device": device,
