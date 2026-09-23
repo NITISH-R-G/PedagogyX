@@ -43,6 +43,7 @@ def _db_conn():
 
 _redis_client = None
 
+
 def _get_redis_client():
     global _redis_client
     if _redis_client is None:
@@ -92,10 +93,7 @@ def _download_chunks(session_id: str, chunks: list[tuple[int, str]]) -> str:
 
     results = {}
     with ThreadPoolExecutor(max_workers=5) as executor:
-        future_to_idx = {
-            executor.submit(_download_chunk, client, key): idx
-            for idx, key in chunks
-        }
+        future_to_idx = {executor.submit(_download_chunk, client, key): idx for idx, key in chunks}
         for future in as_completed(future_to_idx):
             idx = future_to_idx[future]
             results[idx] = future.result()
@@ -184,9 +182,17 @@ def process_job(payload: dict) -> None:
             try:
                 os.unlink(audio_path)
             except FileNotFoundError as exc:
-                print(f"[worker-asr] warning: audio path not found for unlink {audio_path}: {exc}", file=sys.stderr, flush=True)
+                print(
+                    f"[worker-asr] warning: audio path not found for unlink {audio_path}: {exc}",
+                    file=sys.stderr,
+                    flush=True,
+                )
             except OSError as exc:
-                print(f"[worker-asr] warning: failed to unlink {audio_path}: {exc}", file=sys.stderr, flush=True)
+                print(
+                    f"[worker-asr] warning: failed to unlink {audio_path}: {exc}",
+                    file=sys.stderr,
+                    flush=True,
+                )
 
     _save_transcript(session_id, text, segments, rtf)
     _enqueue_metrics(session_id, school_id)
