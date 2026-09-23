@@ -1,6 +1,7 @@
 import pytest
 from app.config import Settings
 
+
 @pytest.fixture
 def clean_env(monkeypatch):
     # Remove any existing env vars that might interfere with defaults
