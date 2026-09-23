@@ -1,7 +1,8 @@
-import os
 import json
-from datetime import datetime, timezone
+import os
 import subprocess
+from datetime import UTC, datetime
+
 
 def run_command(cmd, cwd=None):
     try:
@@ -90,7 +91,7 @@ def gather_real_metrics():
 
     # Base Data structure with real and mock data
     data = {
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "executive_overview": {
             "overall_health_score": min(100, max(0, 100 - linting_violations - (2 * open_issues))),
             "engineering_quality_score": min(100, max(0, int(unit_test_coverage) + 10)),
