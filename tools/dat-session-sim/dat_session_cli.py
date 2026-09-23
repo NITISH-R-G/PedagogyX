@@ -172,7 +172,9 @@ def main() -> int:
     run_p.add_argument("--frames", type=int, default=10)
     run_p.add_argument("--frame-interval", type=float, default=0.5)
     run_p.add_argument("--no-camera", action="store_true")
-    run_p.add_argument("--api-key", default="dev_api_key_placeholder", help="API key for authentication")
+    run_p.add_argument(
+        "--api-key", default="dev_api_key_placeholder", help="API key for authentication"
+    )
     run_p.set_defaults(func=run_session)
 
     args = parser.parse_args()
