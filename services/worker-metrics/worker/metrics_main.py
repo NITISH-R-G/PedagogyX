@@ -32,11 +32,21 @@ def _compute_talk_ratio(cur, session_id: str) -> tuple[float, float, str]:
 
     teacher_dur = 0.0
     total_dur = 0.0
-    for i, seg in enumerate(segments):
-        dur = max(0.0, float(seg.get("end", 0)) - float(seg.get("start", 0)))
+    is_teacher = True
+    for seg in segments:
+        try:
+            start = seg["start"]
+            end = seg["end"]
+        except (KeyError, TypeError):
+            start = seg.get("start", 0) if isinstance(seg, dict) else 0
+            end = seg.get("end", 0) if isinstance(seg, dict) else 0
+        dur = float(end) - float(start)
+        if dur < 0.0:
+            dur = 0.0
         total_dur += dur
-        if i % 2 == 0:
+        if is_teacher:
             teacher_dur += dur
+        is_teacher = not is_teacher
     if total_dur <= 0:
         teacher = PREVIEW_TEACHER_RATIO
         return teacher, round(1.0 - teacher, 4), "preview_heuristic"
