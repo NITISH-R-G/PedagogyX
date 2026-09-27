@@ -68,4 +68,3 @@ The following environment variables are detected in the codebase:
 
 ## Contribution Guide
 Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
-
