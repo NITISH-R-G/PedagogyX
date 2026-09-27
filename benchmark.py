@@ -1,8 +1,9 @@
-import time
-import redis
 import json
 import os
-from datetime import datetime, timezone
+import time
+from datetime import UTC, datetime
+
+import redis
 
 REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 JOB_QUEUE_METRICS = "jobs:talk_ratio_test"
@@ -13,7 +14,7 @@ def _enqueue_metrics_original(session_id: str, school_id: str) -> None:
         "job_type": "talk_ratio",
         "session_id": session_id,
         "school_id": school_id,
-        "enqueued_at": datetime.now(timezone.utc).isoformat(),
+        "enqueued_at": datetime.now(UTC).isoformat(),
     }
     client.rpush(JOB_QUEUE_METRICS, json.dumps(payload))
 
@@ -31,7 +32,7 @@ def _enqueue_metrics_optimized(session_id: str, school_id: str) -> None:
         "job_type": "talk_ratio",
         "session_id": session_id,
         "school_id": school_id,
-        "enqueued_at": datetime.now(timezone.utc).isoformat(),
+        "enqueued_at": datetime.now(UTC).isoformat(),
     }
     client.rpush(JOB_QUEUE_METRICS, json.dumps(payload))
 

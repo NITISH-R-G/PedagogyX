@@ -6,7 +6,7 @@ from pathlib import Path
 # Add parent directory to sys.path so we can import bench_whisper
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from bench_whisper import _make_silent_wav  # noqa: E402
+from bench_whisper import _make_silent_wav
 
 
 def test_make_silent_wav(tmp_path: Path):

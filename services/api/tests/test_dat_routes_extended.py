@@ -1,10 +1,9 @@
 import uuid
-from unittest.mock import patch
 from datetime import datetime
-
-from fastapi.testclient import TestClient
+from unittest.mock import patch
 
 from app.main import app
+from fastapi.testclient import TestClient
 
 client = TestClient(app)
 

@@ -2,7 +2,7 @@ import json
 import os
 import sys
 import traceback
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import psycopg2
 import redis
@@ -47,7 +47,7 @@ def _compute_talk_ratio(cur, session_id: str) -> tuple[float, float, str]:
 
 def process_job(payload: dict) -> None:
     session_id = payload["session_id"]
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
 
     with psycopg2.connect(DATABASE_URL) as conn:
         with conn.cursor() as cur:
@@ -59,7 +59,7 @@ def process_job(payload: dict) -> None:
             completed = cur.fetchone()
             latency = None
             if completed and completed[0]:
-                latency = (now - completed[0].replace(tzinfo=timezone.utc)).total_seconds()
+                latency = (now - completed[0].replace(tzinfo=UTC)).total_seconds()
 
             cur.execute(
                 """

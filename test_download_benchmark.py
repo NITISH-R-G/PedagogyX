@@ -1,9 +1,11 @@
-import time
 import os
 import tempfile
+import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 import boto3
 from botocore.stub import Stubber
-from concurrent.futures import ThreadPoolExecutor, as_completed
+
 
 def _s3():
     return boto3.client(
@@ -67,6 +69,7 @@ def download_concurrent(client, chunks):
 
 if __name__ == "__main__":
     import io
+
     from botocore.response import StreamingBody
 
     client = _s3()

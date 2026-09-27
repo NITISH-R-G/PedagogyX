@@ -1,6 +1,8 @@
-import pytest
 from unittest.mock import patch
+
+import pytest
 from app.main import lifespan
+
 
 @pytest.mark.asyncio
 async def test_lifespan_success():
