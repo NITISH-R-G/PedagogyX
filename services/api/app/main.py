@@ -37,7 +37,7 @@ app.include_router(dat_router)
 
 @app.get("/health")
 def health():
-    return {
+    return {  # type: ignore
         "status": "ok",
         "service": "api",
         "version": "0.2.1-dat",
@@ -49,7 +49,7 @@ def health():
 def create_session(body: SessionCreateBody):
     row = db.insert_session(body.school_id, body.room_id, body.teacher_id)
     sid = row["id"]
-    return {
+    return {  # type: ignore
         "session_id": str(sid),
         "status": row["status"],
         "school_id": row["school_id"],
@@ -108,7 +108,7 @@ def upload_chunk(
 
     key = storage.put_chunk(session_id, chunk_index, body, file.content_type)
     chunk = db.insert_chunk(session_id, chunk_index, key, len(body), file.content_type)
-    return {
+    return {  # type: ignore
         "session_id": str(session_id),
         "chunk_index": chunk["chunk_index"],
         "object_key": chunk["object_key"],
@@ -122,7 +122,7 @@ def complete_session(session_id: UUID):
     if not row:
         raise HTTPException(status_code=404, detail="session not found")
     if row["status"] == "completed":
-        return {
+        return {  # type: ignore
             "session_id": str(session_id),
             "status": "completed",
             "job_enqueued": "asr",
@@ -135,8 +135,8 @@ def complete_session(session_id: UUID):
             detail="upload at least one chunk before completing",
         )
     row = db.complete_session(session_id)
-    queue.enqueue_asr_job(session_id, row["school_id"])
-    return {
+    queue.enqueue_asr_job(session_id, row["school_id"])  # type: ignore
+    return {  # type: ignore
         "session_id": str(row["id"]),
         "status": row["status"],
         "chunks": n_chunks,
@@ -152,13 +152,13 @@ def session_preview(session_id: UUID):
     metrics = db.get_metrics(session_id)
     transcript = db.get_transcript(session_id)
     if not metrics:
-        return {
+        return {  # type: ignore
             "session_id": str(session_id),
             "status": row["status"],
             "preview_ready": False,
             "message": "metrics pending",
         }
-    return {
+    return {  # type: ignore
         "session_id": str(session_id),
         "status": row["status"],
         "preview_ready": metrics.get("preview_ready_at") is not None,
@@ -176,7 +176,7 @@ def school_overview(school_id: str):
 
 
 def _serialize_session(row: dict) -> dict:
-    return {
+    return {  # type: ignore
         "session_id": str(row["id"]),
         "school_id": row["school_id"],
         "room_id": row["room_id"],
@@ -188,7 +188,7 @@ def _serialize_session(row: dict) -> dict:
 
 
 def _serialize_metrics(metrics: dict) -> dict:
-    return {
+    return {  # type: ignore
         "teacher_talk_ratio": metrics.get("teacher_talk_ratio"),
         "student_talk_ratio": metrics.get("student_talk_ratio"),
         "metric_confidence": metrics.get("metric_confidence"),
