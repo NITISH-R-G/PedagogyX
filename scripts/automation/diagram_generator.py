@@ -1,6 +1,7 @@
 import json
 import os
 
+
 def load_graph(filepath):
     with open(filepath, 'r') as f:
         return json.load(f)

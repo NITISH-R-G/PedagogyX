@@ -1,8 +1,9 @@
 import pytest
-from fastapi import HTTPException, status
-from fastapi.security import HTTPAuthorizationCredentials
 from app.auth import verify_api_key
 from app.config import settings
+from fastapi import HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials
+
 
 def test_verify_api_key_success(monkeypatch):
     monkeypatch.setattr(settings, "api_key", "test_api_key")

@@ -1,6 +1,7 @@
-import os
 import argparse
 import json
+import os
+
 try:
     from openai import OpenAI
 except ImportError:
