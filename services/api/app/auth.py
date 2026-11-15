@@ -4,6 +4,7 @@ from app.config import settings
 
 security = HTTPBearer()
 
+
 def verify_api_key(credentials: HTTPAuthorizationCredentials = Depends(security)):
     if credentials.scheme != "Bearer":
         raise HTTPException(

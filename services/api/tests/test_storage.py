@@ -3,6 +3,7 @@ from unittest.mock import patch, MagicMock
 
 from app.storage import s3_client, chunk_object_key, put_chunk
 
+
 def test_chunk_object_key():
     session_id = uuid.uuid4()
     chunk_index = 5
@@ -13,6 +14,7 @@ def test_chunk_object_key():
 @patch("app.storage.boto3.client")
 def test_s3_client_secure(mock_boto_client, monkeypatch):
     from app.config import settings
+
     monkeypatch.setattr(settings, "minio_secure", True)
     monkeypatch.setattr(settings, "minio_endpoint", "test-endpoint")
     monkeypatch.setattr(settings, "minio_access_key", "test-access-key")
@@ -33,6 +35,7 @@ def test_s3_client_secure(mock_boto_client, monkeypatch):
 @patch("app.storage.boto3.client")
 def test_s3_client_insecure(mock_boto_client, monkeypatch):
     from app.config import settings
+
     monkeypatch.setattr(settings, "minio_secure", False)
     monkeypatch.setattr(settings, "minio_endpoint", "test-endpoint")
     monkeypatch.setattr(settings, "minio_access_key", "test-access-key")
@@ -53,6 +56,7 @@ def test_s3_client_insecure(mock_boto_client, monkeypatch):
 @patch("app.storage.s3_client")
 def test_put_chunk_default_content_type(mock_s3_client, monkeypatch):
     from app.config import settings
+
     monkeypatch.setattr(settings, "minio_bucket", "test-bucket")
 
     mock_client_instance = MagicMock()
@@ -78,6 +82,7 @@ def test_put_chunk_default_content_type(mock_s3_client, monkeypatch):
 @patch("app.storage.s3_client")
 def test_put_chunk_custom_content_type(mock_s3_client, monkeypatch):
     from app.config import settings
+
     monkeypatch.setattr(settings, "minio_bucket", "test-bucket")
 
     mock_client_instance = MagicMock()
